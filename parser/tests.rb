@@ -3,12 +3,22 @@ require_relative './main.rb'
 require 'shindo'
 require 'pry'
 
-class Tokenizer
+Shindo.tests("Parser") do
+
+  returns(true) do
+    t = Tokenizer.new "function call"
+    t.read
+    parser = Parser.new t.tokens
+    true
+  end
+
+end
+
+class Tokenizee
   attr_accessor :tokens
 end
 
-# Test tokenizer
-Shindo.tests do
+Shindo.tests("Tokenizer") do
 
   def token_test(text, return_value)
     n = nil
@@ -56,5 +66,13 @@ Shindo.tests do
 
   # test punctuation with characters
   token_test "Hello.text", [:Hello, :".", :text]
+
+  token_test "{ interesting }", [:do, :interesting, :end]
+
+  # test some real code
+  token_test "class Hello do
+      some hi, there
+    end",
+    [:class, :Hello, :do, :newline, :some, :hi, :",", :there, :newline, :end]
 
 end

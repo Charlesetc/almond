@@ -2,7 +2,11 @@
 CHAR_MAPPING = {
   ";" => :newline,
   "\n" => :newline,
+  "}" => :end,
+  "{" => :do,
 }
+
+KEYWORDS = [:do, :newline, :end]
 
 class String
 
@@ -28,9 +32,22 @@ class Token
     @column = column
     @character = character
   end
+
+  def newline?
+    self == :"\n"
+  end
+
+  def end?
+    self == :end
+  end
+
+  def do?
+    self == :do
+  end
 end
 
 class Tokenizer
+  attr_accessor :tokens
 
   def initialize(text)
     @chars = text.chars.reverse
@@ -41,7 +58,7 @@ class Tokenizer
   end
 
   def read
-    read_start pop
+    read_start next_char
   end
 
   def read_start(a)
@@ -78,7 +95,7 @@ class Tokenizer
 
   def read_characters(a, method)
     ident = [a]
-    while (a = pop) and a.send method
+    while (a = next_char) and a.send method
       ident << a
     end
     return ident.join(''), a
@@ -96,7 +113,7 @@ class Tokenizer
     @tokens << Token.new(a, @line, @column, @character)
   end
 
-  def pop
+  def next_char
     a = @chars.pop
     @character += 1
     @column += 1
@@ -109,10 +126,83 @@ class Tokenizer
   
 end
 
+class Expression
+  attr_accessor :name, :arguments, :block
+
+  def initialize(name, arguments, block)
+    @name = name
+    @arguments = arguments
+    @block = block
+  end
+
+  def inspect
+    "#{@name.symbol}(#{arguments}) {
+      #{block}
+    }"
+  end
+end
+
 class Parser
   
-  def initialize(text)
-    @text = text
+  def initialize(tokens)
+    @tokens = tokens.reverse
+    @character = 0
+    @column = 0
+    @line = 0
+  end
+
+  def parse
+    parse_functions next_token
+  end
+
+  def parse_functions(token, trees=[])
+    return trees unless token
+    return trees if token.end?
+    return parse_funcitons next_token, trees if token.newline?
+
+    tree, a = parse_function token
+    trees << tree
+    parse_functions a, trees
+  end
+
+  def parse_function(token)
+    raise "No newlines" if token.newline?
+    raise "The end is nigh" if token.end?
+
+    name = token
+    arguments, a = parse_arguments next_token
+    block = parse_block a
+    Expression.new name, arguments, block
+  end
+
+  def parse_arguments(token, arguments=[])
+    case token
+    when nil
+      return arguments, token
+    when :do, :newline, :")"
+      return arguments, token
+    when :"("
+      arguments << (parse_function token)
+    else
+      arguments << (Expression.new token, [], [])
+    end
+    parse_arguments next_token, arguments
+  end
+
+  def parse_block(token)
+    return nil unless token
+    if token.do?
+      parse_functions next_token
+    end
+  end
+
+  def next_token
+    token = @tokens.pop
+    return nil unless token
+    @line = token.line
+    @column = token.column
+    @character = token.character
+    token
   end
 
 end
