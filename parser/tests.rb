@@ -31,11 +31,19 @@ Shindo.tests("Parser") do
     end
   end
 
+  parses_test "map", [:map]
+
   parses_test "map a b", [[:map, [:a, :b], []]]
 
   parses_test "map a { b }", [[:map, [:a], [:b]]]
 
   parses_test "map a (lambda x { b x })", [[:map, [:a, [:lambda, [:x], [[:b, [:x], []]]]], []]]
+
+  parses_test "hi there; wonderkin", [[:hi, [:there], []], :wonderkin]
+
+  parses_test "hi there\n wonderkin", [[:hi, [:there], []], :wonderkin]
+
+  parses_test "hi there {\nwonderkin}", [[:hi, [:there], [:wonderkin]]]
 
 end
 

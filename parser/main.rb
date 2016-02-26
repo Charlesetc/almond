@@ -134,7 +134,6 @@ class Expression
     @name = name
     @arguments = arguments
     @block = block
-    puts
   end
 
   def inspect
