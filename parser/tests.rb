@@ -3,14 +3,39 @@ require_relative './main.rb'
 require 'shindo'
 require 'pry'
 
+class Expression
+
+  def to_array
+    if (not self.block or  self.block.length == 0) \
+       and (not self.arguments or self.arguments.length == 0)
+      return self.name.symbol
+    end
+    b = self.block ? self.block.map { |x| x.to_array } : []
+    a = self.arguments ? self.arguments.map { |x| x.to_array } : []
+
+    [self.name.symbol, a, b]
+
+  end
+
+end
+
 Shindo.tests("Parser") do
 
-  returns(true) do
-    t = Tokenizer.new "function call"
-    t.read
-    parser = Parser.new t.tokens
-    true
+  def parses_test(string, arrays)
+    returns(arrays, string) do
+      t = Tokenizer.new string
+      t.read
+      parser = Parser.new t.tokens
+      a = parser.parse.map { |x| x.to_array }
+      a
+    end
   end
+
+  parses_test "map a b", [[:map, [:a, :b], []]]
+
+  parses_test "map a { b }", [[:map, [:a], [:b]]]
+
+  parses_test "map a (lambda x { b x })", [[:map, [:a, [:lambda, [:x], [[:b, [:x], []]]]], []]]
 
 end
 
@@ -61,9 +86,6 @@ Shindo.tests("Tokenizer") do
   # test ident with number
   token_test "abc23d 123", [:abc23d, :"123"]
 
-  # test punctuation
-  token_test "?\n;", [:"?", :newline, :newline]
-
   # test punctuation with characters
   token_test "Hello.text", [:Hello, :".", :text]
 
@@ -73,6 +95,6 @@ Shindo.tests("Tokenizer") do
   token_test "class Hello do
       some hi, there
     end",
-    [:class, :Hello, :do, :newline, :some, :hi, :",", :there, :newline, :end]
+    [:class, :Hello, :do, :"\n", :some, :hi, :",", :there, :"\n", :end]
 
 end
