@@ -7,6 +7,8 @@ require_relative 'data.rb'
 require_relative 'token.rb'
 require_relative 'parser.rb'
 
+
+# Just to make comparisons & literals easier.
 class Expression
 
   def to_array
@@ -18,7 +20,6 @@ class Expression
     a = self.arguments ? self.arguments.map { |x| x.to_array } : []
 
     [self.name.symbol, a, b]
-
   end
 
 end
