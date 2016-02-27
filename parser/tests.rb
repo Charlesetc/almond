@@ -1,7 +1,11 @@
-require_relative './main.rb'
+# tests.rb
 
 require 'shindo'
 require 'pry'
+
+require_relative 'data.rb'
+require_relative 'token.rb'
+require_relative 'parser.rb'
 
 class Expression
 
