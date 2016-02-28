@@ -60,7 +60,7 @@ class Position
   def increment(a)
     @character += 1
     @column += 1
-    if a == '\n'
+    if a == "\n"
       @column = 0
       @line += 1
     end

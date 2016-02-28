@@ -111,12 +111,22 @@ Shindo.tests("Parser") do
 
   parses_test "hi there {\nwonderkin}", [[:hi, [:there], {[] => [:wonderkin]}]]
 
+  parses_test "\tif {\n\t\tprint this\n\t}", [[:if, [], {[] => [[:print, [:this], {}]]}]]
+
 end
 
 Shindo.tests("Generator") do
 
   returns(true) do
-    t = Tokenizer.new "map a {b : c}"
+    t = Tokenizer.new "
+    test test
+    mapped a {b c : c} test
+    if hi {
+      print this
+    } else if true {
+      print that
+    }
+    "
     t.read
     parser = Parser.new t.tokens
     forest = parser.parse

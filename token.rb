@@ -23,7 +23,7 @@ class Tokenizer
       read_number a
     when a.alpha?
       read_ident a
-    when ' \t'.include?(a)
+    when " \t".include?(a)
       read
     else
       read_punct a

@@ -54,7 +54,9 @@ class Parser
 
   def parse_block_arguments(token, arguments=[])
     case token.symbol
-    when :do, :"\n", :"(", :")", :end
+    when :do
+      raise "this would be a problem. #{arguments}" unless arguments.empty?
+    when :"\n", :"(", :")", :end
       return arguments, token
     else
       arguments << token
