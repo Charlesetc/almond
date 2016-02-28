@@ -51,15 +51,13 @@ Ident  [Node]  [Node] [Ident]
 
 My hope is that this will make macros easy, although I haven't gone about implementing them yet.
 
-```
-
 # Progress
 
 * [ ] Finish the first compiler
-  - [*] Parse the tokens
-  - [*] Parse the ast
-  - [*] Generate function calls
-  - [*] Generate `if` and `else` statements
+  - [x] Parse the tokens
+  - [x] Parse the ast
+  - [x] Generate function calls
+  - [x] Generate `if` and `else` statements
   - [ ] Generate function definitions
   - [ ] Generate structs
   - [ ] Make a decent stdlib in Go
