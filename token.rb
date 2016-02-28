@@ -8,9 +8,7 @@ class Tokenizer
   def initialize(text)
     @chars = text.chars.reverse
     @tokens = []
-    @line = 0
-    @column = 0
-    @character = 0
+    @position = Position.new
   end
 
   def read
@@ -66,70 +64,14 @@ class Tokenizer
     unless a.is_a? Symbol
       a = a.to_sym
     end
-    @tokens << Token.new(a, @line, @column, @character)
+    @tokens << Token.new(a, @position) # This might need a clone
   end
 
   def next_char
     a = @chars.pop
-    @character += 1
-    @column += 1
-    if a == '\n'
-      @column = 0
-      @line += 1
-    end
+    @position.increment(a)
     a
   end
   
-end
-
-class Expression
-  attr_accessor :name, :arguments, :block
-  @@indentation = 0
-
-  def initialize(name, arguments, block)
-    @name = name
-    @arguments = arguments
-    @block = block
-  end
-
-  def inspect
-    output = ""
-    output += "#{@name.symbol}"
-
-    @@indentation += 1
-
-    if @arguments and @arguments.length > 0
-      output += "("
-      first = true
-      arguments.each do |a|
-        if first
-          first = false
-        else
-          output += ", "
-        end
-        output += a.inspect
-      end
-      output += ")"
-    end
-
-    if @block and @block.length > 0
-      output += " {\n"
-      @block.each do |b|
-        output += indentation
-        output += b.inspect
-      end
-      @@indentation -= 1
-      output += "\n#{indentation}}"
-    else
-      @@indentation -= 1
-    end
-    total_string = "@name"
-
-    output
-  end
-
-  def indentation
-    ("  " * @@indentation)
-  end
 end
 

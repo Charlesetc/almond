@@ -6,9 +6,7 @@ class Parser
   
   def initialize(tokens)
     @tokens = tokens.reverse
-    @character = 0
-    @column = 0
-    @line = 0
+    @position = Position.new
   end
 
   def parse
@@ -66,9 +64,7 @@ class Parser
   def next_token
     token = @tokens.pop
     return nil unless token
-    @line = token.line
-    @column = token.column
-    @character = token.character
+    @position = token.position
     token
   end
 

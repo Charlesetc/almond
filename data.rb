@@ -26,12 +26,11 @@ class String
 end
 
 class Token
-  attr_accessor :line, :symbol, :column, :character
-  def initialize(symbol, line, column, character)
+  attr_accessor :symbol, :position
+
+  def initialize(symbol, position)
     @symbol = symbol
-    @line = line
-    @column = column
-    @character = character
+    @position = position
   end
 
   def newline?
@@ -44,5 +43,80 @@ class Token
 
   def do?
     self.symbol == :do
+  end
+end
+
+class Position
+
+  attr_accessor :line, :column, :character
+
+  def initialize
+    @line = 0
+    @column = 0
+    @character = 0
+  end
+
+  def increment(a)
+    @character += 1
+    @column += 1
+    if a == '\n'
+      @column = 0
+      @line += 1
+    end
+  end
+
+end
+
+
+class Expression
+  attr_accessor :name, :arguments, :block
+  @@indentation = 0
+
+  def initialize(name, arguments, block)
+    @name = name
+    @arguments = arguments
+    @block = block
+  end
+
+  # This is just pretty-printing for debugging
+  def inspect
+    output = ""
+    output += "#{@name.symbol}"
+
+    @@indentation += 1
+
+    if @arguments and @arguments.length > 0
+      output += "("
+      first = true
+      arguments.each do |a|
+        if first
+          first = false
+        else
+          output += ", "
+        end
+        output += a.inspect
+      end
+      output += ")"
+    end
+
+    if @block and @block.length > 0
+      output += " {\n"
+      @block.each do |b|
+        output += indentation
+        output += b.inspect
+      end
+      @@indentation -= 1
+      output += "\n#{indentation}}"
+    else
+      @@indentation -= 1
+    end
+    total_string = "@name"
+
+    output
+  end
+
+  # also for pretty-printing
+  def indentation
+    ("  " * @@indentation)
   end
 end
