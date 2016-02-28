@@ -62,3 +62,4 @@ My hope is that this will make macros easy, although I haven't gone about implem
   - [ ] Generate structs
   - [ ] Make a decent stdlib in Go
 * [ ] Bootstrap
+* [ ] Add objects and methods
