@@ -12,43 +12,15 @@ require_relative 'parser.rb'
 class Expression
 
   def to_array
-    if (not self.block or  self.block.length == 0) \
+    if (not self.block or self.block.forest.length == 0) \
        and (not self.arguments or self.arguments.length == 0)
       return self.name.symbol
     end
-    b = self.block ? self.block.map { |x| x.to_array } : []
+    b = self.block ? {self.block.arguments.map { |x| x.symbol } => self.block.forest.map { |x| x.to_array }} : {}
     a = self.arguments ? self.arguments.map { |x| x.to_array } : []
 
     [self.name.symbol, a, b]
   end
-
-end
-
-Shindo.tests("Parser") do
-
-  def parses_test(string, arrays)
-    returns(arrays, string) do
-      t = Tokenizer.new string
-      t.read
-      parser = Parser.new t.tokens
-      a = parser.parse.map { |x| x.to_array }
-      a
-    end
-  end
-
-  parses_test "map", [:map]
-
-  parses_test "map a b", [[:map, [:a, :b], []]]
-
-  parses_test "map a { b }", [[:map, [:a], [:b]]]
-
-  parses_test "map a (lambda x { b x })", [[:map, [:a, [:lambda, [:x], [[:b, [:x], []]]]], []]]
-
-  parses_test "hi there; wonderkin", [[:hi, [:there], []], :wonderkin]
-
-  parses_test "hi there\n wonderkin", [[:hi, [:there], []], :wonderkin]
-
-  parses_test "hi there {\nwonderkin}", [[:hi, [:there], [:wonderkin]]]
 
 end
 
@@ -109,5 +81,33 @@ Shindo.tests("Tokenizer") do
       some hi, there
     end",
     [:class, :Hello, :do, :"\n", :some, :hi, :",", :there, :"\n", :end]
+
+end
+
+Shindo.tests("Parser") do
+
+  def parses_test(string, arrays)
+    returns(arrays, string) do
+      t = Tokenizer.new string
+      t.read
+      parser = Parser.new t.tokens
+      a = parser.parse.map { |x| x.to_array }
+      a
+    end
+  end
+
+  parses_test "map", [:map]
+
+  parses_test "map a b", [[:map, [:a, :b], {}]]
+
+  parses_test "map a {;b }", [[:map, [:a], {[] => [:b]}]]
+
+  parses_test "map a (lambda {x: b x })", [[:map, [:a, [:lambda, [], { [:x] => [[:b, [:x], {}]]}]], {}]]
+
+  parses_test "hi there; wonderkin", [[:hi, [:there], {}], :wonderkin]
+
+  parses_test "hi there\n wonderkin", [[:hi, [:there], {}], :wonderkin]
+
+  parses_test "hi there {\nwonderkin}", [[:hi, [:there], {[] => [:wonderkin]}]]
 
 end

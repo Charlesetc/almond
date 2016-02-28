@@ -5,6 +5,7 @@ CHAR_MAPPING = {
   "\n" => :"\n",
   "}" => :end,
   "{" => :do,
+  ":" => :"\n",
 }
 
 KEYWORDS = [:do, :"\n", :end]
@@ -67,6 +68,14 @@ class Position
 
 end
 
+class Block
+  attr_accessor :forest, :arguments
+
+  def initialize(forest, arguments)
+    @forest = forest
+    @arguments = arguments
+  end
+end
 
 class Expression
   attr_accessor :name, :arguments, :block

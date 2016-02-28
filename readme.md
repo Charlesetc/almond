@@ -13,7 +13,20 @@ or
 
 some_function_or_marco argument (function other_argument)
 
-(list 2 3 4 5 6).map x do
+class Iterator do
+
+  define map do xs function
+    let x (head xs) xs (tail xs) do
+      if (empty? x)
+        (list)
+        (cons (map xs function) (function x))
+    end
+  end
+
+end
+
+
+(list 2 3 4 5 6).map do x
   plus 2 3
 end
 

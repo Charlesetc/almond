@@ -13,14 +13,14 @@ class Parser
     parse_functions next_token
   end
 
-  def parse_functions(token, trees=[])
-    return trees unless token
-    return trees if token.end? or token.symbol == :")"
-    return parse_functions next_token, trees if token.newline?
+  def parse_functions(token, forest=[])
+    return forest unless token
+    return forest if token.end? or token.symbol == :")"
+    return parse_functions next_token, forest if token.newline?
 
     tree, a = parse_function token
-    trees << tree
-    parse_functions a, trees
+    forest << tree
+    parse_functions a, forest
   end
 
   def parse_function(token)
@@ -47,15 +47,27 @@ class Parser
       arguments << argument
       return parse_arguments a, arguments
     else
-      arguments << (Expression.new token, [], [])
+      arguments << (Expression.new token, [], nil)
     end
     parse_arguments next_token, arguments
+  end
+
+  def parse_block_arguments(token, arguments=[])
+    case token.symbol
+    when :do, :"\n", :"(", :")", :end
+      return arguments, token
+    else
+      arguments << token
+    end
+    parse_block_arguments(next_token, arguments)
   end
 
   def parse_block(token)
     return nil unless token
     if token.do?
-      return parse_functions(next_token), next_token
+      arguments, a = parse_block_arguments next_token
+      forest = parse_functions a
+      return Block.new(forest, arguments), next_token
     else
       return nil, token
     end
