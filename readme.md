@@ -1,41 +1,66 @@
 
 ## Almond
 
+Hi! Almond is a programming language I'm working on.
+It's pretty simple, with the main goal being to bootstrap
+itself as quickly as possible. It compiles to Go.
 
-Every expression looks like this:
+# Syntax
+
+## Haskell-like function calls
+
 ```ruby
+assert (equals this that)
+```
 
-some_function_or_macro argument (function argument) do
-  call_some function
-end
+There are no operators, for simplicity.
 
-or
+## Blocks
 
-some_function_or_marco argument (function other_argument)
+Inspired by the ruby blocks:
+```
+map (list 3 4 5) { x: x * x }
+```
 
-class Iterator do
+Fun fact: the `:` here is an alias for a newline or semicolon. This is also valid:
 
-  define map do xs function
-    let x (head xs) xs (tail xs) do
-      if (empty? x)
-        (list)
-        (cons (map xs function) (function x))
-    end
-  end
-
-end
-
-
-(list 2 3 4 5 6).map do x
-  plus 2 3
-end
-
-(range 2 6).map x do
-  puts (plus 2 x)
+```
+map (list 3 4 5) do x
+  x * x
 end
 ```
 
-# What's the point?
+You've probably gotten by now that Almond dynamically typed (and still compiles to Go), 
+Almond by default returns the last line in a block.
 
-Easy, consistent syntax -- macros are doable.
-Easy to parse and therefore bootstrap
+## That's it!
+
+That's all the syntax there is. It's not quite as simple as lisp, but the AST is very simple:
+each node has a name, a list of nodes and a block, which has a list of identifiers and a list of nodes.
+```
+       Node
+      / | \
+     /  |  \
+    /   |   \
+Name Arguments Block
+ |       |       |   \
+ |       |       |    \
+Ident  [Node]  [Node] [Ident]
+```
+* By "Ident", I mean a literal word in the text, like "if" or "return" or "fish".
+
+My hope is that this will make macros easy, although I haven't gone about implementing them yet.
+
+```
+
+# Progress
+
+* [ ] Finish the first compiler
+  - [*] Parse the tokens
+  - [*] Parse the ast
+  - [*] Generate function calls
+  - [*] Generate `if` and `else` statements
+  - [ ] Generate function definitions
+  - [ ] Generate structs
+  - [ ] Make a decent stdlib in Go
+* [ ] Bootstrap
