@@ -6,6 +6,7 @@ require 'pry'
 require_relative 'data.rb'
 require_relative 'token.rb'
 require_relative 'parser.rb'
+require_relative 'generator.rb'
 
 
 # Just to make comparisons & literals easier.
@@ -109,5 +110,19 @@ Shindo.tests("Parser") do
   parses_test "hi there\n wonderkin", [[:hi, [:there], {}], :wonderkin]
 
   parses_test "hi there {\nwonderkin}", [[:hi, [:there], {[] => [:wonderkin]}]]
+
+end
+
+Shindo.tests("Generator") do
+
+  returns(true) do
+    t = Tokenizer.new "map a {b : c}"
+    t.read
+    parser = Parser.new t.tokens
+    forest = parser.parse
+    generator = Generator.new forest
+    puts generator.generate
+    true
+  end
 
 end
