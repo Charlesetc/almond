@@ -123,7 +123,7 @@ Shindo.tests("Generator") do
     mapped a {b c : c} test
     if hi {
       print this
-    } else if true {
+    } else {
       print that
     }
     "
