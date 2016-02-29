@@ -87,6 +87,14 @@ class Expression
     @block = block
   end
 
+  def is_ident?
+    self.arguments.empty? and not self.block and self.name.symbol.to_s[0].alpha?
+  end
+
+  def symbol
+    self.name.symbol
+  end
+
   # This is just pretty-printing for debugging
   def inspect
     output = ""

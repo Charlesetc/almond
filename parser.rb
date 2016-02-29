@@ -45,7 +45,8 @@ class Parser
     when :"("
       argument, a = parse_function token
       arguments << argument
-      return parse_arguments a, arguments
+      raise "This shoudn't happen. This is a bug" if a.symbol != :")"
+      return parse_arguments next_token, arguments
     else
       arguments << (Expression.new token, [], nil)
     end

@@ -23,19 +23,28 @@ class Generator
     ].join
     File.write("/tmp/almond", output)
     `goimports -w /tmp/almond`
-    `gofmt -s /tmp/almond`
+    `gofmt -s /tmp/almond`.gsub "\t", "  "
   end
 
   def ingest_forest
     @forest.reject! do |tree|
-      if tree.name.symbol == :define
+      if tree.symbol == :define
         @functions << tree
       end
     end
   end
 
   def generate_functions
-    # TODO: Do this.
+    # @functions.each do |tree|
+      # next = tree.arguments.shift
+      # [
+      #   "func",
+      #   tree.symbol,
+      #   tree.arguments,
+
+      # ].join ' '
+
+    # end
   end
 
   def generate_headers

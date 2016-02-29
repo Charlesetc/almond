@@ -15,12 +15,12 @@ class Expression
   def to_array
     if (not self.block or self.block.forest.length == 0) \
        and (not self.arguments or self.arguments.length == 0)
-      return self.name.symbol
+      return self.symbol
     end
     b = self.block ? {self.block.arguments.map { |x| x.symbol } => self.block.forest.map { |x| x.to_array }} : {}
     a = self.arguments ? self.arguments.map { |x| x.to_array } : []
 
-    [self.name.symbol, a, b]
+    [self.symbol, a, b]
   end
 
 end
@@ -101,6 +101,8 @@ Shindo.tests("Parser") do
 
   parses_test "map a b", [[:map, [:a, :b], {}]]
 
+  parses_test "map {\nb }", [[:map, [], {[] => [:b]}]]
+
   parses_test "map a {;b }", [[:map, [:a], {[] => [:b]}]]
 
   parses_test "map a (lambda {x: b x })", [[:map, [:a, [:lambda, [], { [:x] => [[:b, [:x], {}]]}]], {}]]
@@ -113,11 +115,13 @@ Shindo.tests("Parser") do
 
   parses_test "\tif {\n\t\tprint this\n\t}", [[:if, [], {[] => [[:print, [:this], {}]]}]]
 
+  parses_test "let (hi 3) 4", [[:let, [[:hi, [:"3"], {}], :"4"], {}]]
+
 end
 
 Shindo.tests("Generator") do
 
-  returns(true) do
+  returns(false, "outputs valid gofmt") do
     t = Tokenizer.new "
     test test
     mapped a {b c : c} test
@@ -126,13 +130,20 @@ Shindo.tests("Generator") do
     } else {
       print that
     }
+    let hi this that wow
+    let hi 2
+
+    mapped {
+      let next hi
+    }
     "
     t.read
     parser = Parser.new t.tokens
     forest = parser.parse
     generator = Generator.new forest
-    puts generator.generate
-    true
+    output = generator.generate
+    puts output
+    output.empty?
   end
 
 end

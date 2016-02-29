@@ -3,6 +3,7 @@
 module Tree
 
   @@token_functions = {}
+  @@stacks = [[]]
 
   def self.match(token, &block)
     @@token_functions[token] = block
@@ -34,7 +35,7 @@ module Tree
         "}",
       ].join
     else
-      unless tree.arguments[0].name.symbol == :if
+      unless tree.arguments[0].symbol == :if
         raise "syntax error: else can only be followed by if or {"
       end
       tree.name = tree.arguments.shift.name
@@ -45,16 +46,38 @@ module Tree
     ''
   end
 
+  match :let do |tree|
+    raise "let does not take a block" unless tree.block.nil?
+    raise "let needs an even number of arguments" unless tree.arguments.length % 2 == 0
+
+    tree.arguments.each_slice(2).map do |ident, value|
+      raise "'let' takes identifier - expression pairs as arguments" unless ident.is_ident?
+
+      if @@stacks.last.include?(ident.symbol)
+        equals = "="
+      else
+        equals = ":="
+        @@stacks.last << ident.symbol
+      end
+
+      [ident.symbol, equals, call(value), "\n"]
+    end.join
+  end
+
   def call(tree)
-    function = @@token_functions[tree.name.symbol]
+    function = @@token_functions[tree.symbol]
     return self.instance_exec(tree, &function) if function
     call_normal_function(tree)
   end
 
   def call_normal_function(tree)
     self.if_statement = nil
+
+    if tree.is_ident? and @@stacks.flatten.include? tree.symbol
+      return tree.symbol.to_s
+    end
     [
-      tree.name.symbol,
+      tree.symbol,
       "([",
       tree.arguments.length,
       "]*any{",
@@ -73,21 +96,32 @@ module Tree
 
   def block(tree)
     return 'nil' if (
-      tree.block.nil? or
-      tree.block.arguments.empty?
+      tree.block.nil?
     )
     as = tree.block.arguments.map do |x|
       x.symbol.to_s + ' *any'
     end.join(", ")
+
+    enter_stack
+    calls = generate_calls(tree.block.forest)
+    exit_stack
 
     [
       "func (",
       as,
       ")",
       "{",
-      generate_calls(tree.block.forest),
+      calls,
       "}",
     ].join
+  end
+
+  def enter_stack
+    @@stacks << []
+  end
+
+  def exit_stack
+    @@stacks.pop
   end
 
 end
