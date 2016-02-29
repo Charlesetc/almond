@@ -78,9 +78,7 @@ module Tree
     end
     [
       tree.symbol,
-      "([",
-      tree.arguments.length,
-      "]*any{",
+      "([]*any{",
       arguments(tree),
       "}, ",
       block(tree),
@@ -98,6 +96,8 @@ module Tree
     return 'nil' if (
       tree.block.nil?
     )
+
+    # TODO: This needs to be changed to accept a list of arguments.
     as = tree.block.arguments.map do |x|
       x.symbol.to_s + ' *any'
     end.join(", ")
