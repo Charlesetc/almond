@@ -136,6 +136,10 @@ Shindo.tests("Generator") do
     mapped {
       let next hi
     }
+
+    define hi this that do
+      somefunction this that
+    end
     "
     t.read
     parser = Parser.new t.tokens

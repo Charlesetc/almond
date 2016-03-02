@@ -57,7 +57,7 @@ module Tree
         equals = "="
       else
         equals = ":="
-        @@stacks.last << ident.symbol
+        stack_push ident
       end
 
       [ident.symbol, equals, call(value), "\n"]
@@ -78,18 +78,27 @@ module Tree
     end
     [
       tree.symbol,
-      "([]*any{",
+      "(",
       arguments(tree),
-      "}, ",
+      ",",
       block(tree),
       ")",
     ].join
   end
 
+  def stack_push(expression)
+    @@stacks.last << expression.symbol
+  end
+
   def arguments(tree)
-    tree.arguments.reduce('') do |output, argument|
-      output + call(argument) + ','
+    as = tree.arguments.reduce('') do |output, argument|
+        output + call(argument) + ','
     end
+    [
+      "[]*any{",
+      as,
+      "}",
+    ].join
   end
 
   def block(tree)

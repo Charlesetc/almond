@@ -35,16 +35,34 @@ class Generator
   end
 
   def generate_functions
-    # @functions.each do |tree|
-      # next = tree.arguments.shift
-      # [
-      #   "func",
-      #   tree.symbol,
-      #   tree.arguments,
+    @functions.map do |tree|
+      function_name = tree.arguments.shift
+      unless function_name and function_name.is_ident?
+        raise "first argument to define must be an ident"
+      end
+      raise "define takes a block" unless tree.block
+      raise "define's block doesn't take any arguments" if tree.block.arguments and not tree.block.arguments.empty?
 
-      # ].join ' '
+      defined_arguments = tree.arguments.each_with_index.map do |a, i|
+        raise "arguments to define must be idents" unless a.is_ident?
+        stack_push a
+        "#{a.symbol} := arguments[#{i}];"
+      end
 
-    # end
+
+      [
+        "func ",
+        function_name.symbol,
+        "(arguments []*any, block func([]*any) *any) *any {
+        if arguments.len() != #{tree.arguments.length} {
+          panic(\"Wrong number of arguments for #{function_name.symbol} - not #{tree.arguments.length}\")
+        }
+        ",
+        defined_arguments,
+        generate_calls(tree.block.forest),
+        "}\n\n",
+      ].join
+    end.join "\n"
   end
 
   def generate_headers
