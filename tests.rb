@@ -25,6 +25,21 @@ class Expression
 
 end
 
+class Printer
+  attr_accessor :str
+  def initialize(str)
+    @str = str
+  end
+  def inspect
+    
+    @str.inspect + "\n" + @str
+  end
+  def ==(other)
+    str == other.str
+  end
+end
+
+
 class Tokenizee
   attr_accessor :tokens
 end
@@ -120,6 +135,59 @@ Shindo.tests("Parser") do
 end
 
 Shindo.tests("Generator") do
+
+  def generates_test(almond_code, go_code)
+    File.write("/tmp/almond2", go_code.strip)
+    `goimports -w /tmp/almond2`
+    go_code= `gofmt -s /tmp/almond2`.gsub "\t", "  "
+    returns(Printer.new(go_code), go_code) do 
+      t = Tokenizer.new almond_code
+
+      t.read
+      parser = Parser.new t.tokens
+      forest = parser.parse
+      generator = Generator.new forest
+      output = generator.generate
+      Printer.new(output)
+    end
+  end
+
+  generates_test "call something", "
+    package main
+    func main() {
+      call([]*any{something([]*any{}, nil)}, nil)
+    }
+  "
+
+  generates_test "mapped a { c : d c }", "
+    package main
+    func main() {
+      mapped([]*any{a([]*any{}, nil)}, func (arguments []*any) *any {
+        if arguments.len() != 1 {
+          panic(\"Wrong number of arguments for  - not 1\")
+        }
+        c := arguments[0];
+        return d([]*any{c}, nil)
+      })
+    }
+  "
+
+  generates_test "
+    if a {
+      b
+    } else {
+      c
+    }
+  ", "
+    package main
+    func main() {
+      if a([]*any{}, nil) {
+        return b([]*any{}, nil)
+      } else {
+        return c([]*any{}, nil)
+      }
+    }
+  "
 
   returns(false, "outputs valid gofmt") do
     t = Tokenizer.new "

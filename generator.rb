@@ -34,6 +34,32 @@ class Generator
     end
   end
 
+  def generate_function(symbol, arguments, forest, is_closure = false)
+
+      defined_arguments = arguments.each_with_index.map do |a, i|
+        raise "arguments to a function definition must be idents" unless a.is_a?(Token) or a.is_ident?
+        stack_push a
+        "#{a.symbol} := arguments[#{i}];"
+      end
+
+
+      [
+        "func ",
+        symbol,
+        "(arguments []*any",
+        is_closure ? "" : ", block func([]*any) *any",
+        ") *any {
+        if arguments.len() != #{arguments.length} {
+          panic(\"Wrong number of arguments for #{symbol} - not #{arguments.length}\")
+        }
+        ",
+        defined_arguments,
+        generate_calls(forest),
+        "}",
+        is_closure ? "" : "\n\n",
+      ].join
+  end
+
   def generate_functions
     @functions.map do |tree|
       function_name = tree.arguments.shift
@@ -43,25 +69,8 @@ class Generator
       raise "define takes a block" unless tree.block
       raise "define's block doesn't take any arguments" if tree.block.arguments and not tree.block.arguments.empty?
 
-      defined_arguments = tree.arguments.each_with_index.map do |a, i|
-        raise "arguments to define must be idents" unless a.is_ident?
-        stack_push a
-        "#{a.symbol} := arguments[#{i}];"
-      end
+      generate_function(function_name.symbol, tree.arguments, tree.block.forest) 
 
-
-      [
-        "func ",
-        function_name.symbol,
-        "(arguments []*any, block func([]*any) *any) *any {
-        if arguments.len() != #{tree.arguments.length} {
-          panic(\"Wrong number of arguments for #{function_name.symbol} - not #{tree.arguments.length}\")
-        }
-        ",
-        defined_arguments,
-        generate_calls(tree.block.forest),
-        "}\n\n",
-      ].join
     end.join "\n"
   end
 
@@ -74,15 +83,20 @@ class Generator
       "
       func main() {
       ",
-      generate_calls(@forest),
+      generate_calls(@forest, false),
       "
       }
       ",
     ].join
   end
 
-  def generate_calls(forest)
-    forest.map { |tree| call(tree) }.join(';')
+  def generate_calls(forest, includereturn = true)
+    forest.map! { |tree| call(tree) }.flatten!
+    if includereturn
+      forest[-1] =  "return " + forest[-1] 
+    end
+    
+    forest.join(';')
   end
 
 end

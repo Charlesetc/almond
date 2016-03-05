@@ -60,8 +60,9 @@ module Tree
         stack_push ident
       end
 
-      [ident.symbol, equals, call(value), "\n"]
-    end.join
+      [[ident.symbol, equals, call(value), "\n"].join,
+       equals == ":=" ? ident.symbol.to_s : ""]
+    end
   end
 
   def call(tree)
@@ -106,23 +107,10 @@ module Tree
       tree.block.nil?
     )
 
-    # TODO: This needs to be changed to accept a list of arguments.
-    as = tree.block.arguments.map do |x|
-      x.symbol.to_s + ' *any'
-    end.join(", ")
-
     enter_stack
-    calls = generate_calls(tree.block.forest)
+    output = generate_function("", tree.block.arguments, tree.block.forest, true)
     exit_stack
-
-    [
-      "func (",
-      as,
-      ")",
-      "{",
-      calls,
-      "}",
-    ].join
+    return output
   end
 
   def enter_stack
