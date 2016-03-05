@@ -60,7 +60,9 @@ My hope is that this will make macros easy, although I haven't gone about implem
   - [x] Generate `if` and `else` statements
   - [x] Generate `let` statements
   - [x] Differentiate between vars and function calls
-  - [ ] Generate function definitions
+  - [x] Generate function definitions
+  - [ ] Command line tool
+  - [ ] Constants
   - [ ] Generate structs
   - [ ] Make a decent stdlib in Go
 * [ ] Bootstrap
