@@ -68,9 +68,10 @@ class Generator
       end
       raise "define takes a block" unless tree.block
       raise "define's block doesn't take any arguments" if tree.block.arguments and not tree.block.arguments.empty?
-
-      generate_function(function_name.symbol, tree.arguments, tree.block.forest) 
-
+      enter_stack
+      output = generate_function(function_name.symbol, tree.arguments, tree.block.forest) 
+      exit_stack
+      output
     end.join "\n"
   end
 

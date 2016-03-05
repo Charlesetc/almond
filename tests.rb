@@ -136,11 +136,11 @@ end
 
 Shindo.tests("Generator") do
 
-  def generates_test(almond_code, go_code)
+  def generates_test(description, almond_code, go_code)
     File.write("/tmp/almond2", go_code.strip)
     `goimports -w /tmp/almond2`
     go_code= `gofmt -s /tmp/almond2`.gsub "\t", "  "
-    returns(Printer.new(go_code), go_code) do 
+    returns(Printer.new(go_code), description) do
       t = Tokenizer.new almond_code
 
       t.read
@@ -152,14 +152,16 @@ Shindo.tests("Generator") do
     end
   end
 
-  generates_test "call something", "
+  generates_test  "function call with arguments",
+  "call something", "
     package main
     func main() {
       call([]*any{something([]*any{}, nil)}, nil)
     }
   "
 
-  generates_test "mapped a { c : d c }", "
+  generates_test "function call with block",
+  "mapped a { c : d c }", "
     package main
     func main() {
       mapped([]*any{a([]*any{}, nil)}, func (arguments []*any) *any {
@@ -172,7 +174,8 @@ Shindo.tests("Generator") do
     }
   "
 
-  generates_test "
+  generates_test "if and else statement",
+  "
     if a {
       b
     } else {
@@ -186,6 +189,40 @@ Shindo.tests("Generator") do
       } else {
         return c([]*any{}, nil)
       }
+    }
+  "
+
+  generates_test "let syntax",
+  "
+    let a 2
+    b a
+  ", "
+    package main
+    func main() {
+      a := 2([]*any{}, nil)
+      a
+      b([]*any{a}, nil)
+    }
+  "
+
+  generates_test "define a function" ,
+  "
+    define a b do
+      print
+    end
+    a b
+  ", "
+    package main
+    func a(arguments []*any, block func([]*any) *any) *any {
+        if len(arguments) != 1 {
+          panic(\"Wrong number of arguments for a - not 1\")
+        }
+        b := arguments[0]
+      return print([]*any{}, nil)
+    }
+
+    func main() {
+      a([]*any{b([]*any{}, nil)}, nil)
     }
   "
 
