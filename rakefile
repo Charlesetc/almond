@@ -10,3 +10,8 @@ desc "Run tests, don't exit on error"
 task :pry do
   puts sh "shindo ."
 end
+
+desc "Count the number of lines in the project"
+task :lines do
+  puts `find . -type f | ack -v git | ack -v 'md$' | ack -v readme | ack -v examples | ack -v '.go$' | xargs cat |wc -l`.to_i
+end
