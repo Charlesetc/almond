@@ -49,7 +49,7 @@ class Generator
         "(arguments []*any",
         is_closure ? "" : ", block func([]*any) *any",
         ") *any {
-        if arguments.len() != #{arguments.length} {
+        if len(arguments) != #{arguments.length} {
           panic(\"Wrong number of arguments for #{symbol} - not #{arguments.length}\")
         }
         ",
@@ -75,7 +75,7 @@ class Generator
   end
 
   def generate_headers
-    "package main\n"  # No includes yet
+    "package main\n"
   end
 
   def generate_main

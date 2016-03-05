@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require_relative "./generator.rb"
+require_relative "./parser.rb"
+require_relative "./token.rb"
+
+def compile(source)
+      t = Tokenizer.new source
+      t.read
+      parser = Parser.new t.tokens
+      generator = Generator.new parser.parse
+      generator.generate
+end
+
+
+case ARGV.shift
+when "run"
+  File.write("./build/main.go", compile(ARGF.read))
+  puts `go run ./build/*.go`
+else
+  puts compile(ARGF.read)
+end

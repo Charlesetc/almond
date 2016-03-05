@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"unsafe"
-)
+import "unsafe"
 
 type ALMOND_TYPE int32
 
@@ -35,14 +32,4 @@ func plus(arguments []*any, block func([]*any) *any) *any {
 	b := from_int(arguments[1])
 	c := *a + *b
 	return into_any(INT, unsafe.Pointer(&c))
-}
-
-func main() {
-	a := 2
-	b := 3
-	ap := into_any(INT, unsafe.Pointer(&a))
-	bp := into_any(INT, unsafe.Pointer(&b))
-	c := plus([]*any{ap, bp}, nil)
-	d := from_int(c)
-	fmt.Printf("%d\n", *d)
 }

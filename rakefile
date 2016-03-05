@@ -1,0 +1,12 @@
+
+task default: :test
+
+desc "Run tests, exit on error"
+task :test do
+  puts sh "echo q | shindo ."
+end
+
+desc "Run tests, don't exit on error"
+task :pry do
+  puts sh "shindo ."
+end

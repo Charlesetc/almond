@@ -61,7 +61,7 @@ My hope is that this will make macros easy, although I haven't gone about implem
   - [x] Generate `let` statements
   - [x] Differentiate between vars and function calls
   - [x] Generate function definitions
-  - [ ] Command line tool
+  - [x] Command line tool
   - [ ] Constants
   - [ ] Generate structs
   - [ ] Make a decent stdlib in Go

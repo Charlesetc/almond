@@ -163,7 +163,7 @@ Shindo.tests("Generator") do
     package main
     func main() {
       mapped([]*any{a([]*any{}, nil)}, func (arguments []*any) *any {
-        if arguments.len() != 1 {
+        if len(arguments) != 1 {
           panic(\"Wrong number of arguments for  - not 1\")
         }
         c := arguments[0];
@@ -214,7 +214,6 @@ Shindo.tests("Generator") do
     forest = parser.parse
     generator = Generator.new forest
     output = generator.generate
-    puts output
     output.empty?
   end
 

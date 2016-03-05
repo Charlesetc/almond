@@ -1,0 +1,5 @@
+define hi do
+  3
+end
+
+hi 23
