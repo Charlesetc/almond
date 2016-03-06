@@ -13,7 +13,7 @@ KEYWORDS = [:do, :"\n", :end]
 class String
 
   def alpha?
-    self =~ /^[[:alpha:]]+$/
+    self =~ /^[[:alpha:]\-_+@*]+$/
   end
 
   def numeric?
@@ -21,7 +21,11 @@ class String
   end
 
   def alphanumeric?
-    self =~ /^[[:alpha:][:digit:]]+$/
+    self =~ /^[[:alpha:]\-_+@*[:digit:]]+$/
+  end
+
+  def quote?
+    self == "'" or self == '"'
   end
   
 end

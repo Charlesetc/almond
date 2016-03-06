@@ -1,10 +1,20 @@
 # generator/call_tree.rb
 
+class FunctionCall
+  attr_accessor :prerequisites, :body, :return_value
+  def initialize(body, prerequisites="", rvalue=body)
+    @prerequisites = prerequisites
+    @body = body
+    @return_value = rvalue
+  end
+end
+
 module Tree
 
   @@token_functions = {}
   @@token_predicates = []
   @@stacks = [[]]
+
 
   ### A DSL for matching against certain tokens. ###
 
@@ -19,23 +29,24 @@ module Tree
   match :if do |tree|
     raise "argument error: if takes one argument" if tree.arguments.length != 1
     raise "argument error: if takes a block" if tree.block.nil?
-    output = [
+    fn = call(tree.arguments[0])
+    fn.body = [
       "if ",
-      call(tree.arguments[0]),
+      fn.body,
       "{",
       generate_calls(tree.block.forest),
       "}",
     ].join
-    self.if_statement = output
-    output
+    self.if_statement = fn
   end
 
   match :else do |tree|
+    # TODO: This can be refactored to be better.
     raise "syntax error: else must follow an if" unless self.if_statement
     if tree.arguments.length == 0
       previous_if = self.if_statement
       self.if_statement = nil
-      previous_if << [
+      previous_if.body << [
         "else ",
         "{",
         generate_calls(tree.block.forest),
@@ -46,17 +57,23 @@ module Tree
         raise "syntax error: else can only be followed by if or {"
       end
       tree.name = tree.arguments.shift.name
-      self.if_statement << "else "
-      self.if_statement << call(tree)
+      self.if_statement.body << "else "
+      fn = call(tree)
+      self.if_statement.prerequisites << fn.prerequisites
+      self.if_statement.body << fn.body
+      self.if_statement.return_value = fn.return_value
     end
     self.if_statement = nil
-    ''
+    FunctionCall.new('') # Should be a no-op because we added it to the if.
   end
 
   match :let do |tree|
     raise "let does not take a block" if tree.block
     raise "let needs an even number of arguments" unless tree.arguments.length % 2 == 0
 
+    body = ''
+    preceeding = ''
+    return_value = nil
     tree.arguments.each_slice(2).map do |ident, value|
       raise "'let' takes identifier - expression pairs as arguments" unless ident.is_ident?
 
@@ -67,20 +84,12 @@ module Tree
         stack_push ident
       end
       
-      result = call(value)
-      if result.is_a?(Array) and result.length > 1 
-        preceding = result
-        result = result.pop
-      else
-        preceding = ""
-      end
-
-      [
-        preceding,
-        [ident.symbol, equals, result, "\n"].join,
-        equals == ":=" ? ident.symbol.to_s : ""
-      ]
+      fn = call(value)
+      preceeding += fn.prerequisites
+      body += [ident.symbol, equals, fn.body, "\n"].join
+      return_value = ident.symbol.to_s
     end
+    FunctionCall.new(body, preceeding, return_value)
   end
 
   # Integer and Float constants.
@@ -93,11 +102,22 @@ module Tree
       type = 'INT'
     end
     tmp = temp_var
-    [
-      "#{tmp} := #{tree.symbol}\n",
-      "into_any(#{type}, unsafe.Pointer(&#{tmp}))"
-    ]
+    definition = "#{tmp} := #{tree.symbol}\n"
+    body= "into_any(#{type}, unsafe.Pointer(&#{tmp}))"
+    FunctionCall.new(body, definition)
   end
+
+  # String constants
+  # match lambda { |symbol| symbol.to_s[0].quote? } do |tree|
+  #   raise "Strings do not take a block" if tree.block
+  #   raise "Strings do not take any arguments" if tree.arguments.length != 0
+  #   tmp = temp_var
+  #   content = tree.symbol.to_s[1..-2]
+  #   [
+  #     "#{tmp} := \"#{content}\"\n",
+  #     "into_any(STRING, unsafe.Pointer(&#{tmp}))",
+  #   ]
+  # end
 
   ### Other Functions that are key to generating function calls ###
 
@@ -106,7 +126,10 @@ module Tree
     return self.instance_exec(tree, &function) if function
 
     @@token_predicates.each do |predicate, function|
-      return self.instance_exec(tree, &function) if predicate.call(tree.symbol)
+      if predicate.call(tree.symbol)
+        fn = self.instance_exec(tree, &function)
+        return fn
+      end
     end
 
     call_normal_function(tree)
@@ -116,20 +139,19 @@ module Tree
     self.if_statement = nil
 
     if tree.is_ident? and @@stacks.flatten.include? tree.symbol
-      return tree.symbol.to_s
+      return FunctionCall.new(tree.symbol.to_s)
     end
-    definitions, args = arguments(tree)
-    [
-      definitions,
-      [
-        tree.symbol,
-        "(",
-        args,
-        ",",
-        block(tree),
-        ")",
-      ].join
-    ]
+    fn = arguments(tree)
+    fn.body = [
+             tree.symbol,
+             "(",
+             fn.body,
+             ",",
+             block(tree),
+             ")",
+           ].join
+     fn.return_value = fn.body
+     fn
   end
 
   def stack_push(expression)
@@ -137,27 +159,21 @@ module Tree
   end
 
   def arguments(tree)
-    definitions = []
-    as = tree.arguments.reduce('') do |output, argument|
-        result = call(argument)
-        if result.is_a?(Array)
-          these_definitions = result
-          result = these_definitions.pop
-          definitions += these_definitions
-        end
-        output + result + ','
+    fn_acc = tree.arguments.reduce(FunctionCall.new("")) do |fn_acc, argument|
+        fn = call(argument)
+        fn_acc.prerequisites += fn.prerequisites
+        fn_acc.return_value = fn.return_value
+
+        fn_acc.body += fn.body
+        fn_acc.body += ","
+        fn_acc
     end
-    return definitions, [
-      "[]*any{",
-      as,
-      "}",
-    ].join
+    fn_acc.body = "[]*any{#{fn_acc.body}}"
+    fn_acc
   end
 
   def block(tree)
-    return 'nil' if (
-      tree.block.nil?
-    )
+    return 'nil' if not tree.block
 
     enter_stack
     output = generate_function("", tree.block.arguments, tree.block.forest, true)

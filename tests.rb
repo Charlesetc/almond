@@ -92,6 +92,9 @@ Shindo.tests("Tokenizer") do
 
   token_test "{ interesting }", [:do, :interesting, :end]
 
+  token_test "interesting_tidbit", [:interesting_tidbit]
+  token_test "interesting-tidbit", [:"interesting-tidbit"]
+
   # test some real code
   token_test "class Hello do
       some hi, there
@@ -204,7 +207,6 @@ Shindo.tests("Generator") do
     func main() {
       temp := 2
       a := into_any(INT, unsafe.Pointer(&temp))
-      a
       b([]*any{a}, nil)
     }
   "

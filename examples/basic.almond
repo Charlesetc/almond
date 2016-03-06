@@ -1,6 +1,10 @@
 
+# Almond at its finest
+
 define addthree x do
   plus x 3
 end
 
-puts (addthree 23)
+let a 3
+
+puts (addthree 23) a

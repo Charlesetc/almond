@@ -34,9 +34,9 @@ class Generator
     end
   end
 
-  def generate_function(symbol, arguments, forest, is_closure = false)
+  def generate_function(symbol, args, forest, is_closure = false)
 
-      defined_arguments = arguments.each_with_index.map do |a, i|
+      defined_arguments = args.each_with_index.map do |a, i|
         raise "arguments to a function definition must be idents" unless a.is_a?(Token) or a.is_ident?
         stack_push a
         "#{a.symbol} := arguments[#{i}];"
@@ -49,8 +49,8 @@ class Generator
         "(arguments []*any",
         is_closure ? "" : ", block func([]*any) *any",
         ") *any {
-        if len(arguments) != #{arguments.length} {
-          panic(\"Wrong number of arguments for #{symbol} - not #{arguments.length}\")
+        if len(arguments) != #{args.length} {
+          panic(\"Wrong number of arguments for #{symbol} - not #{args.length}\")
         }
         ",
         defined_arguments,
@@ -92,12 +92,18 @@ class Generator
   end
 
   def generate_calls(forest, includereturn = true)
-    forest.map! { |tree| call(tree) }.flatten!
+    forest.map! { |tree| fn = call(tree) }
+
     if includereturn
-      forest[-1] =  "return " + forest[-1] 
+      ret = forest[-1]
+     # Not sure if this is necessary
+      if ret.return_value != ret.body
+        ret.prerequisites += ret.body
+        ret.body = ret.return_value
+      end
+      ret.body = "return " + ret.body
     end
-    
-    forest.join(';')
+    forest.map! { |fn| [fn.prerequisites, fn.body] }.join(';')
   end
 
 end

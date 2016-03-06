@@ -19,15 +19,35 @@ class Tokenizer
     case
     when a == nil
       return
+    when a.quote?
+      @quote = a
+      read_string next_char a
     when a.numeric?
       read_number a
     when a.alpha?
       read_ident a
     when " \t".include?(a)
       read
+    when a == "#"
+      read_until_newline
     else
       read_punct a
     end
+  end
+
+  def read_until_newline
+    while next_char != "\n"
+    end
+    read_start("\n")
+  end
+
+  def read_string(a, acc="")
+    if a == @quote
+      token (@quote + acc + @quote)
+      return
+    end
+    acc += a
+    read_string next_char acc
   end
 
   def read_number(a)
