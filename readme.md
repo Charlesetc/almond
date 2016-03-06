@@ -70,6 +70,6 @@ My hope is that this will make macros easy, although I haven't gone about implem
       * [ ] Structs
   - [x] Bindings to Go code
   - [ ] Use a different namespace for Hazelnut functions
+  - [ ] Support dot syntax and methods
 * [ ] Bootstrap
-* [ ] Add objects and methods
 * [ ] Add macros w/ interpreter!
