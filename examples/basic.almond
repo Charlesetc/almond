@@ -1,5 +1,6 @@
-define hi do
-  3
+
+define addthree x do
+  plus x 3
 end
 
-hi 23
+puts (addthree 23)

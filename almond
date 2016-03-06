@@ -13,10 +13,11 @@ def compile(source)
 end
 
 
-case ARGV.shift
+case a = ARGV.shift
 when "run"
   File.write("./build/main.go", compile(ARGF.read))
   puts `go run ./build/*.go`
 else
+  ARGV.unshift a
   puts compile(ARGF.read)
 end

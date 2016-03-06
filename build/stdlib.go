@@ -1,6 +1,9 @@
 package main
 
-import "unsafe"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type ALMOND_TYPE int32
 
@@ -8,6 +11,7 @@ const (
 	INT ALMOND_TYPE = iota
 	FLOAT
 	STRING
+	NIL
 )
 
 type any struct {
@@ -32,4 +36,18 @@ func plus(arguments []*any, block func([]*any) *any) *any {
 	b := from_int(arguments[1])
 	c := *a + *b
 	return into_any(INT, unsafe.Pointer(&c))
+}
+
+func puts(arguments []*any, block func([]*any) *any) *any {
+	for _, a := range arguments {
+		if a.almond_type == INT {
+			fmt.Printf("%d", *(*int)(a.almond_data))
+		} else if a.almond_type == FLOAT {
+			fmt.Printf("%f", *(*float64)(a.almond_data))
+		} else if a.almond_type == NIL {
+			fmt.Printf("nil")
+		}
+	}
+	fmt.Print("\n")
+	return into_any(NIL, nil)
 }

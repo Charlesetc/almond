@@ -147,7 +147,7 @@ Shindo.tests("Generator") do
       parser = Parser.new t.tokens
       forest = parser.parse
       generator = Generator.new forest
-      output = generator.generate
+      output = generator.generate.gsub(/temp_(\d)*/, "temp")
       Printer.new(output)
     end
   end
@@ -198,8 +198,12 @@ Shindo.tests("Generator") do
     b a
   ", "
     package main
+
+    import \"unsafe\"
+
     func main() {
-      a := 2([]*any{}, nil)
+      temp := 2
+      a := into_any(INT, unsafe.Pointer(&temp))
       a
       b([]*any{a}, nil)
     }
