@@ -17,6 +17,11 @@ case a = ARGV.shift
 when "run"
   File.write("./build/main.go", compile(ARGF.read))
   puts `go run ./build/*.go`
+when "build"
+  name = ARGV[0]
+  File.write("./build/main.go", compile(ARGF.read))
+  output_file = File.basename(name).split('.')[0]
+  puts `go build -o ./build/#{output_file} ./build/*.go `
 else
   ARGV.unshift a
   puts compile(ARGF.read)
