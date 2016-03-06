@@ -1,7 +1,7 @@
 
-## Almond
+## Hazelnut
 
-Hi! Almond is a programming language I'm working on.
+Hi! Hazelnut is a programming language I'm working on.
 It's pretty simple, with the main goal being to bootstrap
 itself as quickly as possible. It compiles to Go.
 
@@ -30,8 +30,8 @@ map (list 3 4 5) do x
 end
 ```
 
-You've probably gotten by now that Almond dynamically typed (and still compiles to Go), 
-Almond by default returns the last line in a block.
+You've probably gotten by now that Hazelnut dynamically typed (and still compiles to Go), 
+Hazelnut by default returns the last line in a block.
 
 ## That's it!
 
@@ -69,7 +69,7 @@ My hope is that this will make macros easy, although I haven't gone about implem
       * [ ] Strings
       * [ ] Structs
   - [x] Bindings to Go code
-  - [ ] Use a different namespace for Almond functions
+  - [ ] Use a different namespace for Hazelnut functions
 * [ ] Bootstrap
 * [ ] Add objects and methods
 * [ ] Add macros w/ interpreter!

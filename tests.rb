@@ -151,12 +151,12 @@ end
 
 Shindo.tests("Generator") do
 
-  def generates_test(description, almond_code, go_code)
-    File.write("/tmp/almond2", go_code.strip)
-    `goimports -w /tmp/almond2`
-    go_code= `gofmt -s /tmp/almond2`.gsub "\t", "  "
+  def generates_test(description, hazelnut_code, go_code)
+    File.write("/tmp/hazelnut2", go_code.strip)
+    `goimports -w /tmp/hazelnut2`
+    go_code= `gofmt -s /tmp/hazelnut2`.gsub "\t", "  "
     returns(Printer.new(go_code), description) do
-      t = Tokenizer.new almond_code
+      t = Tokenizer.new hazelnut_code
 
       t.read
       parser = Parser.new t.tokens

@@ -5,10 +5,10 @@ import (
 	"unsafe"
 )
 
-type ALMOND_TYPE int32
+type HAZELNUT_TYPE int32
 
 const (
-	INT ALMOND_TYPE = iota
+	INT HAZELNUT_TYPE = iota
 	FLOAT
 	STRING
 	NIL
@@ -16,29 +16,29 @@ const (
 )
 
 type any struct {
-	almond_type ALMOND_TYPE
-	almond_data unsafe.Pointer
+	hazelnut_type HAZELNUT_TYPE
+	hazelnut_data unsafe.Pointer
 }
 
 func from_int(a *any) *int {
-	if a.almond_type != INT {
+	if a.hazelnut_type != INT {
 		panic("from_int called with non-integer type")
 	}
-	return (*int)(a.almond_data)
+	return (*int)(a.hazelnut_data)
 }
 
 func from_bool(a *any) bool {
-	if a.almond_type == BOOL {
-		return *(*bool)(a.almond_data)
-	} else if a.almond_type == NIL {
+	if a.hazelnut_type == BOOL {
+		return *(*bool)(a.hazelnut_data)
+	} else if a.hazelnut_type == NIL {
 		return false
 	}
 	return true
 }
 
-func into_any(almond_type ALMOND_TYPE, almond_data unsafe.Pointer) *any {
-	return &any{almond_type: almond_type,
-		almond_data: almond_data}
+func into_any(hazelnut_type HAZELNUT_TYPE, hazelnut_data unsafe.Pointer) *any {
+	return &any{hazelnut_type: hazelnut_type,
+		hazelnut_data: hazelnut_data}
 }
 
 func plus(arguments []*any, block func([]*any) *any) *any {
@@ -50,14 +50,14 @@ func plus(arguments []*any, block func([]*any) *any) *any {
 
 func puts(arguments []*any, block func([]*any) *any) *any {
 	for _, a := range arguments {
-		if a.almond_type == INT {
-			fmt.Printf("%d ", *(*int)(a.almond_data))
-		} else if a.almond_type == FLOAT {
-			fmt.Printf("%f ", *(*float64)(a.almond_data))
-		} else if a.almond_type == NIL {
+		if a.hazelnut_type == INT {
+			fmt.Printf("%d ", *(*int)(a.hazelnut_data))
+		} else if a.hazelnut_type == FLOAT {
+			fmt.Printf("%f ", *(*float64)(a.hazelnut_data))
+		} else if a.hazelnut_type == NIL {
 			fmt.Printf("nil")
-		} else if a.almond_type == BOOL {
-			fmt.Printf("%t ", *(*bool)(a.almond_data))
+		} else if a.hazelnut_type == BOOL {
+			fmt.Printf("%t ", *(*bool)(a.hazelnut_data))
 		}
 	}
 	fmt.Print("\n")

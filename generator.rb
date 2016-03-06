@@ -23,9 +23,9 @@ class Generator
       generate_functions,
       generate_main,
     ].join
-    File.write("/tmp/almond", output)
-    `goimports -w /tmp/almond`
-    `gofmt -s /tmp/almond`.gsub "\t", "  "
+    File.write("/tmp/hazelnut", output)
+    `goimports -w /tmp/hazelnut`
+    `gofmt -s /tmp/hazelnut`.gsub "\t", "  "
   end
 
   def ingest_forest
@@ -108,10 +108,10 @@ class Generator
     type_arguments = tree.block.arguments.each_slice(2).with_index.map { |args, i|
       name, type = args
       "
-      if arguments[#{i}].almond_type != #{TYPE_MAPPING[type.symbol]} {
+      if arguments[#{i}].hazelnut_type != #{TYPE_MAPPING[type.symbol]} {
          panic(\"#{i}th argument of #{fn_name} takes a #{type.symbol}\")
        }
-       #{name.symbol} := (*#{type.symbol})(arguments[#{i}].almond_data)
+       #{name.symbol} := (*#{type.symbol})(arguments[#{i}].hazelnut_data)
       "
     }
     preceeding, return_value = tree.block.forest

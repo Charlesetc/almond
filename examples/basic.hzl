@@ -1,6 +1,6 @@
 
-# Almond at its finest
-# Yes the almond language officially has commenting
+# Hazelnut at its finest
+# Yes the hazelnut language officially has commenting
 
 define addthree x do
   plus x 3
