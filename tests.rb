@@ -93,7 +93,19 @@ Shindo.tests("Tokenizer") do
   token_test "{ interesting }", [:do, :interesting, :end]
 
   token_test "interesting_tidbit", [:interesting_tidbit]
+
   token_test "interesting-tidbit", [:"interesting-tidbit"]
+
+  token_test "'quote1'", [:"'quote1'"]
+
+  token_test '"quote2"', [:'"quote2"']
+
+  token_test '"quote3\\""', [:'"quote3\\""']
+
+  token_test "'quote4\\''", [:"'quote4''"]
+
+  token_test '"quote"
+              \'quote\'', [:'"quote"', :"\n", :"'quote'"]
 
   # test some real code
   token_test "class Hello do

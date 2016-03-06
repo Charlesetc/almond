@@ -21,7 +21,7 @@ class Tokenizer
       return
     when a.quote?
       @quote = a
-      read_string next_char a
+      read_string next_char
     when a.numeric?
       read_number a
     when a.alpha?
@@ -42,12 +42,29 @@ class Tokenizer
   end
 
   def read_string(a, acc="")
-    if a == @quote
-      token (@quote + acc + @quote)
-      return
+    if a == @quote or a.nil?
+      if @escape
+        if a == '"'
+          a = '\\"'
+        end
+        @escape = false
+      else
+        token (@quote + acc + @quote)
+        return read
+      end
     end
-    acc += a
-    read_string next_char acc
+
+
+    if a == '\\'
+      @escape = true
+    else
+      if @escape
+        acc += '\\'
+      end
+      acc += a
+      @escape = false
+    end
+    read_string next_char, acc
   end
 
   def read_number(a)

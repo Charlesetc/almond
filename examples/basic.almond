@@ -1,10 +1,18 @@
 
 # Almond at its finest
+# Yes the almond language officially has commenting
 
 define addthree x do
   plus x 3
 end
 
+binding print_and_return int do x int
+  "fmt.Printf(\"%d\n\", *x)"
+  "x"
+end
+
 let a 3
+
+puts (print_and_return 5)
 
 puts (addthree 23) a

@@ -41,9 +41,9 @@ func plus(arguments []*any, block func([]*any) *any) *any {
 func puts(arguments []*any, block func([]*any) *any) *any {
 	for _, a := range arguments {
 		if a.almond_type == INT {
-			fmt.Printf("%d", *(*int)(a.almond_data))
+			fmt.Printf("%d ", *(*int)(a.almond_data))
 		} else if a.almond_type == FLOAT {
-			fmt.Printf("%f", *(*float64)(a.almond_data))
+			fmt.Printf("%f ", *(*float64)(a.almond_data))
 		} else if a.almond_type == NIL {
 			fmt.Printf("nil")
 		}

@@ -8,6 +8,13 @@ CHAR_MAPPING = {
   ":" => :"\n",
 }
 
+TYPE_MAPPING = {
+  int: "INT",
+  float32: "FLOAT",
+  :String => "STRING",
+}
+
+
 KEYWORDS = [:do, :"\n", :end]
 
 class String
@@ -95,6 +102,10 @@ class Expression
     self.arguments.empty? and not self.block and self.name.symbol.to_s[0].alpha?
   end
 
+  def is_string?
+    self.arguments.empty? and not self.block and self.name.symbol.to_s[0].quote?
+  end
+
   def symbol
     self.name.symbol
   end
@@ -131,7 +142,6 @@ class Expression
     else
       @@indentation -= 1
     end
-    total_string = "@name"
 
     output
   end
