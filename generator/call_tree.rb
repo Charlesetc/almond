@@ -31,10 +31,10 @@ module Tree
     raise "argument error: if takes a block" if tree.block.nil?
     fn = call(tree.arguments[0])
     fn.body = [
-      "if ",
+      "if from_bool(",
       fn.body,
-      "{",
-      generate_calls(tree.block.forest),
+      "){",
+      generate_calls(tree.block.forest, false),
       "}",
     ].join
     self.if_statement = fn
@@ -49,7 +49,7 @@ module Tree
       previous_if.body << [
         "else ",
         "{",
-        generate_calls(tree.block.forest),
+        generate_calls(tree.block.forest, false),
         "}",
       ].join
     else

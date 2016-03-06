@@ -12,6 +12,7 @@ TYPE_MAPPING = {
   int: "INT",
   float32: "FLOAT",
   :String => "STRING",
+  :bool => "BOOL",
 }
 
 

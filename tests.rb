@@ -199,10 +199,10 @@ Shindo.tests("Generator") do
   ", "
     package main
     func main() {
-      if a([]*any{}, nil) {
-        return b([]*any{}, nil)
+      if from_bool(a([]*any{}, nil)) {
+        b([]*any{}, nil)
       } else {
-        return c([]*any{}, nil)
+        c([]*any{}, nil)
       }
     }
   "

@@ -12,6 +12,7 @@ const (
 	FLOAT
 	STRING
 	NIL
+	BOOL
 )
 
 type any struct {
@@ -24,6 +25,15 @@ func from_int(a *any) *int {
 		panic("from_int called with non-integer type")
 	}
 	return (*int)(a.almond_data)
+}
+
+func from_bool(a *any) bool {
+	if a.almond_type == BOOL {
+		return *(*bool)(a.almond_data)
+	} else if a.almond_type == NIL {
+		return false
+	}
+	return true
 }
 
 func into_any(almond_type ALMOND_TYPE, almond_data unsafe.Pointer) *any {
@@ -46,6 +56,8 @@ func puts(arguments []*any, block func([]*any) *any) *any {
 			fmt.Printf("%f ", *(*float64)(a.almond_data))
 		} else if a.almond_type == NIL {
 			fmt.Printf("nil")
+		} else if a.almond_type == BOOL {
+			fmt.Printf("%t ", *(*bool)(a.almond_data))
 		}
 	}
 	fmt.Print("\n")

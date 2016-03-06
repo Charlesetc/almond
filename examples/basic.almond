@@ -11,7 +11,30 @@ binding print_and_return int do x int
   "x"
 end
 
-let a 3
+binding multiply_integer int do x int y int
+  "a := *x * *y"
+  "&a"
+end
+
+binding f bool do
+  "a := false"
+  "&a"
+end
+
+binding t bool do
+  "a := true"
+  "&a"
+end
+
+let a (multiply_integer 7 1000)
+
+let b t
+
+if b {
+  puts 3
+} else {
+  puts 4
+}
 
 puts (print_and_return 5)
 

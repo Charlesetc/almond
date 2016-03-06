@@ -63,8 +63,13 @@ My hope is that this will make macros easy, although I haven't gone about implem
   - [x] Generate function definitions
   - [x] Command line tool
   - [ ] Constants
-  - [ ] Generate structs
-  - [ ] Make a decent stdlib in Go
+      * [x] Integers
+      * [x] Booleans
+      * [ ] Floats
+      * [ ] Strings
+      * [ ] Structs
+  - [x] Bindings to Go code
+  - [ ] Use a different namespace for Almond functions
 * [ ] Bootstrap
 * [ ] Add objects and methods
 * [ ] Add macros w/ interpreter!
