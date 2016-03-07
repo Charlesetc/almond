@@ -71,5 +71,7 @@ My hope is that this will make macros easy, although I haven't gone about implem
   - [x] Bindings to Go code
   - [ ] Use a different namespace for Hazelnut functions
   - [ ] Support dot syntax and methods
+  - [ ] Better error messages
+  - [ ] Support for panic and defer
 * [ ] Bootstrap
 * [ ] Add macros w/ interpreter!
