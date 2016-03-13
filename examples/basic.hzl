@@ -51,3 +51,8 @@ if b {
 puts (print_and_return 5)
 
 puts (addthree 23) a
+
+struct hi {
+  none
+  two
+}

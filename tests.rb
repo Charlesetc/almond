@@ -178,6 +178,9 @@ Shindo.tests("Generator") do
   generates_test  "function call with arguments",
   "call something", "
     package main
+
+    var struct_definitions [][]string = [][]string{}
+
     func main() {
       call([]*any{something([]*any{}, nil)}, nil)
     }
@@ -186,6 +189,9 @@ Shindo.tests("Generator") do
   generates_test "function call with block",
   "mapped a { c : d c }", "
     package main
+
+    var struct_definitions [][]string = [][]string{}
+
     func main() {
       mapped([]*any{a([]*any{}, nil)}, func (arguments []*any) *any {
         if len(arguments) != 1 {
@@ -206,6 +212,9 @@ Shindo.tests("Generator") do
     }
   ", "
     package main
+
+    var struct_definitions [][]string = [][]string{}
+
     func main() {
       if from_bool(a([]*any{}, nil)) {
         b([]*any{}, nil)
@@ -224,6 +233,8 @@ Shindo.tests("Generator") do
 
     import \"unsafe\"
 
+    var struct_definitions [][]string = [][]string{}
+
     func main() {
       temp := 2
       a := into_any(INT, unsafe.Pointer(&temp))
@@ -239,6 +250,8 @@ Shindo.tests("Generator") do
     package main
 
     import \"unsafe\"
+
+    var struct_definitions [][]string = [][]string{}
 
     func main() {
       temp := \"testing\"
@@ -256,6 +269,8 @@ Shindo.tests("Generator") do
 
     import \"unsafe\"
 
+    var struct_definitions [][]string = [][]string{}
+
     func main() {
       temp := 2
       temp := \"five\"
@@ -266,6 +281,30 @@ Shindo.tests("Generator") do
     }
   "
 
+  generates_test "define a struct",
+  "
+    struct animal do
+      width
+      color
+    end
+
+    struct hat do
+      brimmed
+      color
+    end
+  ", "
+    package main
+
+    import \"unsafe\"
+
+    var struct_definitions [][]string = [][]string{{\"width\", \"color\"}, {\"brimmed\", \"color\"}}
+
+    func main() {
+
+    }
+  "
+
+
   generates_test "define a function" ,
   "
     define a b do
@@ -274,6 +313,7 @@ Shindo.tests("Generator") do
     a b
   ", "
     package main
+
     func a(arguments []*any, block func([]*any) *any) *any {
         if len(arguments) != 1 {
           panic(\"Wrong number of arguments for a - not 1\")
@@ -281,6 +321,8 @@ Shindo.tests("Generator") do
         b := arguments[0]
       return print([]*any{}, nil)
     }
+
+    var struct_definitions [][]string = [][]string{}
 
     func main() {
       a([]*any{b([]*any{}, nil)}, nil)

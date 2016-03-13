@@ -7,6 +7,8 @@ import (
 
 type HAZELNUT_TYPE int32
 
+const NUMBER_OF_TYPES int32 = 6
+
 const (
 	INT HAZELNUT_TYPE = iota
 	FLOAT

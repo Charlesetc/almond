@@ -5,11 +5,11 @@ require_relative "./parser.rb"
 require_relative "./token.rb"
 
 def compile(source)
-      t = Tokenizer.new source
-      t.read
-      parser = Parser.new t.tokens
-      generator = Generator.new parser.parse
-      generator.generate
+  t = Tokenizer.new source
+  t.read
+  parser = Parser.new t.tokens
+  generator = Generator.new parser.parse
+  generator.generate
 end
 
 

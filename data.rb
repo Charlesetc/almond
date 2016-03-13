@@ -15,6 +15,7 @@ TYPE_MAPPING = {
   :bool => "BOOL",
 }
 
+NUMBER_OF_TYPES = 6
 
 KEYWORDS = [:do, :"\n", :end]
 

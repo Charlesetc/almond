@@ -2,11 +2,12 @@
 
 require_relative './data.rb'
 require_relative './generator/call_tree.rb'
-require 'pry'
+require_relative './generator/struct.rb'
 
 class Generator
 
   include Tree
+  include Structs
 
   attr_accessor :if_statement
 
@@ -14,13 +15,13 @@ class Generator
     @forest = forest
     @functions = []
     @bindings = []
+    @struct_definitions = {}
   end
 
   def generate
     ingest_forest
     output = [
       generate_headers,
-      generate_functions,
       generate_main,
     ].join
     File.write("/tmp/hazelnut", output)
@@ -34,6 +35,8 @@ class Generator
         @functions << tree
       elsif tree.symbol == :binding
         @bindings << tree
+      elsif tree.symbol == :struct
+        ingest_struct tree
       end
     end
   end
@@ -72,21 +75,6 @@ class Generator
         function_end,
         is_closure ? "" : "\n\n",
       ].join
-  end
-
-  def generate_functions
-    @functions.map do |tree|
-      function_name = tree.arguments.shift
-      unless function_name and function_name.is_ident?
-        raise "first argument to define must be an ident"
-      end
-      raise "define takes a block" unless tree.block
-      raise "define's block doesn't take any arguments" if tree.block.arguments and not tree.block.arguments.empty?
-      enter_stack
-      output = generate_function(function_name.symbol, tree.arguments, tree.block.forest) 
-      exit_stack
-      output
-    end.join("\n") + @bindings.map { |tree| generate_binding tree }.join("\n")
   end
 
   def generate_binding(tree)
@@ -130,7 +118,21 @@ class Generator
   end
 
   def generate_headers
-    "package main\n"
+    "package main\n" +
+    @functions.map do |tree|
+      function_name = tree.arguments.shift
+      unless function_name and function_name.is_ident?
+        raise "first argument to define must be an ident"
+      end
+      raise "define takes a block" unless tree.block
+      raise "define's block doesn't take any arguments" if tree.block.arguments and not tree.block.arguments.empty?
+      enter_stack
+      output = generate_function(function_name.symbol, tree.arguments, tree.block.forest) 
+      exit_stack
+      output
+    end.join("\n") +
+    @bindings.map { |tree| generate_binding tree }.join("\n") +
+    struct_headers
   end
 
   def generate_main

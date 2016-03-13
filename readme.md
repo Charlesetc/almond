@@ -66,7 +66,7 @@ My hope is that this will make macros easy, although I haven't gone about implem
       * [x] Integers
       * [x] Booleans
       * [ ] Floats
-      * [ ] Strings
+      * [x] Strings
       * [ ] Structs
   - [x] Bindings to Go code
   - [ ] Use a different namespace for Hazelnut functions
