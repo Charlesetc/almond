@@ -7,6 +7,8 @@ import (
 
 type HAZELNUT_TYPE int32
 
+type block func([]*any, block) *any
+
 const NUMBER_OF_TYPES HAZELNUT_TYPE = 6
 
 const (
@@ -83,7 +85,7 @@ func into_any(hazelnut_type HAZELNUT_TYPE, hazelnut_data unsafe.Pointer) *any {
 		hazelnut_data: hazelnut_data}
 }
 
-func hzl_plus(arguments []*any, block func([]*any) *any) *any {
+func hzl____plus___(arguments []*any, block func([]*any) *any) *any {
 	a := from_int(arguments[0])
 	b := from_int(arguments[1])
 	c := *a + *b

@@ -45,9 +45,7 @@ class Generator
       [
         "func ",
         is_closure ? "" : hzl_namespace(symbol),
-        "(arguments []*any",
-        is_closure ? "" : ", block func([]*any) *any",
-        ") *any {
+        "(arguments []*any, hzl_yield block) *any {
         if len(arguments) != #{args.length} {
           panic(\"Wrong number of arguments for #{symbol} - not #{args.length}\")
         }\n"

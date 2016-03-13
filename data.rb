@@ -21,11 +21,11 @@ KEYWORDS = [:do, :"\n", :end]
 
 def hzl_namespace(name)
   name = name.to_s
-  name.sub! "+", "___plus___"
-  name.sub! ".", "___dot___"
-  name.sub! "*", "___star___"
-  name.sub! "%", "___percentage___"
-  name.sub! "=", "___equals___"
+  name.gsub! "+", "___plus___"
+  name.gsub! ".", "___dot___"
+  name.gsub! "*", "___star___"
+  name.gsub! "%", "___percentage___"
+  name.gsub! "=", "___equals___"
   "hzl_" + name
 end
 

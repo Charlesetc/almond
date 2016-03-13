@@ -198,7 +198,7 @@ Shindo.tests("Generator") do
     var struct_definitions [][]string = [][]string{}
 
     func main() {
-      hzl_map([]*any{hzl_a([]*any{}, nil)}, func (arguments []*any) *any {
+      hzl_map([]*any{hzl_a([]*any{}, nil)}, func (arguments []*any, hzl_yield block) *any {
         if len(arguments) != 1 {
           panic(\"Wrong number of arguments for  - not 1\")
         }
@@ -327,7 +327,7 @@ Shindo.tests("Generator") do
   ", "
     package main
 
-    func hzl_a(arguments []*any, block func([]*any) *any) *any {
+    func hzl_a(arguments []*any, hzl_yield block) *any {
         if len(arguments) != 1 {
           panic(\"Wrong number of arguments for a - not 1\")
         }

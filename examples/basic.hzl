@@ -3,7 +3,7 @@
 # Yes the hazelnut language officially has commenting
 
 define addthree x do
-  plus x 3
+  + x 3
 end
 
 binding print_and_return int do x int
@@ -11,7 +11,7 @@ binding print_and_return int do x int
   "x"
 end
 
-binding multiply_integer int do x int y int
+binding * int do x int y int
   "a := *x * *y"
   "&a"
 end
@@ -26,7 +26,7 @@ binding true bool do
   "&a"
 end
 
-let a (multiply_integer 7 1000)
+let a (* 7 1000)
 
 let b true
 
@@ -72,3 +72,19 @@ puts (. myhi "color")
 .= myhi "width" true
 puts myhi
 puts (. myhi "width")
+
+
+
+
+puts "------------------------"
+
+define called_two x do
+  puts (+ 2 (yield x))
+end
+
+called_two 400 do x
+  * 2 x
+end
+
+
+puts "------------------------"
