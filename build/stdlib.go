@@ -56,6 +56,8 @@ func puts(arguments []*any, block func([]*any) *any) *any {
 			fmt.Printf("%f ", *(*float64)(a.hazelnut_data))
 		} else if a.hazelnut_type == NIL {
 			fmt.Printf("nil")
+		} else if a.hazelnut_type == STRING {
+			fmt.Printf("%s ", *(*string)(a.hazelnut_data))
 		} else if a.hazelnut_type == BOOL {
 			fmt.Printf("%t ", *(*bool)(a.hazelnut_data))
 		}

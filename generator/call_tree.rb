@@ -108,16 +108,16 @@ module Tree
   end
 
   # String constants
-  # match lambda { |symbol| symbol.to_s[0].quote? } do |tree|
-  #   raise "Strings do not take a block" if tree.block
-  #   raise "Strings do not take any arguments" if tree.arguments.length != 0
-  #   tmp = temp_var
-  #   content = tree.symbol.to_s[1..-2]
-  #   [
-  #     "#{tmp} := \"#{content}\"\n",
-  #     "into_any(STRING, unsafe.Pointer(&#{tmp}))",
-  #   ]
-  # end
+  match lambda { |symbol| symbol.to_s[0].quote? } do |tree|
+    raise "Strings do not take a block" if tree.block
+    raise "Strings do not take any arguments" if tree.arguments.length != 0
+    tmp = temp_var
+    content = tree.symbol.to_s[1..-2]
+    FunctionCall.new(
+      "into_any(STRING, unsafe.Pointer(&#{tmp}))", # body
+      "#{tmp} := \"#{content}\"\n" # preceeding
+    )
+  end
 
   ### Other Functions that are key to generating function calls ###
 

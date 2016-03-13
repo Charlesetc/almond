@@ -30,6 +30,12 @@ let a (multiply_integer 7 1000)
 
 let b t
 
+let c "test"
+let d c
+
+puts c
+puts d
+
 if b {
   puts 3
 } else {

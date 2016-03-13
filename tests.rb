@@ -25,15 +25,22 @@ class Expression
 
 end
 
+class Generator
+  def self.reset
+    @@stacks = [[]]
+  end
+end
+
 class Printer
   attr_accessor :str
   def initialize(str)
     @str = str
   end
+
   def inspect
-    
     @str.inspect + "\n" + @str
   end
+
   def ==(other)
     str == other.str
   end
@@ -161,6 +168,7 @@ Shindo.tests("Generator") do
       t.read
       parser = Parser.new t.tokens
       forest = parser.parse
+      Generator.reset
       generator = Generator.new forest
       output = generator.generate.gsub(/temp_(\d)*/, "temp")
       Printer.new(output)
@@ -220,6 +228,22 @@ Shindo.tests("Generator") do
       temp := 2
       a := into_any(INT, unsafe.Pointer(&temp))
       b([]*any{a}, nil)
+    }
+  "
+
+  generates_test "string constant",
+  "
+    let a 'testing'
+    puts a
+  ", "
+    package main
+
+    import \"unsafe\"
+
+    func main() {
+      temp := \"testing\"
+      a := into_any(STRING, unsafe.Pointer(&temp))
+      puts([]*any{a}, nil)
     }
   "
 
