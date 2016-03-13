@@ -19,14 +19,14 @@ There are no operators, for simplicity.
 
 Inspired by the ruby blocks:
 ```
-map (list 3 4 5) { x: x * x }
+map (list 3 4 5) { x: * x x }
 ```
 
 Fun fact: the `:` here is an alias for a newline or semicolon. This is also valid:
 
 ```
 map (list 3 4 5) do x
-  x * x
+  * x x
 end
 ```
 
