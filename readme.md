@@ -1,6 +1,8 @@
 
 ## Hazelnut
 
+![hazelnut logo](logo/hazelnut.png)
+
 Hi! Hazelnut is a programming language I'm working on.
 It's pretty simple, with the main goal being to bootstrap
 itself as quickly as possible. It compiles to Go.
