@@ -13,6 +13,7 @@ const (
 	STRING
 	NIL
 	BOOL
+	ARRAY
 )
 
 type any struct {
@@ -60,6 +61,8 @@ func puts(arguments []*any, block func([]*any) *any) *any {
 			fmt.Printf("%s ", *(*string)(a.hazelnut_data))
 		} else if a.hazelnut_type == BOOL {
 			fmt.Printf("%t ", *(*bool)(a.hazelnut_data))
+		} else if a.hazelnut_type == ARRAY {
+			puts(*(*[]*any)(a.hazelnut_data), nil)
 		}
 	}
 	fmt.Print("\n")

@@ -247,6 +247,25 @@ Shindo.tests("Generator") do
     }
   "
 
+  generates_test "array constant",
+  "
+    let a (list 2 'five')
+    puts a
+  ", "
+    package main
+
+    import \"unsafe\"
+
+    func main() {
+      temp := 2
+      temp := \"five\"
+
+      temp := []*any{into_any(INT, unsafe.Pointer(&temp)), into_any(STRING, unsafe.Pointer(&temp))}
+      a := into_any(ARRAY, unsafe.Pointer(&temp))
+      puts([]*any{a}, nil)
+    }
+  "
+
   generates_test "define a function" ,
   "
     define a b do

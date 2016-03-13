@@ -92,6 +92,28 @@ module Tree
     FunctionCall.new(body, preceeding, return_value)
   end
 
+  match :list do |tree|
+    raise "list does not take a block" if tree.block
+    preceeding = ''
+    body = '[]*any{'
+    seperator = ''
+    tree.arguments.map do |item|
+      fn = call(item)
+
+      preceeding += fn.prerequisites
+      body += seperator
+      body += fn.body
+      seperator = ', '
+    end
+    body += '}'
+    temp = temp_var
+    preceeding += "\n#{temp} := #{body}\n"
+    FunctionCall.new(
+      "into_any(ARRAY, unsafe.Pointer(&#{temp}))",
+      preceeding,
+    )
+  end
+
   # Integer and Float constants.
   match lambda { |symbol| symbol.to_s[0].numeric? } do |tree|
     raise "Numbers do not take a block" if tree.block
