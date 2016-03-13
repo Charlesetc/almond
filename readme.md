@@ -62,12 +62,12 @@ My hope is that this will make macros easy, although I haven't gone about implem
   - [x] Differentiate between vars and function calls
   - [x] Generate function definitions
   - [x] Command line tool
-  - [ ] Constants
+  - [x] Constants
       * [x] Integers
       * [x] Booleans
-      * [ ] Floats
+      * [x] Floats
       * [x] Strings
-      * [ ] Structs
+      * [x] Structs
   - [x] Bindings to Go code
   - [ ] Use a different namespace for Hazelnut functions
   - [ ] Support dot syntax and methods

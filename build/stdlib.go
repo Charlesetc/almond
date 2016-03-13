@@ -49,8 +49,8 @@ func set_struct_member(as []*any, block func([]*any) *any) *any {
 	for i, name := range definiton {
 		if name == member_name {
 			(*(*[]*any)(a.hazelnut_data))[i] = value
+			return into_any(NIL, nil)
 		}
-		return into_any(NIL, nil)
 	}
 	panic(fmt.Sprintf("so such field in struct: %s", member_name))
 }
@@ -104,6 +104,10 @@ func puts(arguments []*any, block func([]*any) *any) *any {
 			fmt.Printf("%t ", *(*bool)(a.hazelnut_data))
 		} else if a.hazelnut_type == ARRAY {
 			puts(*(*[]*any)(a.hazelnut_data), nil)
+		} else {
+			fmt.Print("{\n")
+			puts(*(*[]*any)(a.hazelnut_data), nil)
+			fmt.Print("}")
 		}
 	}
 	fmt.Print("\n")

@@ -64,7 +64,11 @@ struct hi {
 # end
 
 let myhi (new hi)
+puts (. myhi "color")
 .= myhi "color" 55
 puts (. myhi "color")
 .= myhi "color" 45
 puts (. myhi "color")
+.= myhi "width" t
+puts myhi
+puts (. myhi "width")
