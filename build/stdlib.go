@@ -23,7 +23,7 @@ type any struct {
 	hazelnut_data unsafe.Pointer
 }
 
-func get_struct_member(as []*any, block func([]*any) *any) *any {
+func hzl____dot___(as []*any, block func([]*any) *any) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
 	if a.hazelnut_type <= NUMBER_OF_TYPES {
@@ -38,7 +38,7 @@ func get_struct_member(as []*any, block func([]*any) *any) *any {
 	panic(fmt.Sprintf("so such field in struct: %s", member_name))
 }
 
-func set_struct_member(as []*any, block func([]*any) *any) *any {
+func hzl____dot______equals___(as []*any, block func([]*any) *any) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
 	value := as[2]
@@ -83,14 +83,14 @@ func into_any(hazelnut_type HAZELNUT_TYPE, hazelnut_data unsafe.Pointer) *any {
 		hazelnut_data: hazelnut_data}
 }
 
-func plus(arguments []*any, block func([]*any) *any) *any {
+func hzl_plus(arguments []*any, block func([]*any) *any) *any {
 	a := from_int(arguments[0])
 	b := from_int(arguments[1])
 	c := *a + *b
 	return into_any(INT, unsafe.Pointer(&c))
 }
 
-func puts(arguments []*any, block func([]*any) *any) *any {
+func hzl_puts(arguments []*any, block func([]*any) *any) *any {
 	for _, a := range arguments {
 		if a.hazelnut_type == INT {
 			fmt.Printf("%d ", *(*int)(a.hazelnut_data))
@@ -103,10 +103,10 @@ func puts(arguments []*any, block func([]*any) *any) *any {
 		} else if a.hazelnut_type == BOOL {
 			fmt.Printf("%t ", *(*bool)(a.hazelnut_data))
 		} else if a.hazelnut_type == ARRAY {
-			puts(*(*[]*any)(a.hazelnut_data), nil)
+			hzl_puts(*(*[]*any)(a.hazelnut_data), nil)
 		} else {
 			fmt.Print("{\n")
-			puts(*(*[]*any)(a.hazelnut_data), nil)
+			hzl_puts(*(*[]*any)(a.hazelnut_data), nil)
 			fmt.Print("}")
 		}
 	}

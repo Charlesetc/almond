@@ -44,7 +44,7 @@ class Generator
   def function_start(symbol, args, is_closure)
       [
         "func ",
-        symbol,
+        is_closure ? "" : hzl_namespace(symbol),
         "(arguments []*any",
         is_closure ? "" : ", block func([]*any) *any",
         ") *any {
@@ -63,7 +63,7 @@ class Generator
       defined_arguments = args.each_with_index.map do |a, i|
         raise "arguments to a function definition must be idents" unless a.is_a?(Token) or a.is_ident?
         stack_push a
-        "#{a.symbol} := arguments[#{i}];"
+        "#{hzl_namespace(a.symbol)} := arguments[#{i}];"
       end
 
       start = function_start(symbol, args, is_closure)
@@ -100,7 +100,7 @@ class Generator
          panic(\"#{i}th argument of #{fn_name} takes a #{type.symbol}\")
        }
        #{name.symbol} := (*#{type.symbol})(arguments[#{i}].hazelnut_data)
-      "
+      " # These arguments are not hzl_namespace'd
     }
     preceeding, return_value = tree.block.forest
 

@@ -69,8 +69,9 @@ My hope is that this will make macros easy, although I haven't gone about implem
       * [x] Strings
       * [x] Structs
   - [x] Bindings to Go code
-  - [ ] Use a different namespace for Hazelnut functions
+  - [x] Use a different namespace for Hazelnut functions
   - [ ] Support dot syntax and methods
+  - [ ] Make namespaces and 'include' for hazelnut
   - [ ] Better error messages
   - [ ] Support for panic and defer
 * [ ] Bootstrap

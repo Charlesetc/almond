@@ -34,8 +34,8 @@ module Tree
     end
   end
 
-  alias_symbol :".=", :set_struct_member
-  alias_symbol :".", :get_struct_member
+  # alias_symbol :".=", :set_struct_member
+  # alias_symbol :".", :get_struct_member
 
   match :if do |tree|
     raise "argument error: if takes one argument" if tree.arguments.length != 1
@@ -84,7 +84,7 @@ module Tree
 
     body = ''
     preceeding = ''
-    return_value = nil
+    name = nil
     tree.arguments.each_slice(2).map do |ident, value|
       raise "'let' takes identifier - expression pairs as arguments" unless ident.is_ident?
 
@@ -94,13 +94,14 @@ module Tree
         equals = ":="
         stack_push ident
       end
+
+      name = hzl_namespace(ident.symbol)
       
       fn = call(value)
       preceeding += fn.prerequisites
-      body += [ident.symbol, equals, fn.body, "\n"].join
-      return_value = ident.symbol.to_s
+      body += [name, equals, fn.body, "\n"].join
     end
-    FunctionCall.new(body, preceeding, return_value)
+    FunctionCall.new(body, preceeding, name)
   end
 
   match :new do |tree|
@@ -196,11 +197,11 @@ module Tree
     self.if_statement = nil
 
     if tree.is_ident? and @@stacks.flatten.include? tree.symbol
-      return FunctionCall.new(tree.symbol.to_s)
+      return FunctionCall.new(hzl_namespace(tree.symbol))
     end
     fn = arguments(tree)
     fn.body = [
-             tree.symbol,
+             hzl_namespace(tree.symbol),
              "(",
              fn.body,
              ",",

@@ -19,6 +19,16 @@ NUMBER_OF_TYPES = 6
 
 KEYWORDS = [:do, :"\n", :end]
 
+def hzl_namespace(name)
+  name = name.to_s
+  name.sub! "+", "___plus___"
+  name.sub! ".", "___dot___"
+  name.sub! "*", "___star___"
+  name.sub! "%", "___percentage___"
+  name.sub! "=", "___equals___"
+  "hzl_" + name
+end
+
 class String
 
   def alpha?

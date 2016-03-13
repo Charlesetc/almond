@@ -187,23 +187,23 @@ Shindo.tests("Generator") do
     var struct_definitions [][]string = [][]string{}
 
     func main() {
-      call([]*any{something([]*any{}, nil)}, nil)
+      hzl_call([]*any{hzl_something([]*any{}, nil)}, nil)
     }
   "
 
   generates_test "function call with block",
-  "mapped a { c : d c }", "
+  "map a { c : d c }", "
     package main
 
     var struct_definitions [][]string = [][]string{}
 
     func main() {
-      mapped([]*any{a([]*any{}, nil)}, func (arguments []*any) *any {
+      hzl_map([]*any{hzl_a([]*any{}, nil)}, func (arguments []*any) *any {
         if len(arguments) != 1 {
           panic(\"Wrong number of arguments for  - not 1\")
         }
-        c := arguments[0];
-        return d([]*any{c}, nil)
+        hzl_c := arguments[0];
+        return hzl_d([]*any{hzl_c}, nil)
       })
     }
   "
@@ -221,10 +221,10 @@ Shindo.tests("Generator") do
     var struct_definitions [][]string = [][]string{}
 
     func main() {
-      if from_bool(a([]*any{}, nil)) {
-        b([]*any{}, nil)
+      if from_bool(hzl_a([]*any{}, nil)) {
+        hzl_b([]*any{}, nil)
       } else {
-        c([]*any{}, nil)
+        hzl_c([]*any{}, nil)
       }
     }
   "
@@ -242,8 +242,8 @@ Shindo.tests("Generator") do
 
     func main() {
       temp := 2
-      a := into_any(INT, unsafe.Pointer(&temp))
-      b([]*any{a}, nil)
+      hzl_a := into_any(INT, unsafe.Pointer(&temp))
+      hzl_b([]*any{hzl_a}, nil)
     }
   "
 
@@ -260,8 +260,8 @@ Shindo.tests("Generator") do
 
     func main() {
       temp := \"testing\"
-      a := into_any(STRING, unsafe.Pointer(&temp))
-      puts([]*any{a}, nil)
+      hzl_a := into_any(STRING, unsafe.Pointer(&temp))
+      hzl_puts([]*any{hzl_a}, nil)
     }
   "
 
@@ -281,8 +281,8 @@ Shindo.tests("Generator") do
       temp := \"five\"
 
       temp := []*any{into_any(INT, unsafe.Pointer(&temp)), into_any(STRING, unsafe.Pointer(&temp))}
-      a := into_any(ARRAY, unsafe.Pointer(&temp))
-      puts([]*any{a}, nil)
+      hzl_a := into_any(ARRAY, unsafe.Pointer(&temp))
+      hzl_puts([]*any{hzl_a}, nil)
     }
   "
 
@@ -311,9 +311,9 @@ Shindo.tests("Generator") do
 
     func main() {
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
-      myhat := into_any(8, unsafe.Pointer(&temp))
+      hzl_myhat := into_any(8, unsafe.Pointer(&temp))
       temp := \"width\"
-      puts([]*any{get_struct_member([]*any{myhat, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)
+      hzl_puts([]*any{hzl____dot___([]*any{hzl_myhat, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)
     }
   "
 
@@ -327,18 +327,18 @@ Shindo.tests("Generator") do
   ", "
     package main
 
-    func a(arguments []*any, block func([]*any) *any) *any {
+    func hzl_a(arguments []*any, block func([]*any) *any) *any {
         if len(arguments) != 1 {
           panic(\"Wrong number of arguments for a - not 1\")
         }
-        b := arguments[0]
-      return print([]*any{}, nil)
+        hzl_b := arguments[0]
+      return hzl_print([]*any{}, nil)
     }
 
     var struct_definitions [][]string = [][]string{}
 
     func main() {
-      a([]*any{b([]*any{}, nil)}, nil)
+      hzl_a([]*any{hzl_b([]*any{}, nil)}, nil)
     }
   "
 

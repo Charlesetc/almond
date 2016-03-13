@@ -16,19 +16,19 @@ binding multiply_integer int do x int y int
   "&a"
 end
 
-binding f bool do
+binding false bool do
   "a := false"
   "&a"
 end
 
-binding t bool do
+binding true bool do
   "a := true"
   "&a"
 end
 
 let a (multiply_integer 7 1000)
 
-let b t
+let b true
 
 let c "test"
 let d c
@@ -69,6 +69,6 @@ puts (. myhi "color")
 puts (. myhi "color")
 .= myhi "color" 45
 puts (. myhi "color")
-.= myhi "width" t
+.= myhi "width" true
 puts myhi
 puts (. myhi "width")
