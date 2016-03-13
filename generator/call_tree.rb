@@ -26,6 +26,17 @@ module Tree
     end
   end
 
+  def self.alias_symbol(hzl_symbol, go_symbol)
+    match hzl_symbol do |tree|
+      fn = call_normal_function(tree)
+      fn.body.sub!  hzl_symbol.to_s, go_symbol.to_s # this might be terrible
+      fn
+    end
+  end
+
+  alias_symbol :".=", :set_struct_member
+  alias_symbol :".", :get_struct_member
+
   match :if do |tree|
     raise "argument error: if takes one argument" if tree.arguments.length != 1
     raise "argument error: if takes a block" if tree.block.nil?
@@ -90,6 +101,30 @@ module Tree
       return_value = ident.symbol.to_s
     end
     FunctionCall.new(body, preceeding, return_value)
+  end
+
+  match :new do |tree|
+    raise "new does not take a block" if tree.block
+    raise "new takes one argument" if tree.arguments.length != 1
+    name = tree.arguments[0].symbol
+    fields, i = @struct_definitions[name]
+
+    raise "No such struct defined #{name}" unless fields
+
+    temp = temp_var
+    preceeding = [
+      temp,
+      ":= []*any{",
+      fields.map { |_| "into_any(NIL, nil)" }.join(","),
+      "}\n"
+    ].join
+
+    body = "into_any(#{i}, unsafe.Pointer(&#{temp}))"
+
+    FunctionCall.new(
+      body,
+      preceeding,
+    )
   end
 
   match :list do |tree|

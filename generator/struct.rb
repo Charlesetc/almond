@@ -24,11 +24,14 @@ module Structs
       end
     end
 
-    @struct_definitions[tree.arguments[0].symbol] = tree.block.forest.map { |t| t.symbol }
+
+    @struct_count ||= NUMBER_OF_TYPES
+    @struct_count += 1
+    @struct_definitions[tree.arguments[0].symbol] = [tree.block.forest.map { |t| t.symbol }, @struct_count]
   end
 
   def struct_headers
-    inner_list = @struct_definitions.map do |_, symbols|
+    inner_list = @struct_definitions.values.map do |symbols, i|
       "[]string{" + symbols.map { |x| '"' + x.to_s + '"' }.join(", ") + "}"
     end.join(", ")
 

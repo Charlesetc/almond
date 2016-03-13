@@ -95,7 +95,12 @@ Shindo.tests("Tokenizer") do
   token_test "abc23d 123", [:abc23d, :"123"]
 
   # test punctuation with characters
-  token_test "Hello.text", [:Hello, :".", :text]
+  # Might want to change this:
+  token_test "Hello$text", [:"Hello$text"]
+
+  token_test "Hello.text", [:"Hello.text"]
+
+  token_test ".= Hello text", [:".=", :Hello, :text]
 
   token_test "{ interesting }", [:do, :interesting, :end]
 
@@ -292,6 +297,11 @@ Shindo.tests("Generator") do
       brimmed
       color
     end
+
+    let myhat (new hat)
+    # let myhat.width 4
+    # (.= myhat width 4)
+    puts (. myhat 'width')
   ", "
     package main
 
@@ -300,7 +310,10 @@ Shindo.tests("Generator") do
     var struct_definitions [][]string = [][]string{{\"width\", \"color\"}, {\"brimmed\", \"color\"}}
 
     func main() {
-
+      temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
+      myhat := into_any(8, unsafe.Pointer(&temp))
+      temp := \"width\"
+      puts([]*any{get_struct_member([]*any{myhat, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)
     }
   "
 
