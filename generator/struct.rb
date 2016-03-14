@@ -32,11 +32,18 @@ module Structs
 
   def struct_headers
     inner_list = @struct_definitions.values.map do |symbols, i|
-      "[]string{" + symbols.map { |x| '"' + x.to_s + '"' }.join(", ") + "}"
+      [
+        "definition{",
+        "members:",
+          "[]string{",
+          symbols.map { |x| '"' + x.to_s + '"' }.join(", "),
+          "},",
+        "}",
+      ].join
     end.join(", ")
 
     [
-      "\nvar struct_definitions [][]string = [][]string{",
+      "\nvar struct_definitions []definition = []definition{",
       inner_list,
       "}\n",
     ].join

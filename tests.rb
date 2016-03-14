@@ -184,7 +184,7 @@ Shindo.tests("Generator") do
   "call something", "
     package main
 
-    var struct_definitions [][]string = [][]string{}
+    var struct_definitions []definition = []definition{}
 
     func main() {
       hzl_call([]*any{hzl_something([]*any{}, nil)}, nil)
@@ -195,7 +195,7 @@ Shindo.tests("Generator") do
   "map a { c : d c }", "
     package main
 
-    var struct_definitions [][]string = [][]string{}
+    var struct_definitions []definition = []definition{}
 
     func main() {
       hzl_map([]*any{hzl_a([]*any{}, nil)}, func (arguments []*any, hzl_yield block) *any {
@@ -218,7 +218,7 @@ Shindo.tests("Generator") do
   ", "
     package main
 
-    var struct_definitions [][]string = [][]string{}
+    var struct_definitions []definition = []definition{}
 
     func main() {
       if from_bool(hzl_a([]*any{}, nil)) {
@@ -238,7 +238,7 @@ Shindo.tests("Generator") do
 
     import \"unsafe\"
 
-    var struct_definitions [][]string = [][]string{}
+    var struct_definitions []definition = []definition{}
 
     func main() {
       temp := 2
@@ -256,7 +256,7 @@ Shindo.tests("Generator") do
 
     import \"unsafe\"
 
-    var struct_definitions [][]string = [][]string{}
+    var struct_definitions []definition = []definition{}
 
     func main() {
       temp := \"testing\"
@@ -274,7 +274,7 @@ Shindo.tests("Generator") do
 
     import \"unsafe\"
 
-    var struct_definitions [][]string = [][]string{}
+    var struct_definitions []definition = []definition{}
 
     func main() {
       temp := 2
@@ -307,7 +307,7 @@ Shindo.tests("Generator") do
 
     import \"unsafe\"
 
-    var struct_definitions [][]string = [][]string{{\"width\", \"color\"}, {\"brimmed\", \"color\"}}
+    var struct_definitions []definition = []definition{definition{members:[]string{\"width\", \"color\"}}, {members:[]string{\"brimmed\", \"color\"}}}
 
     func main() {
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
@@ -335,7 +335,7 @@ Shindo.tests("Generator") do
       return hzl_print([]*any{}, nil)
     }
 
-    var struct_definitions [][]string = [][]string{}
+    var struct_definitions []definition = []definition{}
 
     func main() {
       hzl_a([]*any{hzl_b([]*any{}, nil)}, nil)

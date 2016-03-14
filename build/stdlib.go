@@ -25,14 +25,18 @@ type any struct {
 	hazelnut_data unsafe.Pointer
 }
 
+type definition struct {
+	members []string
+}
+
 func hzl____dot___(as []*any, block func([]*any) *any) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
 	if a.hazelnut_type <= NUMBER_OF_TYPES {
 		panic(". must be called on a struct.")
 	}
-	definiton := struct_definitions[a.hazelnut_type-(NUMBER_OF_TYPES+1)]
-	for i, name := range definiton {
+	def := struct_definitions[a.hazelnut_type-(NUMBER_OF_TYPES+1)]
+	for i, name := range def.members {
 		if name == member_name {
 			return (*(*[]*any)(a.hazelnut_data))[i]
 		}
@@ -47,8 +51,8 @@ func hzl____dot______equals___(as []*any, block func([]*any) *any) *any {
 	if a.hazelnut_type <= NUMBER_OF_TYPES {
 		panic(".= must be called on a struct.")
 	}
-	definiton := struct_definitions[a.hazelnut_type-(NUMBER_OF_TYPES+1)]
-	for i, name := range definiton {
+	def := struct_definitions[a.hazelnut_type-(NUMBER_OF_TYPES+1)]
+	for i, name := range def.members {
 		if name == member_name {
 			(*(*[]*any)(a.hazelnut_data))[i] = value
 			return into_any(NIL, nil)
