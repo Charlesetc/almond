@@ -74,8 +74,6 @@ puts myhi
 puts (. myhi "width")
 
 
-
-
 puts "------------------------"
 
 define called_two x do
@@ -85,6 +83,5 @@ end
 called_two 400 do x
   * 2 x
 end
-
 
 puts "------------------------"
