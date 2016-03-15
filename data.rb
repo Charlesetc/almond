@@ -1,5 +1,14 @@
 # data.rb
 
+OPERATORS = {
+  :"=" => 0.1,
+  :"+" => 0.2,
+  :"-" => 0.2,
+  :"*" => 0.3,
+  :"/" => 0.3,
+  :"^" => 0.4,
+}
+
 CHAR_MAPPING = {
   ";" => :"\n",
   "\n" => :"\n",
@@ -67,6 +76,10 @@ class Token
 
   def do?
     self.symbol == :do
+  end
+
+  def operator?
+    OPERATORS.include?(self.symbol)
   end
 end
 
