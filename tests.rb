@@ -125,6 +125,7 @@ Shindo.tests("Tokenizer") do
     end",
     [:class, :Hello, :do, :"\n", :some, :hi, :",", :there, :"\n", :end]
 
+
 end
 
 Shindo.tests("Parser") do
@@ -158,6 +159,14 @@ Shindo.tests("Parser") do
   parses_test "\tif {\n\t\tprint this\n\t}", [[:if, [], {[] => [[:print, [:this], {}]]}]]
 
   parses_test "let (hi 3) 4", [[:let, [[:hi, [:"3"], {}], :"4"], {}]]
+
+  # Operators
+
+  parses_test "2 + 2", [[:+, [:"2", :"2"], {}]]
+
+  parses_test "(+ 3 2)", [[:+, [:"3", :"2"], {}]]
+
+  parses_test "1 + 2 * 3", [[:+, [[:*, [:"3", :"2"], {}], :"1"], {}]]
 
 end
 
