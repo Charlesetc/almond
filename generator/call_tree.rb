@@ -248,7 +248,9 @@ module Tree
   end
 
   def temp_var
-   "temp_" + rand.hash.abs.to_s[0, 10]
+    @i ||= 0
+    @i += 1
+   "hazelnut_#{@i}"
   end
 
 end

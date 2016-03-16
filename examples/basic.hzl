@@ -11,7 +11,7 @@ binding print_and_return int do x int
   "x"
 end
 
-binding * int do x int y int
+binding (*) int do x int y int
   "a := *x * *y"
   "&a"
 end
@@ -85,3 +85,5 @@ called_two 400 do x
 end
 
 puts "------------------------"
+
+puts (addthree 2 * 4)

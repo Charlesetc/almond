@@ -184,7 +184,7 @@ Shindo.tests("Generator") do
       forest = parser.parse
       Generator.reset
       generator = Generator.new forest
-      output = generator.generate.gsub(/temp_(\d)*/, "temp")
+      output = generator.generate.gsub(/hazelnut_(\d)*/, "temp")
       Printer.new(output)
     end
   end
