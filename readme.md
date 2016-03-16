@@ -12,23 +12,33 @@ itself as quickly as possible. It compiles to Go.
 ## Haskell-like function calls
 
 ```ruby
-assert (equals this that)
+assert (= this that)
 ```
 
-There are no operators, for simplicity.
+## Operators
+
+Postfix or prefix
+
+```ruby
+2 + 3 * 8
+```
+
+```ruby
+(+ 2 (* 3 8))
+```
 
 ## Blocks
 
 Inspired by the ruby blocks:
 ```
-map (list 3 4 5) { x: * x x }
+map (list 3 4 5) { x: x * x }
 ```
 
 Fun fact: the `:` here is an alias for a newline or semicolon. This is also valid:
 
 ```
 map (list 3 4 5) do x
-  * x x
+  x * x
 end
 ```
 
@@ -53,6 +63,37 @@ Ident  [Node]  [Node] [Ident]
 
 My hope is that this will make macros easy, although I haven't gone about implementing them yet.
 
+# Features
+
+## Functions
+
+```ruby
+define add_2 { x: x + 2 }
+```
+
+## Structures
+```ruby
+struct Animal {
+  color
+  height
+}
+
+a = new animal
+a.color = "red"
+```
+
+## Control Flow
+
+```ruby
+if is_red panda {
+  puts "This is a red panda!"
+} else {
+  puts "This is not a red panda!"
+}
+```
+
+There aren't for loops yet but that's just because I haven't gotten to them.
+
 # Progress
 
 * [ ] Finish the first compiler
@@ -72,6 +113,7 @@ My hope is that this will make macros easy, although I haven't gone about implem
       * [x] Structs
   - [x] Bindings to Go code
   - [x] Use a different namespace for Hazelnut functions
+  - [x] Operators with shunting yard
   - [ ] Support dot syntax and methods
   - [ ] Make namespaces and 'include' for hazelnut
   - [ ] Better error messages
