@@ -78,29 +78,25 @@ module Tree
     FunctionCall.new('') # Should be a no-op because we added it to the if.
   end
 
-  match :let do |tree|
-    raise "let does not take a block" if tree.block
-    raise "let needs an even number of arguments" unless tree.arguments.length % 2 == 0
+  match :"=" do |tree|
+    raise "= does not take a block" if tree.block
+    raise "= takes two arguments" unless tree.arguments.length == 2
 
-    body = ''
-    preceeding = ''
-    name = nil
-    tree.arguments.each_slice(2).map do |ident, value|
-      raise "'let' takes identifier - expression pairs as arguments" unless ident.is_ident?
+    value, ident = tree.arguments
+    raise "'=' takes identifier - expression pairs as arguments" unless ident.is_ident?
 
-      if @@stacks.last.include?(ident.symbol)
-        equals = "="
-      else
-        equals = ":="
-        stack_push ident
-      end
-
-      name = hzl_namespace(ident.symbol)
-      
-      fn = call(value)
-      preceeding += fn.prerequisites
-      body += [name, equals, fn.body, "\n"].join
+    if @@stacks.last.include?(ident.symbol)
+      equals = "="
+    else
+      equals = ":="
+      stack_push ident
     end
+
+    name = hzl_namespace(ident.symbol)
+    
+    fn = call(value)
+    preceeding = fn.prerequisites
+    body = [name, equals, fn.body, "\n"].join
     FunctionCall.new(body, preceeding, name)
   end
 

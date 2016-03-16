@@ -92,7 +92,11 @@ class Parser
 
   def parse_functions(forest=[])
     return forest unless current
-    return forest if current.end? or current.symbol == :")"
+    return forest if current.end? 
+    if current.symbol == :")"
+      next_current
+      return parse_functions(forest)
+    end
 
     if current.newline?
       next_current

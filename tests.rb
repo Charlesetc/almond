@@ -238,9 +238,9 @@ Shindo.tests("Generator") do
     }
   "
 
-  generates_test "let syntax",
+  generates_test "= syntax",
   "
-    let a 2
+    a = 2
     b a
   ", "
     package main
@@ -258,7 +258,7 @@ Shindo.tests("Generator") do
 
   generates_test "string constant",
   "
-    let a 'testing'
+    a = 'testing'
     puts a
   ", "
     package main
@@ -276,7 +276,7 @@ Shindo.tests("Generator") do
 
   generates_test "array constant",
   "
-    let a (list 2 'five')
+    a = list 2 'five'
     puts a
   ", "
     package main
@@ -307,8 +307,8 @@ Shindo.tests("Generator") do
       color
     end
 
-    let myhat (new hat)
-    # let myhat.width 4
+    myhat = new hat
+    # myhat.width = 4
     # (.= myhat width 4)
     puts (. myhat 'width')
   ", "
@@ -329,7 +329,7 @@ Shindo.tests("Generator") do
 
   generates_test "define a function" ,
   "
-    define a b do
+    define a do b
       print
     end
     a b
@@ -360,14 +360,14 @@ Shindo.tests("Generator") do
     } else {
       print that
     }
-    let hi this that wow
-    let hi 2
+    hi = this that wow
+    hi = 2
 
     mapped {
-      let next hi
+      next = hi
     }
 
-    define hi this that do
+    define hi do this that
       somefunction this that
     end
     "
