@@ -71,8 +71,47 @@ class ShuntingBox
 
 end
 
+module Transformations
+
+  def transform_dot_syntax(tree)
+
+    # The first argument is handled differently because it would be
+    # a method call.
+    first_a = tree.arguments[0]
+    if first_a and first_a.dot_syntax?
+      old_name = tree.name
+      tree.name = first_a.name
+      first_a.name = old_name
+      # poifect
+    end
+
+    # Skips the first one
+    last_a = nil
+    tree.arguments.reverse!.reject! do |a|
+      if (keep = (last_a and last_a.dot_syntax?))
+        # The old switcheroo
+        inner = Expression.new(last_a.name, last_a.arguments, last_a.block)
+        last_a.arguments = [inner]
+        last_a.name = a.name
+        last_a.block = a.block
+      else
+        last_a = a
+      end
+      keep
+    end
+    tree.arguments.reverse!
+
+    # Map over the rest of the tree
+    tree.arguments.each { |x| transform_dot_syntax x }
+    tree.block and tree.block.forest.each { |x| transform_dot_syntax x }
+  end
+
+end
+
 class Parser
   attr_reader :current
+
+  include Transformations
   
   def initialize(tokens)
     @tokens = tokens.reverse
@@ -86,6 +125,8 @@ class Parser
     # It might be a good place to alert errors if there's a token
     # TODO: Find out what the normal ending scenario for this should be.
     # It is probably nil.
+
+    forest.map { |x| transform_dot_syntax x }
 
     forest
   end

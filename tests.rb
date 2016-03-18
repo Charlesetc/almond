@@ -98,7 +98,7 @@ Shindo.tests("Tokenizer") do
   # Might want to change this:
   token_test "Hello$text", [:"Hello$text"]
 
-  token_test "Hello.text", [:"Hello.text"]
+  token_test "Hello.text", [:"Hello", :".text"]
 
   token_test ".= Hello text", [:".=", :Hello, :text]
 
@@ -167,6 +167,16 @@ Shindo.tests("Parser") do
   parses_test "(+ 3 2)", [[:+, [:"3", :"2"], {}]]
 
   parses_test "1 + 2 * 3", [[:+, [[:*, [:"3", :"2"], {}], :"1"], {}]]
+
+  # Dot syntax
+
+  parses_test "map.test", [[:".test", [:map], {}]]
+
+  parses_test "map.test a b", [[:".test", [:map, :a, :b], {}]]
+
+  parses_test "map a.test b", [[:"map", [[:'.test', [:a], {}], :b], {}]]
+
+  parses_test "all.map a.test b", [[:".map", [:all, [:'.test', [:a], {}], :b], {}]]
 
 end
 

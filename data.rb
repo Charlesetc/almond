@@ -49,7 +49,7 @@ class String
   end
 
   def alphanumeric?
-    self =~ /^[[:alpha:]\.\-_=%$^+@*[:digit:]]+$/
+    self =~ /^[[:alpha:]\-_=%$^+@*[:digit:]]+$/
   end
 
   def quote?
@@ -121,6 +121,10 @@ class Expression
     @name = name
     @arguments = arguments
     @block = block
+  end
+
+  def dot_syntax?
+    symbol.to_s[0] == '.' and symbol.to_s.length > 1 and self.arguments.empty? and not self.block
   end
 
   def is_ident?
