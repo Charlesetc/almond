@@ -1,0 +1,36 @@
+/**
+ * Site header
+ */
+.site-header {
+    border-bottom: 1px solid $grey-color-light;
+    background: $grey-color-light;
+    padding: 30px;
+    padding-top: 60px;
+
+    // Positioning context for the mobile navigation icon
+    position: relative;
+}
+
+.site-title {
+    font-size: 56px;
+    line-height: 56px;
+    letter-spacing: -1px;
+    margin-bottom: 0;
+    float: left;
+    color: $grey-color-dark;
+
+    &,
+    &:visited {
+        color: $grey-color-dark;
+    }
+
+    &:hover {
+      text-decoration: none;
+      color: #AE00FF;
+    }
+}
+
+.page-content {
+  margin-top:40px;
+}
+

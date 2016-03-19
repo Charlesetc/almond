@@ -1,0 +1,6 @@
+
+task default: :test
+
+task :test do
+  puts "No tests on web branch"
+end
