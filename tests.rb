@@ -170,13 +170,13 @@ Shindo.tests("Parser") do
 
   # Dot syntax
 
-  parses_test "map.test", [[:".test", [:map], {}]]
+  parses_test "map.test", [[:".", [:map, :'"test"'], {}]]
 
-  parses_test "map.test a b", [[:".test", [:map, :a, :b], {}]]
+  parses_test "map.test a b", [[:".", [:map, :'"test"', :a, :b], {}]]
 
-  parses_test "map a.test b", [[:"map", [[:'.test', [:a], {}], :b], {}]]
+  parses_test "map a.test b", [[:"map", [[:'.', [:a, :'"test"'], {}], :b], {}]]
 
-  parses_test "all.map a.test b", [[:".map", [:all, [:'.test', [:a], {}], :b], {}]]
+  parses_test "all.map a.test b", [[:".", [:all, :'"map"', [:'.', [:a, :'"test"'], {}], :b], {}]]
 
 end
 
@@ -318,9 +318,8 @@ Shindo.tests("Generator") do
     end
 
     myhat = new hat
-    # myhat.width = 4
-    # (.= myhat width 4)
-    puts (. myhat 'width')
+    myhat.width = 4
+    puts myhat.width
   ", "
     package main
 
@@ -331,6 +330,9 @@ Shindo.tests("Generator") do
     func main() {
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
       hzl_myhat := into_any(8, unsafe.Pointer(&temp))
+      temp := \"width\"
+      temp := 4
+      hzl____dot______equals___([]*any{hzl_myhat, into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)
       temp := \"width\"
       hzl_puts([]*any{hzl____dot___([]*any{hzl_myhat, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)
     }

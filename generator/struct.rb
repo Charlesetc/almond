@@ -1,7 +1,6 @@
 # generator/struct.rb
 
 require_relative '../data.rb'
-require 'pry'
 
 # TODO: Make function definitions as neat as this.
 #       Standardize the api for pluggins.

@@ -73,6 +73,24 @@ end
 
 module Transformations
 
+  def transform_dot_preceeding(tree)
+    if tree.dot_syntax_with_call?
+      name_symbol = ('"' + tree.symbol.to_s[1..-1] + '"').to_sym
+      name = tree.name.clone
+      name.symbol = name_symbol
+
+      receiver = tree.arguments.shift
+      raise "Receiver should not be none" unless receiver
+      tree.arguments.unshift Expression.new(name)
+      tree.arguments.unshift receiver
+      tree.name.symbol = :"."
+    end
+
+    # Map over the rest of the tree
+    tree.arguments.each { |x| transform_dot_preceeding x }
+    tree.block and tree.block.forest.each { |x| transform_dot_preceeding x }
+  end
+
   def transform_dot_syntax(tree)
 
     # The first argument is handled differently because it would be
@@ -126,7 +144,8 @@ class Parser
     # TODO: Find out what the normal ending scenario for this should be.
     # It is probably nil.
 
-    forest.map { |x| transform_dot_syntax x }
+    forest.each { |x| transform_dot_syntax x }
+    forest.each { |x| transform_dot_preceeding x }
 
     forest
   end
@@ -193,7 +212,7 @@ class Parser
       if current.operator?
         return arguments
       end
-      arguments << (Expression.new current, [], nil)
+      arguments << (Expression.new current)
     end
     next_current
     parse_arguments arguments

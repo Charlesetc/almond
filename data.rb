@@ -1,5 +1,7 @@
 # data.rb
 
+require 'pry'
+
 OPERATORS = {
   :"=" => 0.0,
   :"+" => 0.2,
@@ -117,14 +119,19 @@ class Expression
   attr_accessor :name, :arguments, :block
   @@indentation = 0
 
-  def initialize(name, arguments, block)
+  def initialize(name, arguments=[], block=nil)
     @name = name
     @arguments = arguments
     @block = block
   end
 
+  # TODO: Make these two methods cleaner
   def dot_syntax?
     symbol.to_s[0] == '.' and symbol.to_s.length > 1 and self.arguments.empty? and not self.block
+  end
+
+  def dot_syntax_with_call?
+    symbol.to_s[0] == '.' and symbol.to_s.length > 1
   end
 
   def is_ident?

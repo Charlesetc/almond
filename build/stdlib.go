@@ -103,7 +103,7 @@ func hzl_puts(arguments []*any, block func([]*any) *any) *any {
 		} else if a.hazelnut_type == FLOAT {
 			fmt.Printf("%f ", *(*float64)(a.hazelnut_data))
 		} else if a.hazelnut_type == NIL {
-			fmt.Printf("nil")
+			fmt.Printf("nil ")
 		} else if a.hazelnut_type == STRING {
 			fmt.Printf("%s ", *(*string)(a.hazelnut_data))
 		} else if a.hazelnut_type == BOOL {

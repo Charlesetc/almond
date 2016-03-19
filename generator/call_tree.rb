@@ -81,23 +81,31 @@ module Tree
   match :"=" do |tree|
     raise "= does not take a block" if tree.block
     raise "= takes two arguments" unless tree.arguments.length == 2
+    value, assignee = tree.arguments
 
-    value, ident = tree.arguments
-    raise "'=' takes identifier - expression pairs as arguments" unless ident.is_ident?
+    if assignee.is_ident?
+      if @@stacks.last.include?(assignee.symbol)
+        equals = "="
+      else
+        equals = ":="
+        stack_push assignee
+      end
 
-    if @@stacks.last.include?(ident.symbol)
-      equals = "="
+      name = hzl_namespace(assignee.symbol)
+      
+      fn = call(value)
+      preceeding = fn.prerequisites
+      body = [name, equals, fn.body, "\n"].join
+      FunctionCall.new(body, preceeding, name)
+    elsif assignee.symbol == :"."
+      raise "cannot assign to function call" unless assignee.arguments.length == 2
+      assignee.arguments.push value
+      assignee.name.symbol = :".="
+      call_normal_function(assignee)
     else
-      equals = ":="
-      stack_push ident
+      binding.pry
+      raise "'=' needs a valid identifier to assign to"
     end
-
-    name = hzl_namespace(ident.symbol)
-    
-    fn = call(value)
-    preceeding = fn.prerequisites
-    body = [name, equals, fn.body, "\n"].join
-    FunctionCall.new(body, preceeding, name)
   end
 
   match :new do |tree|
