@@ -30,6 +30,10 @@ class Tokenizer
       read
     when a == "#"
       read_until_newline
+    when a == "["
+      token :"("
+      token :list
+      read
     else
       read_punct a
     end

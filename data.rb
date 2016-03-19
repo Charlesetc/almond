@@ -17,6 +17,7 @@ CHAR_MAPPING = {
   "}" => :end,
   "{" => :do,
   ":" => :"\n",
+  "]" => ")"
 }
 
 TYPE_MAPPING = {

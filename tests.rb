@@ -160,6 +160,8 @@ Shindo.tests("Parser") do
 
   parses_test "let (hi 3) 4", [[:let, [[:hi, [:"3"], {}], :"4"], {}]]
 
+  parses_test "[one two three]", [[:list, [:one, :two, :three], {}]]
+
   # Operators
 
   parses_test "2 + 2", [[:+, [:"2", :"2"], {}]]

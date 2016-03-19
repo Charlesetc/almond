@@ -38,7 +38,7 @@ d =  c
 puts c
 puts d
 
-mylist = list 'one' 2 'five'
+mylist = ['two + three' '=' (addthree 2)]
 
 puts mylist
 
