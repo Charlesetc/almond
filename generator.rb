@@ -14,7 +14,7 @@ class Generator
   def initialize(forest)
     @forest = forest
     @functions = []
-    @methods = []
+    @methods = {}
     @bindings = []
     @struct_definitions = {}
   end
@@ -33,8 +33,14 @@ class Generator
   def ingest_forest
     @forest.reject! do |tree|
       if tree.symbol == :define
-        if tree.arguments[0] and tree.arguments[0].symbol == :'.'
-          @methods << tree
+        first_a = tree.arguments[0]
+        if first_a and first_a.symbol == :'.'
+          if first_a.arguments.length != 2
+            raise "First argument to define is invalid"
+          end
+          struct_name = first_a.arguments[1].symbol
+          @methods[struct_name] ||= []
+          @methods[struct_name] << tree
         else
           @functions << tree
         end

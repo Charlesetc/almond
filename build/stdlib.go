@@ -28,9 +28,10 @@ type any struct {
 type definition struct {
 	name    string
 	members []string
+	methods binary_tree
 }
 
-func hzl____dot___(as []*any, block func([]*any) *any) *any {
+func hzl____dot___(as []*any, yield block) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
 	if a.hazelnut_type <= NUMBER_OF_TYPES {
@@ -45,7 +46,7 @@ func hzl____dot___(as []*any, block func([]*any) *any) *any {
 	panic(fmt.Sprintf("so such field in struct: %s", member_name))
 }
 
-func hzl____dot______equals___(as []*any, block func([]*any) *any) *any {
+func hzl____dot______equals___(as []*any, yield block) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
 	value := as[2]
@@ -90,14 +91,14 @@ func into_any(hazelnut_type HAZELNUT_TYPE, hazelnut_data unsafe.Pointer) *any {
 		hazelnut_data: hazelnut_data}
 }
 
-func hzl____plus___(arguments []*any, block func([]*any) *any) *any {
+func hzl____plus___(arguments []*any, yield block) *any {
 	a := from_int(arguments[0])
 	b := from_int(arguments[1])
 	c := *a + *b
 	return into_any(INT, unsafe.Pointer(&c))
 }
 
-func hzl_print(arguments []*any, block func([]*any) *any) *any {
+func hzl_print(arguments []*any, yield block) *any {
 	first := true
 	for _, a := range arguments {
 		if !first {
@@ -127,8 +128,8 @@ func hzl_print(arguments []*any, block func([]*any) *any) *any {
 	return into_any(NIL, nil)
 }
 
-func hzl_puts(arguments []*any, block func([]*any) *any) *any {
-	out := hzl_print(arguments, block)
+func hzl_puts(arguments []*any, yield block) *any {
+	out := hzl_print(arguments, yield)
 	fmt.Print("\n")
 	return out
 }

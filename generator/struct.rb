@@ -32,6 +32,11 @@ module Structs
   def struct_headers
     inner_list = @struct_definitions.map do |name, data|
       symbols, i = data
+
+
+      methods = generate_methods(name)
+
+
       [
         "definition{",
         "name:",
@@ -42,6 +47,10 @@ module Structs
           "[]string{",
           symbols.map { |x| '"' + x.to_s + '"' }.join(", "),
           "},",
+        "methods:",
+          "binary_tree {",
+            methods,
+          "},",
         "}",
       ].join
     end.join(", ")
@@ -51,6 +60,17 @@ module Structs
       inner_list,
       "}\n",
     ].join
+  end
+
+  def generate_methods(name)
+    methods = @methods[name]
+    if methods
+      methods.map do |tree|
+        func = block tree
+      end
+    else
+      ""
+    end
   end
 
 end
