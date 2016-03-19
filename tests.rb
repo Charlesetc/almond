@@ -327,7 +327,7 @@ Shindo.tests("Generator") do
 
     import \"unsafe\"
 
-    var struct_definitions []definition = []definition{definition{members:[]string{\"width\", \"color\"}}, {members:[]string{\"brimmed\", \"color\"}}}
+    var struct_definitions []definition = []definition{definition{name: \"animal\", members:[]string{\"width\", \"color\"}}, {name: \"hat\", members:[]string{\"brimmed\", \"color\"}}}
 
     func main() {
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}

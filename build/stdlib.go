@@ -26,6 +26,7 @@ type any struct {
 }
 
 type definition struct {
+	name    string
 	members []string
 }
 
@@ -96,26 +97,38 @@ func hzl____plus___(arguments []*any, block func([]*any) *any) *any {
 	return into_any(INT, unsafe.Pointer(&c))
 }
 
-func hzl_puts(arguments []*any, block func([]*any) *any) *any {
+func hzl_print(arguments []*any, block func([]*any) *any) *any {
+	first := true
 	for _, a := range arguments {
+		if !first {
+			fmt.Print(" ")
+		}
+		first = false
+
 		if a.hazelnut_type == INT {
-			fmt.Printf("%d ", *(*int)(a.hazelnut_data))
+			fmt.Printf("%d", *(*int)(a.hazelnut_data))
 		} else if a.hazelnut_type == FLOAT {
-			fmt.Printf("%f ", *(*float64)(a.hazelnut_data))
+			fmt.Printf("%f", *(*float64)(a.hazelnut_data))
 		} else if a.hazelnut_type == NIL {
-			fmt.Printf("nil ")
+			fmt.Printf("nil")
 		} else if a.hazelnut_type == STRING {
-			fmt.Printf("%s ", *(*string)(a.hazelnut_data))
+			fmt.Printf("%s", *(*string)(a.hazelnut_data))
 		} else if a.hazelnut_type == BOOL {
-			fmt.Printf("%t ", *(*bool)(a.hazelnut_data))
+			fmt.Printf("%t", *(*bool)(a.hazelnut_data))
 		} else if a.hazelnut_type == ARRAY {
 			hzl_puts(*(*[]*any)(a.hazelnut_data), nil)
-		} else {
-			fmt.Print("{\n")
-			hzl_puts(*(*[]*any)(a.hazelnut_data), nil)
+		} else { // Must be a struct
+			def := struct_definitions[a.hazelnut_type-(NUMBER_OF_TYPES+1)]
+			fmt.Printf("{%s: ", def.name)
+			hzl_print(*(*[]*any)(a.hazelnut_data), nil)
 			fmt.Print("}")
 		}
 	}
-	fmt.Print("\n")
 	return into_any(NIL, nil)
+}
+
+func hzl_puts(arguments []*any, block func([]*any) *any) *any {
+	out := hzl_print(arguments, block)
+	fmt.Print("\n")
+	return out
 }

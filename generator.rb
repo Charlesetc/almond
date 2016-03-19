@@ -14,6 +14,7 @@ class Generator
   def initialize(forest)
     @forest = forest
     @functions = []
+    @methods = []
     @bindings = []
     @struct_definitions = {}
   end
@@ -32,7 +33,11 @@ class Generator
   def ingest_forest
     @forest.reject! do |tree|
       if tree.symbol == :define
-        @functions << tree
+        if tree.arguments[0] and tree.arguments[0].symbol == :'.'
+          @methods << tree
+        else
+          @functions << tree
+        end
       elsif tree.symbol == :binding
         @bindings << tree
       elsif tree.symbol == :struct

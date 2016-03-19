@@ -30,9 +30,14 @@ module Structs
   end
 
   def struct_headers
-    inner_list = @struct_definitions.values.map do |symbols, i|
+    inner_list = @struct_definitions.map do |name, data|
+      symbols, i = data
       [
         "definition{",
+        "name:",
+          '"',
+          name,
+          '",',
         "members:",
           "[]string{",
           symbols.map { |x| '"' + x.to_s + '"' }.join(", "),
