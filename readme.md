@@ -1,7 +1,7 @@
 
 ## Hazelnut
 
-![hazelnut logo](logo/hazelnut.svg)
+![hazelnut logo](http://www.charlesetc.com/hazelnut/logo/hazelnut.svg)
 
 Hi! Hazelnut is a programming language I'm working on.
 It's pretty simple, with the main goal being to bootstrap
