@@ -42,8 +42,7 @@ Fun fact: the `:` here is an alias for a newline or semicolon. This is also vali
 end
 ```
 
-You've probably gotten by now that Hazelnut dynamically typed (and still compiles to Go), 
-Hazelnut by default returns the last line in a block.
+You've probably gotten by now that Hazelnut is dynamically typed (and still compiles to Go), Hazelnut by default returns the last line in a block.
 
 ## That's it!
 
@@ -69,6 +68,8 @@ My hope is that this will make macros easy, although I haven't gone about implem
 
 ```ruby
 define add_2 { x: x + 2 }
+
+add_2 5   # => 7
 ```
 
 ## Structures
@@ -80,12 +81,13 @@ struct Animal {
 
 a = new animal
 a.color = "red"
+a.color   # => "red"
 ```
 
 ## Control Flow
 
 ```ruby
-if is_red panda {
+if is_red? panda {
   puts "This is a red panda!"
 } else {
   puts "This is not a red panda!"
@@ -114,7 +116,8 @@ There aren't for loops yet but that's just because I haven't gotten to them.
   - [x] Bindings to Go code
   - [x] Use a different namespace for Hazelnut functions
   - [x] Operators with shunting yard
-  - [ ] Support dot syntax and methods
+  - [x] Support dot syntax
+  - [ ] Methods on structs
   - [ ] Make namespaces and 'include' for hazelnut
   - [ ] Better error messages
   - [ ] Support for panic and defer
