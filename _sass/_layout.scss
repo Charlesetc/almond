@@ -30,6 +30,28 @@
     }
 }
 
+.logo {
+  text-align:center;
+
+  border-top: 1px solid $grey-color-light;
+  border-bottom: 1px solid $grey-color-light;
+  width: 80%;
+  margin: auto;
+  margin-bottom: 40px;
+  margin-top: 40px;
+  padding: 20px;
+
+  & img {
+    position: relative;
+    top: 0px;
+    transition: top 0.5s;
+    -webkit-transition: top 0.3s;
+    &:hover {
+      top:-5px;
+    }
+  }
+}
+
 .page-content {
   margin-top:40px;
 }
