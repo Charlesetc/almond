@@ -1,2 +1,4 @@
 *.swp
 build/main.go
+.sass-cache
+_site/*

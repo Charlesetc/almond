@@ -1,7 +1,7 @@
 
 ## Hazelnut
 
-![hazelnut logo](logo/hazelnut.png)
+![hazelnut logo](logo/hazelnut.svg)
 
 Hi! Hazelnut is a programming language I'm working on.
 It's pretty simple, with the main goal being to bootstrap
