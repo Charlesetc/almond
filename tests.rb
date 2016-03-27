@@ -168,6 +168,11 @@ Shindo.tests("Parser") do
 
   parses_test "(+ 3 2)", [[:+, [:"3", :"2"], {}]]
 
+  parses_test "function a + b", [[:+, [:b, [:function, [:a], {}]], {}]]
+  parses_test "function (a == b)", [[:function, [[:==, [:b, :a], {}]], {}]]
+
+  parses_test "function (length a == b)", [[:function, [[:==, [:b, [:length, [:a], {}]], {}]], {}]]
+
   parses_test "1 + 2 * 3", [[:+, [[:*, [:"3", :"2"], {}], :"1"], {}]]
 
   # Dot syntax

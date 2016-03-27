@@ -121,5 +121,10 @@ There aren't for loops yet but that's just because I haven't gotten to them.
   - [ ] Make namespaces and 'include' for hazelnut
   - [ ] Better error messages
   - [ ] Support for panic and defer
+* [ ] Make a decent standard library
+  - [ ] IO - gets puts write to file.
+  - [ ] String manipulation
+  - [ ] Testing w/ assertions
+  - [ ] Generic pipes.
 * [ ] Bootstrap
 * [ ] Add macros w/ interpreter!

@@ -3,12 +3,13 @@
 require 'pry'
 
 OPERATORS = {
-  :"=" => 0.0,
-  :"+" => 0.2,
-  :"-" => 0.2,
-  :"*" => 0.3,
-  :"/" => 0.3,
-  :"^" => 0.4,
+  :'=' => 0.0,
+  :== => 0.1,
+  :+ => 0.2,
+  :- => 0.2,
+  :* => 0.3,
+  :/ => 0.3,
+  :^ => 0.4,
 }
 
 CHAR_MAPPING = {
@@ -24,8 +25,9 @@ CHAR_MAPPING = {
 TYPE_MAPPING = {
   int: "INT",
   float32: "FLOAT",
-  :String => "STRING",
-  :bool => "BOOL",
+  String: "STRING",
+  string: "STRING",
+  bool: "BOOL",
 }
 
 NUMBER_OF_TYPES = 6

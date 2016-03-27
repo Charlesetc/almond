@@ -88,6 +88,10 @@ func from_string(a *any) *string {
 	return (*string)(a.hazelnut_data)
 }
 
+func into_bool(b bool) *any {
+	return into_any(BOOL, unsafe.Pointer(&b))
+}
+
 func from_bool(a *any) bool {
 	if a.hazelnut_type == BOOL {
 		return *(*bool)(a.hazelnut_data)
@@ -100,6 +104,22 @@ func from_bool(a *any) bool {
 func into_any(hazelnut_type HAZELNUT_TYPE, hazelnut_data unsafe.Pointer) *any {
 	return &any{hazelnut_type: hazelnut_type,
 		hazelnut_data: hazelnut_data}
+}
+
+func hzl____equals______equals___(arguments []*any, yield block) *any {
+	if len(arguments) != 2 {
+		panic("Wrong number of arguments for == - not 2")
+	}
+	a := arguments[0]
+	b := arguments[1]
+	if a.hazelnut_type != b.hazelnut_type {
+		return into_bool(false)
+	}
+
+	if a.hazelnut_type == INT {
+		return into_bool(*(*int)(a.hazelnut_data) == *(*int)(b.hazelnut_data))
+	} // else if a.hazelnut_type == STRING {
+	return into_bool(*(*string)(a.hazelnut_data) == *(*string)(b.hazelnut_data))
 }
 
 func hzl____plus___(arguments []*any, yield block) *any {

@@ -8,7 +8,8 @@ def compile(source)
   t = Tokenizer.new source
   t.read
   parser = Parser.new t.tokens
-  generator = Generator.new parser.parse
+  forest = parser.parse
+  generator = Generator.new forest
   generator.generate
 end
 
