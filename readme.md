@@ -117,7 +117,7 @@ There aren't for loops yet but that's just because I haven't gotten to them.
   - [x] Use a different namespace for Hazelnut functions
   - [x] Operators with shunting yard
   - [x] Support dot syntax
-  - [ ] Methods on structs
+  - [x] Methods on structs
   - [ ] Make namespaces and 'include' for hazelnut
   - [ ] Better error messages
   - [ ] Support for panic and defer

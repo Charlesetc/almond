@@ -369,7 +369,7 @@ Shindo.tests("Generator") do
   "
 
 
-  generates_test "define a function" ,
+  generates_test "define a function",
   "
     define a do b
       print
@@ -397,8 +397,48 @@ Shindo.tests("Generator") do
     }
   "
 
+  generates_test "define a struct and method",
+    "
+      struct animal {
+        position
+      }
+      define animal.walk { x
+        self.position = self.position + x
+      }
+
+      animal.walk 3
+    ",
+    '
+		package main
+
+		import "unsafe"
+
+		var struct_definitions []definition
+
+		func init() {
+			struct_definitions = []definition{{name: "animal", members: []string{"position"}, methods: []method{{"walk", func(arguments []*any, hzl_yield block) *any {
+				if len(arguments) != 2 {
+					panic("Wrong number of arguments for  - not 2")
+				}
+				hzl_self := arguments[0]
+				hzl_x := arguments[1]
+				_ = hzl_self
+				temp := "position"
+				temp := "position"
+				return hzl____dot______equals___([]*any{hzl_self, into_any(STRING, unsafe.Pointer(&temp)), hzl____plus___([]*any{hzl_x, hzl____dot___([]*any{hzl_self, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)}, nil)
+			}}}}}
+		}
+
+		func main() {
+			temp := "walk"
+			temp := 3
+			hzl____dot___([]*any{hzl_animal([]*any{}, nil), into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)
+		}
+    '
+
   returns(false, "outputs valid gofmt") do
     t = Tokenizer.new "
+
     test test
     mapped a {b c : c} test
     if hi {
@@ -409,13 +449,23 @@ Shindo.tests("Generator") do
     hi = this that wow
     hi = 2
 
-    mapped {
+    map {
       next = hi
     }
 
     define hi do this that
       somefunction this that
     end
+
+    struct test do
+      hi
+    end
+
+    define test.wow do y
+      puts (2 * x)
+    end
+
+    test.wow 4
     "
     t.read
     parser = Parser.new t.tokens
