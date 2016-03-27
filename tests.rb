@@ -123,7 +123,7 @@ Shindo.tests("Tokenizer") do
   token_test "class Hello do
       some hi, there
     end",
-    [:class, :Hello, :do, :"\n", :some, :hi, :",", :there, :"\n", :end]
+    [:class, :Hello, :do, :"\n", :some, :hi, :there, :"\n", :end]
 
 
 end

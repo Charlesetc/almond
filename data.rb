@@ -14,10 +14,11 @@ OPERATORS = {
 CHAR_MAPPING = {
   ";" => :"\n",
   "\n" => :"\n",
+  ":" => :"\n",
+
   "}" => :end,
   "{" => :do,
-  ":" => :"\n",
-  "]" => ")"
+  "]" => ")" # to support lists
 }
 
 TYPE_MAPPING = {
