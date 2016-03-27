@@ -29,13 +29,11 @@ module Structs
     @struct_definitions[tree.arguments[0].symbol] = [tree.block.forest.map { |t| t.symbol }, @struct_count]
   end
 
-  def struct_headers
+  def struct_init
     inner_list = @struct_definitions.map do |name, data|
       symbols, i = data
 
-
       methods = generate_methods(name)
-
 
       [
         "definition{",
@@ -48,29 +46,46 @@ module Structs
           symbols.map { |x| '"' + x.to_s + '"' }.join(", "),
           "},",
         "methods:",
-          "binary_tree {",
-            methods,
+          "[]method{",
+            methods.join(","),
           "},",
         "}",
       ].join
     end.join(", ")
 
     [
-      "\nvar struct_definitions []definition = []definition{",
-      inner_list,
-      "}\n",
+      "struct_definitions = []definition{",
+        inner_list,
+      "}"
     ].join
+  end
+
+  def struct_headers
+    "\nvar struct_definitions []definition\n"
   end
 
   def generate_methods(name)
     methods = @methods[name]
     if methods
       methods.map do |tree|
-        func = block tree
+        if tree.block
+          tree.block.arguments.unshift(Expression.new(Token.new(:self, Position.new)))
+        end
+        [
+          "{",
+          method_name(tree),
+          ",",
+          block(tree, "\n_ = hzl_self\n"), # Avoid go's weird rules.
+          "}",
+        ].join
       end
     else
-      ""
+      []
     end
+  end
+
+  def method_name(tree)
+    tree.arguments[0].arguments[1].symbol
   end
 
 end

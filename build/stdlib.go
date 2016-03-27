@@ -25,10 +25,15 @@ type any struct {
 	hazelnut_data unsafe.Pointer
 }
 
+type method struct {
+	name     string
+	function block
+}
+
 type definition struct {
 	name    string
 	members []string
-	methods binary_tree
+	methods []method
 }
 
 func hzl____dot___(as []*any, yield block) *any {
@@ -38,6 +43,12 @@ func hzl____dot___(as []*any, yield block) *any {
 		panic(". must be called on a struct.")
 	}
 	def := struct_definitions[a.hazelnut_type-(NUMBER_OF_TYPES+1)]
+	for _, meth := range def.methods {
+		if meth.name == member_name {
+			return meth.function(append([]*any{a}, as[2:]...), yield)
+		}
+	}
+
 	for i, name := range def.members {
 		if name == member_name {
 			return (*(*[]*any)(a.hazelnut_data))[i]

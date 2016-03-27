@@ -38,7 +38,7 @@ class Generator
           if first_a.arguments.length != 2
             raise "First argument to define is invalid"
           end
-          struct_name = first_a.arguments[1].symbol
+          struct_name = first_a.arguments[0].symbol
           @methods[struct_name] ||= []
           @methods[struct_name] << tree
         else
@@ -67,7 +67,7 @@ class Generator
     "}"
   end
 
-  def generate_function(symbol, args, forest, is_closure = false)
+  def generate_function(symbol, args, forest, is_closure = false, extra="")
 
       defined_arguments = args.each_with_index.map do |a, i|
         raise "arguments to a function definition must be idents" unless a.is_a?(Token) or a.is_ident?
@@ -80,6 +80,7 @@ class Generator
       [
         start,
         defined_arguments,
+        extra,
         generate_calls(forest),
         function_end,
         is_closure ? "" : "\n\n",
@@ -141,7 +142,16 @@ class Generator
       output
     end.join("\n") +
     @bindings.map { |tree| generate_binding tree }.join("\n") +
-    struct_headers
+    struct_headers + 
+    init_function
+  end
+
+  def init_function
+    [
+      "func init() {\n",
+      struct_init,
+      "}\n",
+    ].join
   end
 
   def generate_main

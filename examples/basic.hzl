@@ -74,6 +74,17 @@ myhi.width = 1000000
 puts myhi
 puts myhi.width
 
+define hi.test do x
+  puts x
+  puts "test passed"
+end
+
+define hi.wow do
+  self.color = "green"
+end
+
+myhi.wow
+myhi.test 2
 
 puts "------------------------"
 
@@ -87,4 +98,4 @@ end
 
 puts "------------------------"
 
-puts (addthree 2 * 4)
+puts (addthree 1 * 4)

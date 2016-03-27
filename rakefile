@@ -13,5 +13,5 @@ end
 
 desc "Count the number of lines in the project"
 task :lines do
-  puts `find . -type f | ack -v git | ack -v 'md$' | ack -v readme | ack -v example | ack -v '\.png$' | ack -v '\.svg$' | ack -v 'main.go$' | xargs cat |wc -l `.to_i
+  puts `git ls-tree HEAD -r --name-only | ack -v gitignore | ack -v 'md$' | ack -v readme | ag -v license | ack -v example | ack -v '\.png$' | ack -v '\.svg$' | xargs cat | wc -l`
 end

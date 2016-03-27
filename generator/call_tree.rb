@@ -234,11 +234,11 @@ module Tree
     fn_acc
   end
 
-  def block(tree)
+  def block(tree, extra="")
     return 'nil' if not tree.block
 
     enter_stack
-    output = generate_function("", tree.block.arguments, tree.block.forest, true)
+    output = generate_function("", tree.block.arguments, tree.block.forest, true, extra)
     exit_stack
     return output
   end
