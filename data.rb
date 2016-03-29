@@ -25,12 +25,21 @@ CHAR_MAPPING = {
 TYPE_MAPPING = {
   int: "INT",
   float32: "FLOAT",
-  String: "STRING",
   string: "STRING",
   bool: "BOOL",
 }
 
-NUMBER_OF_TYPES = 6
+# Move to this away from that ^^
+GO_BUILTIN_TYPES = [
+	[:INT, :int],
+	[:FLOAT, :float32],
+	[:STRING, :string],
+	[:NIL, :nil],
+	[:BOOL, :bool],
+	[:ARRAY, :array],
+]
+
+NUMBER_OF_TYPES = GO_BUILTIN_TYPES.length
 
 KEYWORDS = [:do, :"\n", :end]
 

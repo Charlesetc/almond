@@ -29,12 +29,7 @@ module Structs
     @struct_definitions[tree.arguments[0].symbol] = [tree.block.forest.map { |t| t.symbol }, @struct_count]
   end
 
-  def struct_init
-    inner_list = @struct_definitions.map do |name, data|
-      symbols, i = data
-
-      methods = generate_methods(name)
-
+  def construct_def(name, members, methods)
       [
         "definition{",
         "name:",
@@ -43,7 +38,7 @@ module Structs
           '",',
         "members:",
           "[]string{",
-          symbols.map { |x| '"' + x.to_s + '"' }.join(", "),
+          members.map { |x| '"' + x.to_s + '"' }.join(", "),
           "},",
         "methods:",
           "[]method{",
@@ -51,10 +46,35 @@ module Structs
           "},",
         "}",
       ].join
-    end.join(", ")
+  end
+
+  def struct_init
+    inner_list = @struct_definitions.map do |name, data|
+      symbols, i = data
+
+      if GO_BUILTIN_TYPES.map {|x, y| y}.include? name
+        next
+      end
+
+      methods = generate_methods(name)
+      construct_def(name, symbols, methods)
+    end.join(",\n")
+
+    builtin_definitions = GO_BUILTIN_TYPES.map do |gotype, type|
+      definition = @struct_definitions.to_h[type]
+      if definition 
+        symbols, i = definition
+        methods = generate_methods(name)
+        construct_def(type, symbols, methods)
+      else 
+        construct_def(type, [], [])
+      end
+    end.join(",\n")
 
     [
       "struct_definitions = []definition{",
+        builtin_definitions,
+        ",",
         inner_list,
       "}"
     ].join

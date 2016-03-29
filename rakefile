@@ -3,15 +3,20 @@ task default: :test
 
 desc "Run tests, exit on error"
 task :test do
-  puts sh "echo q | shindo ."
+  sh "echo q | shindo ."
 end
 
 desc "Run tests, don't exit on error"
 task :pry do
-  puts sh "shindo ."
+  sh "shindo ."
 end
 
 desc "Count the number of lines in the project"
 task :lines do
   puts `git ls-tree HEAD -r --name-only | ack -v gitignore | ack -v 'md$' | ack -v readme | ag -v license | ack -v example | ack -v '\.png$' | ack -v '\.svg$' | xargs cat | wc -l`
+end
+
+desc "Run the examples"
+task :examples do
+  sh "./hazelnut run examples/basic.hzl"
 end

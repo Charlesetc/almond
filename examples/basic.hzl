@@ -99,3 +99,10 @@ end
 puts "------------------------"
 
 puts (addthree 1 * 4)
+
+define int.square do
+  self * self
+end
+
+a = 12
+puts a.square

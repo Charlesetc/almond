@@ -207,40 +207,50 @@ Shindo.tests("Generator") do
   end
 
   generates_test  "function call with arguments",
-  "call something", "
+  "call something", '
     package main
 
     var struct_definitions []definition
 
     func init() {
-      struct_definitions = []definition{}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
     }
 
     func main() {
       hzl_call([]*any{hzl_something([]*any{}, nil)}, nil)
     }
-  "
+  '
 
   generates_test "function call with block",
-  "map a { c : d c }", "
+  "map a { c : d c }", '
     package main
 
     var struct_definitions []definition
 
     func init() {
-      struct_definitions = []definition{}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
     }
 
     func main() {
       hzl_map([]*any{hzl_a([]*any{}, nil)}, func (arguments []*any, hzl_yield block) *any {
         if len(arguments) != 1 {
-          panic(\"Wrong number of arguments for  - not 1\")
+          panic("Wrong number of arguments for  - not 1")
         }
         hzl_c := arguments[0];
         return hzl_d([]*any{hzl_c}, nil)
       })
     }
-  "
+  '
 
   generates_test "if and else statement",
   "
@@ -249,13 +259,18 @@ Shindo.tests("Generator") do
     } else {
       c
     }
-  ", "
+  ", '
     package main
 
     var struct_definitions []definition
 
     func init() {
-      struct_definitions = []definition{}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
     }
 
     func main() {
@@ -265,21 +280,26 @@ Shindo.tests("Generator") do
         hzl_c([]*any{}, nil)
       }
     }
-  "
+  '
 
   generates_test "= syntax",
   "
     a = 2
     b a
-  ", "
+  ", '
     package main
 
-    import \"unsafe\"
+    import "unsafe"
 
     var struct_definitions []definition
 
     func init() {
-      struct_definitions = []definition{}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
     }
 
     func main() {
@@ -287,54 +307,65 @@ Shindo.tests("Generator") do
       hzl_a := into_any(INT, unsafe.Pointer(&temp))
       hzl_b([]*any{hzl_a}, nil)
     }
-  "
+  '
 
   generates_test "string constant",
   "
     a = 'testing'
     puts a
-  ", "
+  ", '
     package main
 
-    import \"unsafe\"
+    import "unsafe"
 
     var struct_definitions []definition
 
     func init() {
-      struct_definitions = []definition{}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
     }
 
     func main() {
-      temp := \"testing\"
+      temp := "testing"
       hzl_a := into_any(STRING, unsafe.Pointer(&temp))
       hzl_puts([]*any{hzl_a}, nil)
     }
-  "
+  '
 
   generates_test "array constant",
   "
     a = list 2 'five'
     puts a
-  ", "
+  ", '
     package main
 
-    import \"unsafe\"
+    import "unsafe"
 
     var struct_definitions []definition
 
+
     func init() {
-      struct_definitions = []definition{}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
     }
 
     func main() {
       temp := 2
-      temp := \"five\"
+      temp := "five"
 
       temp := []*any{into_any(INT, unsafe.Pointer(&temp)), into_any(STRING, unsafe.Pointer(&temp))}
       hzl_a := into_any(ARRAY, unsafe.Pointer(&temp))
       hzl_puts([]*any{hzl_a}, nil)
     }
-  "
+  '
 
   generates_test "define a struct",
   "
@@ -351,28 +382,33 @@ Shindo.tests("Generator") do
     myhat = new hat
     myhat.width = 4
     puts myhat.width
-  ", "
+  ", '
     package main
 
-    import \"unsafe\"
+    import "unsafe"
 
     var struct_definitions []definition
 
     func init() {
-      struct_definitions = []definition{definition{name: \"animal\", members:[]string{\"width\", \"color\"}, methods: []method{}}, {name: \"hat\", members:[]string{\"brimmed\", \"color\"}, methods: []method{}}}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}, definition{name: "animal", members: []string{"width", "color"}, methods: []method{}},
+        definition{name: "hat", members: []string{"brimmed", "color"}, methods: []method{}}}
     }
 
     func main() {
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
       hzl_myhat := into_any(8, unsafe.Pointer(&temp))
-      temp := \"width\"
+      temp := "width"
       temp := 4
       hzl____dot______equals___([]*any{hzl_myhat, into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)
-      temp := \"width\"
+      temp := "width"
       hzl_puts([]*any{hzl____dot___([]*any{hzl_myhat, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)
     }
-  "
-
+  '
 
   generates_test "define a function",
   "
@@ -380,12 +416,12 @@ Shindo.tests("Generator") do
       print
     end
     a b
-  ", "
+  ", '
     package main
 
     func hzl_a(arguments []*any, hzl_yield block) *any {
         if len(arguments) != 1 {
-          panic(\"Wrong number of arguments for a - not 1\")
+          panic("Wrong number of arguments for a - not 1")
         }
         hzl_b := arguments[0]
       return hzl_print([]*any{}, nil)
@@ -394,13 +430,18 @@ Shindo.tests("Generator") do
     var struct_definitions []definition
 
     func init() {
-      struct_definitions = []definition{}
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
     }
 
     func main() {
       hzl_a([]*any{hzl_b([]*any{}, nil)}, nil)
     }
-  "
+  '
 
   generates_test "define a struct and method",
     "
@@ -420,19 +461,24 @@ Shindo.tests("Generator") do
 
 		var struct_definitions []definition
 
-		func init() {
-			struct_definitions = []definition{{name: "animal", members: []string{"position"}, methods: []method{{"walk", func(arguments []*any, hzl_yield block) *any {
-				if len(arguments) != 2 {
-					panic("Wrong number of arguments for  - not 2")
-				}
-				hzl_self := arguments[0]
-				hzl_x := arguments[1]
-				_ = hzl_self
-				temp := "position"
-				temp := "position"
-				return hzl____dot______equals___([]*any{hzl_self, into_any(STRING, unsafe.Pointer(&temp)), hzl____plus___([]*any{hzl_x, hzl____dot___([]*any{hzl_self, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)}, nil)
-			}}}}}
-		}
+    func init() {
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}, definition{name: "animal", members: []string{"position"}, methods: []method{{"walk", func(arguments []*any, hzl_yield block) *any {
+          if len(arguments) != 2 {
+            panic("Wrong number of arguments for  - not 2")
+          }
+          hzl_self := arguments[0]
+          hzl_x := arguments[1]
+          _ = hzl_self
+          temp := "position"
+          temp := "position"
+          return hzl____dot______equals___([]*any{hzl_self, into_any(STRING, unsafe.Pointer(&temp)), hzl____plus___([]*any{hzl_x, hzl____dot___([]*any{hzl_self, into_any(STRING, unsafe.Pointer(&temp))}, nil)}, nil)}, nil)
+        }}}}}
+    }
 
 		func main() {
 			temp := "walk"
