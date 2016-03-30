@@ -39,7 +39,8 @@ type definition struct {
 func hzl____dot___(as []*any, yield block) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
-	def := struct_definitions[a.hazelnut_type-1]
+	def := struct_definitions[a.hazelnut_type]
+	fmt.Printf("Name: %s\n", def.name)
 	for _, meth := range def.methods {
 		if meth.name == member_name {
 			return meth.function(append([]*any{a}, as[2:]...), yield)
@@ -58,10 +59,10 @@ func hzl____dot______equals___(as []*any, yield block) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
 	value := as[2]
-	if a.hazelnut_type <= NUMBER_OF_TYPES {
+	if a.hazelnut_type < NUMBER_OF_TYPES {
 		panic(".= must be called on a struct.")
 	}
-	def := struct_definitions[a.hazelnut_type-1]
+	def := struct_definitions[a.hazelnut_type]
 	for i, name := range def.members {
 		if name == member_name {
 			(*(*[]*any)(a.hazelnut_data))[i] = value
@@ -147,7 +148,7 @@ func hzl_print(arguments []*any, yield block) *any {
 		} else if a.hazelnut_type == ARRAY {
 			hzl_puts(*(*[]*any)(a.hazelnut_data), nil)
 		} else { // Must be a struct
-			def := struct_definitions[a.hazelnut_type-1]
+			def := struct_definitions[a.hazelnut_type]
 			fmt.Printf("{%s: ", def.name)
 			hzl_print(*(*[]*any)(a.hazelnut_data), nil)
 			fmt.Print("}")

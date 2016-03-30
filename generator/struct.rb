@@ -24,7 +24,7 @@ module Structs
     end
 
 
-    @struct_count ||= NUMBER_OF_TYPES
+    @struct_count ||= NUMBER_OF_TYPES - 1
     @struct_count += 1
     @struct_definitions[tree.arguments[0].symbol] = [tree.block.forest.map { |t| t.symbol }, @struct_count]
   end
@@ -61,10 +61,10 @@ module Structs
     end.join(",\n")
 
     builtin_definitions = GO_BUILTIN_TYPES.map do |gotype, type|
-      definition = @struct_definitions.to_h[type]
-      if definition 
-        symbols, i = definition
-        methods = generate_methods(name)
+      exprs = @methods[type]
+      if exprs 
+        symbols = exprs.map { |e| e.symbol }
+        methods = generate_methods(type)
         construct_def(type, symbols, methods)
       else 
         construct_def(type, [], [])

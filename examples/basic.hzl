@@ -105,4 +105,7 @@ define int.square do
 end
 
 a = 12
+puts a
+
+
 puts a.square

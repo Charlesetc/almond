@@ -185,6 +185,10 @@ Shindo.tests("Parser") do
 
   parses_test "all.map a.test b", [[:".", [:all, :'"map"', [:'.', [:a, :'"test"'], {}], :b], {}]]
 
+#   # Regression Test
+
+  parses_test "plum ((pear mate)) next ", [[:plum, [[:pear, [:mate], {}], :"next"], {}]]
+
 end
 
 Shindo.tests("Generator") do
@@ -401,7 +405,7 @@ Shindo.tests("Generator") do
 
     func main() {
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
-      hzl_myhat := into_any(8, unsafe.Pointer(&temp))
+      hzl_myhat := into_any(7, unsafe.Pointer(&temp))
       temp := "width"
       temp := 4
       hzl____dot______equals___([]*any{hzl_myhat, into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)

@@ -189,7 +189,13 @@ class Parser
 
     if current.symbol == :"("
       next_current
-      return operatorless_function
+
+      function = operatorless_function
+      arguments = parse_arguments
+      block = parse_block
+
+      return function unless (arguments and not arguments.empty?) or block
+      return Expression.new(function, arguments, block)
     end
 
     name = current
@@ -203,10 +209,20 @@ class Parser
     when :do, :"\n" , :")", :end
       return arguments
     when :"("
+      next_current
       argument = parse_intelligent_fuction
       arguments << argument
-      raise "This shouldn't happen. This is a bug" unless current.symbol == :")"
+
+      return arguments unless current
+
+      raise "This shouldn't happen. This is a bug" unless current.symbol == :")" or current.symbol == :"\n"
       next_current
+
+      if current and current.symbol == :")"
+        next_current
+        return arguments + parse_arguments
+      end
+
       return parse_arguments arguments
     else
       if current.operator?
