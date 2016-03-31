@@ -1,3 +1,13 @@
 # Hazelnut Compiler
 
 puts "Length:" "testing".length
+
+define zero? do x
+  if (x == 0) do
+    return true
+  end else do
+    return false
+  end
+end
+
+puts (zero? 10) (zero? 0)

@@ -75,7 +75,7 @@ module Tree
       self.if_statement.return_value = fn.return_value
     end
     self.if_statement = nil
-    FunctionCall.new('') # Should be a no-op because we added it to the if.
+    FunctionCall.new('into_any(NIL, nil)') # Should be a no-op because we added it to the if.
   end
 
   match :"=" do |tree|
@@ -106,6 +106,26 @@ module Tree
       binding.pry
       raise "'=' needs a valid identifier to assign to"
     end
+  end
+
+  match :return do |tree|
+    raise "return does not take a block" if tree.block
+    raise "return takes at least one argument" if tree.arguments.empty?
+
+    name = tree.arguments[0]
+    tree.name = tree.arguments.shift
+
+    fn = call(tree)
+    temp = temp_var
+
+    # should this be body?
+    prerequisites = fn.prerequisites + "\n#{temp} :=" + fn.return_value
+
+    FunctionCall.new(
+      "\nreturn #{temp}",
+      prerequisites,
+      fn.return_value,
+    )
   end
 
   match :new do |tree|

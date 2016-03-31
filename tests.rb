@@ -221,8 +221,7 @@ Shindo.tests("Generator") do
     end
   end
 
-  generates_test  "function call with arguments",
-  "call something", '
+  normal_safe = '
     package main
 
     var struct_definitions []definition
@@ -235,26 +234,38 @@ Shindo.tests("Generator") do
         definition{name: "bool", members: []string{}, methods: []method{}},
         definition{name: "array", members: []string{}, methods: []method{}}}
     }
+
+  '
+
+  normal_unsafe = '
+    package main
+
+    import "unsafe"
+
+    var struct_definitions []definition
+
+    func init() {
+      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
+        definition{name: "float32", members: []string{}, methods: []method{}},
+        definition{name: "string", members: []string{}, methods: []method{}},
+        definition{name: "nil", members: []string{}, methods: []method{}},
+        definition{name: "bool", members: []string{}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}}}
+    }
+
+  '
+
+  generates_test  "function call with arguments",
+  "call something", "
+    #{normal_safe}
 
     func main() {
       hzl_call([]*any{hzl_something([]*any{}, nil)}, nil)
     }
-  '
+  "
 
   generates_test "function call with block",
-  "map a { c : d c }", '
-    package main
-
-    var struct_definitions []definition
-
-    func init() {
-      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
-        definition{name: "float32", members: []string{}, methods: []method{}},
-        definition{name: "string", members: []string{}, methods: []method{}},
-        definition{name: "nil", members: []string{}, methods: []method{}},
-        definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
-    }
+  "map a { c : d c }",  normal_safe + '
 
     func main() {
       hzl_map([]*any{hzl_a([]*any{}, nil)}, func (arguments []*any, hzl_yield block) *any {
@@ -274,19 +285,7 @@ Shindo.tests("Generator") do
     } else {
       c
     }
-  ", '
-    package main
-
-    var struct_definitions []definition
-
-    func init() {
-      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
-        definition{name: "float32", members: []string{}, methods: []method{}},
-        definition{name: "string", members: []string{}, methods: []method{}},
-        definition{name: "nil", members: []string{}, methods: []method{}},
-        definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
-    }
+  ", normal_safe + '
 
     func main() {
       if from_bool(hzl_a([]*any{}, nil)) {
@@ -294,6 +293,20 @@ Shindo.tests("Generator") do
       } else {
         hzl_c([]*any{}, nil)
       }
+      into_any(NIL, nil)
+    }
+  '
+
+  generates_test "return keyword",
+  "
+  return 2
+  ", normal_unsafe + '
+
+    func main() {
+      temp := 2
+
+      temp := into_any(INT, unsafe.Pointer(&temp))
+      return temp
     }
   '
 
@@ -301,21 +314,7 @@ Shindo.tests("Generator") do
   "
     a = 2
     b a
-  ", '
-    package main
-
-    import "unsafe"
-
-    var struct_definitions []definition
-
-    func init() {
-      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
-        definition{name: "float32", members: []string{}, methods: []method{}},
-        definition{name: "string", members: []string{}, methods: []method{}},
-        definition{name: "nil", members: []string{}, methods: []method{}},
-        definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
-    }
+  ", normal_unsafe + '
 
     func main() {
       temp := 2
@@ -328,21 +327,7 @@ Shindo.tests("Generator") do
   "
     a = 'testing'
     puts a
-  ", '
-    package main
-
-    import "unsafe"
-
-    var struct_definitions []definition
-
-    func init() {
-      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
-        definition{name: "float32", members: []string{}, methods: []method{}},
-        definition{name: "string", members: []string{}, methods: []method{}},
-        definition{name: "nil", members: []string{}, methods: []method{}},
-        definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
-    }
+  ", normal_unsafe + '
 
     func main() {
       temp := "testing"
@@ -355,22 +340,7 @@ Shindo.tests("Generator") do
   "
     a = list 2 'five'
     puts a
-  ", '
-    package main
-
-    import "unsafe"
-
-    var struct_definitions []definition
-
-
-    func init() {
-      struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
-        definition{name: "float32", members: []string{}, methods: []method{}},
-        definition{name: "string", members: []string{}, methods: []method{}},
-        definition{name: "nil", members: []string{}, methods: []method{}},
-        definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
-    }
+  ", normal_unsafe + '
 
     func main() {
       temp := 2
