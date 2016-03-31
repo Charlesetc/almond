@@ -15,21 +15,22 @@ class ShuntingBox
     postfix_stack << tree
   end
 
-  def put_operator(operator)
-    if (op = operator_stack.pop)
-      if precedence(op) < precedence(operator)
-        # operator binds more tightly
-        operator_stack << op
-        operator_stack << operator
-      elsif precedence(op) > precedence(operator)
-        put operator
-        put_operator(operator)
+  def put_operator(new_op)
+    if (old_op = operator_stack.pop)
+      if precedence(old_op) < precedence(new_op)
+        # new_op binds more tightly
+        operator_stack << old_op
+        operator_stack << new_op
+      elsif precedence(old_op) > precedence(new_op)
+        put(old_op) #one of these is wrong
+        put_operator(new_op)
       else # They are equal
-        operator_stack << op
-        operator_stack << operator
+        # I'm not taking into account associatitivy
+        operator_stack << old_op
+        operator_stack << new_op
       end
     else
-      operator_stack << operator
+      operator_stack << new_op
     end
   end
 
@@ -46,7 +47,7 @@ class ShuntingBox
     item = stack.pop
 
     if is_operator?(item)
-      raise "operators also take 2 argumenst" if stack.length == 1
+      raise "operators also take 2 arguments" if stack.length == 1
 
       # hardcoded two arguments for an operator
       a1 = convert_to_tree(stack)
@@ -179,6 +180,11 @@ class Parser
 
       return parse_intelligent_fuction box
     end
+
+    if current and current.symbol == :")"
+      next_current
+    end
+
     box.put tree
     box.look_inside
   end
@@ -190,7 +196,7 @@ class Parser
     if current.symbol == :"("
       next_current
 
-      function = operatorless_function
+      function = parse_intelligent_fuction
       arguments = parse_arguments
       block = parse_block
 
@@ -215,9 +221,15 @@ class Parser
 
       return arguments unless current
 
-      raise "This shouldn't happen. This is a bug" unless current.symbol == :")" or current.symbol == :"\n"
-      next_current
+      # This is possibly the worst code I've written.
 
+      if current.symbol == :"\n"
+        return arguments
+      end
+
+      if current.symbol == :")"
+        next_current
+      end
       if current and current.symbol == :")"
         next_current
         return arguments + parse_arguments

@@ -69,8 +69,10 @@ puts myhi.color
 myhi.color = "blue"
 puts myhi.color
 myhi.color = "yellow"
+
 puts (.color myhi)
 myhi.width = 1000000
+
 puts myhi
 puts myhi.width
 

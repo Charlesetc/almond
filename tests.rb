@@ -140,6 +140,7 @@ Shindo.tests("Parser") do
     end
   end
 
+
   parses_test "map", [:map]
 
   parses_test "map a b", [[:map, [:a, :b], {}]]
@@ -153,6 +154,8 @@ Shindo.tests("Parser") do
   parses_test "hi there; wonderkin", [[:hi, [:there], {}], :wonderkin]
 
   parses_test "hi there\n wonderkin", [[:hi, [:there], {}], :wonderkin]
+
+  parses_test "hi there\n wonderkin = 2", [[:hi, [:there], {}], [:"=", [:'2', :wonderkin], {}]]
 
   parses_test "hi there {\nwonderkin}", [[:hi, [:there], {[] => [:wonderkin]}]]
 
@@ -175,6 +178,12 @@ Shindo.tests("Parser") do
 
   parses_test "1 + 2 * 3", [[:+, [[:*, [:"3", :"2"], {}], :"1"], {}]]
 
+  parses_test "3 * 2 + 1", [[:+, [:"1", [:*, [:"2", :"3"], {}]], {}]]
+
+  parses_test "1 * (2 + 3)", [[:*, [[:+, [:"3", :"2"], {}], :"1"], {}]]
+
+  parses_test "(2 + 3) * 1", [[:*, [:"1", [:+, [:"3", :"2"], {}]], {}]]
+
   # Dot syntax
 
   parses_test "map.test", [[:".", [:map, :'"test"'], {}]]
@@ -185,9 +194,11 @@ Shindo.tests("Parser") do
 
   parses_test "all.map a.test b", [[:".", [:all, :'"map"', [:'.', [:a, :'"test"'], {}], :b], {}]]
 
-#   # Regression Test
+  # Regression Tests
 
   parses_test "plum ((pear mate)) next ", [[:plum, [[:pear, [:mate], {}], :"next"], {}]]
+
+  parses_test "puts (something)\n else", [[:puts, [:something], {}], :else]
 
 end
 
