@@ -11,6 +11,11 @@ binding false bool do
   "&a"
 end
 
+binding nil bool do
+  ""
+  "into_any(NIL, nil)"
+end
+
 binding true bool do
   "a := true"
   "&a"
@@ -24,12 +29,11 @@ binding gets string do
   "&a"
 end
 
-binding length int do x string
-  "temp := len(*x)"
-  "&temp"
+define string.length do
+  get_string_length(self)
 end
 
-binding nil bool do
-  ""
-  "into_any(NIL, nil)"
+binding get_string_length int do x string
+  "temp := len(*x)"
+  "&temp"
 end

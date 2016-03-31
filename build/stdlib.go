@@ -40,7 +40,6 @@ func hzl____dot___(as []*any, yield block) *any {
 	a := as[0]
 	member_name := *from_string(as[1])
 	def := struct_definitions[a.hazelnut_type]
-	fmt.Printf("Name: %s\n", def.name)
 	for _, meth := range def.methods {
 		if meth.name == member_name {
 			return meth.function(append([]*any{a}, as[2:]...), yield)

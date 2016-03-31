@@ -1,13 +1,3 @@
 # Hazelnut Compiler
 
-# puts true
-
-define gets_until do x
-  if (x == "\n") {
-    x = gets_until gets
-  }
-  x
-end
-
-a = gets_until gets
-puts a
+puts "Length:" "testing".length
