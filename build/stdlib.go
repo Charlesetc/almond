@@ -9,7 +9,7 @@ type HAZELNUT_TYPE int32
 
 type block func([]*any, block) *any
 
-const NUMBER_OF_TYPES HAZELNUT_TYPE = 6
+const NUMBER_OF_TYPES HAZELNUT_TYPE = 7
 
 const (
 	INT HAZELNUT_TYPE = iota
@@ -18,6 +18,7 @@ const (
 	NIL
 	BOOL
 	ARRAY
+	LAMBDA
 )
 
 type any struct {
@@ -34,6 +35,11 @@ type definition struct {
 	name    string
 	members []string
 	methods []method
+}
+
+func hzl_call(as []*any, yield block) *any {
+	a := as[0]
+	return (*(*block)(a.hazelnut_data))(as[1:], yield)
 }
 
 func hzl____dot___(as []*any, yield block) *any {

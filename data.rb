@@ -37,6 +37,7 @@ GO_BUILTIN_TYPES = [
 	[:NIL, :nil],
 	[:BOOL, :bool],
 	[:ARRAY, :array],
+	[:LAMBDA, :lambda],
 ]
 
 NUMBER_OF_TYPES = GO_BUILTIN_TYPES.length

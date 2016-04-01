@@ -152,6 +152,26 @@ module Tree
     )
   end
 
+  match :lambda do |tree|
+    if tree.block
+      raise "lambda takes no arguments" unless tree.arguments.empty?
+      body = block(tree)
+      temp = temp_var
+      preceeding = "\n#{temp} := #{body}\n"
+      FunctionCall.new(
+        "into_any(LAMBDA, unsafe.Pointer(&#{temp}))",
+        preceeding,
+      )
+    else
+      raise "lambda without a block takes one argument" unless tree.arguments.length == 1
+      raise "argument to lambda should be an ident" unless tree.arguments[0].is_ident?
+      name = tree.arguments[0].symbol
+      FunctionCall.new(
+        "into_any(LAMBDA, unsafe.Pointer(&#{hzl_namespace(name)}))",
+      )
+    end
+  end
+
   match :list do |tree|
     raise "list does not take a block" if tree.block
     preceeding = ''

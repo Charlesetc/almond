@@ -232,7 +232,8 @@ Shindo.tests("Generator") do
         definition{name: "string", members: []string{}, methods: []method{}},
         definition{name: "nil", members: []string{}, methods: []method{}},
         definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
+        definition{name: "array", members: []string{}, methods: []method{}},
+        definition{name: "lambda", members: []string{}, methods: []method{}}}
     }
 
   '
@@ -250,7 +251,8 @@ Shindo.tests("Generator") do
         definition{name: "string", members: []string{}, methods: []method{}},
         definition{name: "nil", members: []string{}, methods: []method{}},
         definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
+        definition{name: "array", members: []string{}, methods: []method{}},
+        definition{name: "lambda", members: []string{}, methods: []method{}}}
     }
 
   '
@@ -380,13 +382,14 @@ Shindo.tests("Generator") do
         definition{name: "string", members: []string{}, methods: []method{}},
         definition{name: "nil", members: []string{}, methods: []method{}},
         definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}, definition{name: "animal", members: []string{"width", "color"}, methods: []method{}},
+        definition{name: "array", members: []string{}, methods: []method{}},
+        definition{name: "lambda", members: []string{}, methods: []method{}}, definition{name: "animal", members: []string{"width", "color"}, methods: []method{}},
         definition{name: "hat", members: []string{"brimmed", "color"}, methods: []method{}}}
     }
 
     func main() {
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
-      hzl_myhat := into_any(7, unsafe.Pointer(&temp))
+      hzl_myhat := into_any(8, unsafe.Pointer(&temp))
       temp := "width"
       temp := 4
       hzl____dot______equals___([]*any{hzl_myhat, into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)
@@ -420,8 +423,10 @@ Shindo.tests("Generator") do
         definition{name: "string", members: []string{}, methods: []method{}},
         definition{name: "nil", members: []string{}, methods: []method{}},
         definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}}
+        definition{name: "array", members: []string{}, methods: []method{}},
+        definition{name: "lambda", members: []string{}, methods: []method{}}}
     }
+
 
     func main() {
       hzl_a([]*any{hzl_b([]*any{}, nil)}, nil)
@@ -440,11 +445,11 @@ Shindo.tests("Generator") do
       animal.walk 3
     ",
     '
-		package main
+    package main
 
-		import "unsafe"
+    import "unsafe"
 
-		var struct_definitions []definition
+    var struct_definitions []definition
 
     func init() {
       struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
@@ -452,7 +457,8 @@ Shindo.tests("Generator") do
         definition{name: "string", members: []string{}, methods: []method{}},
         definition{name: "nil", members: []string{}, methods: []method{}},
         definition{name: "bool", members: []string{}, methods: []method{}},
-        definition{name: "array", members: []string{}, methods: []method{}}, definition{name: "animal", members: []string{"position"}, methods: []method{{"walk", func(arguments []*any, hzl_yield block) *any {
+        definition{name: "array", members: []string{}, methods: []method{}},
+        definition{name: "lambda", members: []string{}, methods: []method{}}, definition{name: "animal", members: []string{"position"}, methods: []method{{"walk", func(arguments []*any, hzl_yield block) *any {
           if len(arguments) != 2 {
             panic("Wrong number of arguments for  - not 2")
           }
@@ -465,11 +471,11 @@ Shindo.tests("Generator") do
         }}}}}
     }
 
-		func main() {
-			temp := "walk"
-			temp := 3
-			hzl____dot___([]*any{hzl_animal([]*any{}, nil), into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)
-		}
+    func main() {
+      temp := "walk"
+      temp := 3
+      hzl____dot___([]*any{hzl_animal([]*any{}, nil), into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)
+    }
     '
 
   returns(false, "outputs valid gofmt") do

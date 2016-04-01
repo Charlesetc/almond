@@ -58,6 +58,7 @@ struct hi {
   width
 }
 
+
 # define hi x do
 #   output = (new hi)
 #   .= output color x
@@ -111,3 +112,5 @@ puts a
 
 
 puts a.square
+
+a = lambda { x : puts x }

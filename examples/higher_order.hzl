@@ -1,0 +1,10 @@
+square = lambda do x: x + x end
+y = call square 4
+puts y
+
+
+higher_order_function = lambda do x: puts x;lambda yield end
+
+call (call higher_order_function "inner function" do x
+  puts "Higher ordered:" x
+end) "this is the higher_order_function"

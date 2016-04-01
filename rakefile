@@ -19,4 +19,5 @@ end
 desc "Run the examples"
 task :examples do
   sh "./hazelnut run examples/basic.hzl"
+  sh "./hazelnut run examples/higher_order.hzl"
 end
