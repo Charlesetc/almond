@@ -9,22 +9,6 @@ require_relative 'parser.rb'
 require_relative 'generator.rb'
 
 
-# Just to make comparisons & literals easier.
-class Expression
-
-  def to_array
-    if (not self.block or self.block.forest.length == 0) \
-       and (not self.arguments or self.arguments.length == 0)
-      return self.symbol
-    end
-    b = self.block ? {self.block.arguments.map { |x| x.symbol } => self.block.forest.map { |x| x.to_array }} : {}
-    a = self.arguments ? self.arguments.map { |x| x.to_array } : []
-
-    [self.symbol, a, b]
-  end
-
-end
-
 class Generator
   def self.reset
     @@stacks = [[]]

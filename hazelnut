@@ -13,7 +13,6 @@ def compile(source)
   generator.generate
 end
 
-
 case a = ARGV.shift
 when "run"
   File.write("./build/main.go", compile(ARGF.read))
@@ -23,6 +22,16 @@ when "build"
   File.write("./build/main.go", compile(ARGF.read))
   output_file = File.basename(name).split('.')[0]
   puts `go build -o ./build/#{output_file} ./build/*.go `
+when "show"
+  t = Tokenizer.new ARGF.read
+  t.read
+  parser = Parser.new t.tokens
+  forest = parser.parse
+  puts forest.map { |x| x.to_array.inspect }
+when "tokens"
+  t = Tokenizer.new ARGF.read
+  t.read
+  puts t.tokens.map {|x| x.symbol.to_s}
 else
   ARGV.unshift a
   puts compile(ARGF.read)

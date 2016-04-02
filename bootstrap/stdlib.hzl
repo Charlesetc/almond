@@ -6,6 +6,11 @@ binding (*) int do x int y int
   "&a"
 end
 
+binding (-) int do x int y int
+  "a := *y - *x"
+  "&a"
+end
+
 binding false bool do
   "a := false"
   "&a"
@@ -36,4 +41,17 @@ end
 binding get_string_length int do x string
   "temp := len(*x)"
   "&temp"
+end
+
+# Very inefficient
+define int.times do
+  yield
+  if (self == 0) {
+    return nil
+  }
+  block = lambda(yield)
+  a = (self - 1)
+  a.times do
+    call block
+  end
 end

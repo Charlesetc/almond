@@ -11,3 +11,7 @@ define zero? do x
 end
 
 puts (zero? 10) (zero? 0)
+
+(10).times do
+  puts "Hi"
+end

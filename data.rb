@@ -22,6 +22,7 @@ CHAR_MAPPING = {
   "]" => ")" # to support lists
 }
 
+# Used for bindings.
 TYPE_MAPPING = {
   int: "INT",
   float32: "FLOAT",
@@ -52,6 +53,7 @@ def hzl_namespace(name)
   name.gsub! "%", "___percentage___"
   name.gsub! "?", "___question___"
   name.gsub! "=", "___equals___"
+  name.gsub! "-", "___minus___"
   "hzl_" + name
 end
 
@@ -182,9 +184,9 @@ class Expression
       output += ")"
     end
 
-    if @block and @block.length > 0
+    if @block and @block.forest.length > 0
       output += " {\n"
-      @block.each do |b|
+      @block.forest.each do |b|
         output += indentation
         output += b.inspect
       end
@@ -201,4 +203,16 @@ class Expression
   def indentation
     ("  " * @@indentation)
   end
+
+  def to_array
+    if (not self.block or self.block.forest.length == 0) \
+       and (not self.arguments or self.arguments.length == 0)
+      return self.symbol
+    end
+    b = self.block ? {self.block.arguments.map { |x| x.symbol } => self.block.forest.map { |x| x.to_array }} : {}
+    a = self.arguments ? self.arguments.map { |x| x.to_array } : []
+
+    [self.symbol, a, b]
+  end
+
 end

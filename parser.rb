@@ -83,7 +83,7 @@ module Transformations
       receiver = tree.arguments.shift
       raise "Receiver should not be none" unless receiver
       tree.arguments.unshift Expression.new(name)
-      tree.arguments.unshift receiver
+      tree.arguments.unshift receiver if receiver
       tree.name.symbol = :"."
     end
 
@@ -106,19 +106,18 @@ module Transformations
 
     # Skips the first one
     last_a = nil
-    tree.arguments.reverse!.reject! do |a|
-      if (keep = (last_a and last_a.dot_syntax?))
+    tree.arguments.reject! do |a|
+      if (should_reject = (last_a and a.dot_syntax?))
         # The old switcheroo
         inner = Expression.new(last_a.name, last_a.arguments, last_a.block)
-        last_a.arguments = [inner]
+        last_a.arguments = [inner] + a.arguments
         last_a.name = a.name
         last_a.block = a.block
       else
         last_a = a
       end
-      keep
+      should_reject
     end
-    tree.arguments.reverse!
 
     # Map over the rest of the tree
     tree.arguments.each { |x| transform_dot_syntax x }
