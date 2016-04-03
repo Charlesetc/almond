@@ -1,5 +1,7 @@
 
-FILES = ./hazelnut.hzl ./std/*
+FILES = ./std/* ./hazelnut.hzl
+
+.PHONY: run show build tokens go
 
 run:
 	hazelnut run $(FILES)
