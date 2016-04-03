@@ -12,6 +12,12 @@ end
 
 puts (zero? 10) (zero? 0)
 
-(10).times do
-  puts "Hi"
+(2).times do
+  puts "iterating"
 end
+
+a = list 0
+a.push 2
+a.push 3
+
+puts a

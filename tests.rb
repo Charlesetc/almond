@@ -147,7 +147,7 @@ Shindo.tests("Parser") do
 
   parses_test "let (hi 3) 4", [[:let, [[:hi, [:"3"], {}], :"4"], {}]]
 
-  parses_test "[one two three]", [[:list, [:one, :two, :three], {}]]
+  parses_test "[one two three]", [[:array, [:one, :two, :three], {}]]
 
   # Operators
 
@@ -324,7 +324,7 @@ Shindo.tests("Generator") do
 
   generates_test "array constant",
   "
-    a = list 2 'five'
+    a = array 2 'five'
     puts a
   ", normal_unsafe + '
 

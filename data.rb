@@ -28,6 +28,7 @@ TYPE_MAPPING = {
   float32: "FLOAT",
   string: "STRING",
   bool: "BOOL",
+  nil: "NIL",
 }
 
 # Move to this away from that ^^

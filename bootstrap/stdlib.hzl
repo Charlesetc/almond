@@ -16,9 +16,9 @@ binding false bool do
   "&a"
 end
 
-binding nil bool do
+binding nil nil do
   ""
-  "into_any(NIL, nil)"
+  "nil"
 end
 
 binding true bool do
@@ -45,13 +45,37 @@ end
 
 # Very inefficient
 define int.times do
-  yield
   if (self == 0) {
     return nil
   }
+  yield
   block = lambda(yield)
   a = (self - 1)
   a.times do
     call block
   end
 end
+
+ struct list {
+   next
+   last
+   value
+ }
+
+ define list { x
+    a = new list
+    a.next = nil
+    a.last = nil
+    a.value = x
+    a
+ }
+
+ define list.push { x
+   if self.next {
+     c = self.next
+     c.push x
+   } else {
+     b = list x
+     self.next = b
+   }
+ }

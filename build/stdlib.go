@@ -57,7 +57,7 @@ func hzl____dot___(as []*any, yield block) *any {
 			return (*(*[]*any)(a.hazelnut_data))[i]
 		}
 	}
-	panic(fmt.Sprintf("so such field in struct: %s", member_name))
+	panic(fmt.Sprintf("no such field in %s: %s", def.name, member_name))
 }
 
 func hzl____dot______equals___(as []*any, yield block) *any {
@@ -121,7 +121,9 @@ func hzl____equals______equals___(arguments []*any, yield block) *any {
 
 	if a.hazelnut_type == INT {
 		return into_bool(*(*int)(a.hazelnut_data) == *(*int)(b.hazelnut_data))
-	} // else if a.hazelnut_type == STRING {
+	} else if a.hazelnut_type == NIL {
+		return into_bool(true)
+	}
 	return into_bool(*(*string)(a.hazelnut_data) == *(*string)(b.hazelnut_data))
 }
 

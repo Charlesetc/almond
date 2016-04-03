@@ -32,7 +32,7 @@ class Tokenizer
       read_until_newline
     when a == "["
       token :"("
-      token :list
+      token :array
       read
     else
       read_punct a

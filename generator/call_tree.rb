@@ -172,8 +172,8 @@ module Tree
     end
   end
 
-  match :list do |tree|
-    raise "list does not take a block" if tree.block
+  match :array do |tree|
+    raise "array does not take a block" if tree.block
     preceeding = ''
     body = '[]*any{'
     seperator = ''
