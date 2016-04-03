@@ -1,0 +1,21 @@
+
+# Hazelnut Standard Library
+# Strings
+
+binding gets string do
+  # This can definitely be improved upon
+  "
+  reader := bufio.NewReader(os.Stdin)
+  a, _ := reader.ReadString('\n')
+  "
+  "&a"
+end
+
+define string.length do
+  get_string_length(self)
+end
+
+binding get_string_length int do x string
+  "temp := len(*x)"
+  "&temp"
+end

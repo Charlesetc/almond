@@ -1,0 +1,29 @@
+
+# Hazelnut Standard Library
+# Numerics
+
+binding (*) int do x int y int
+"a := *x * *y"
+"&a"
+end
+
+binding (-) int do x int y int
+"a := *y - *x"
+"&a"
+end
+
+# Very inefficient
+define int.times do
+
+  if (self == 0) {
+    return nil
+  }
+
+  yield
+
+  block = lambda(yield)
+  a = (self - 1)
+  a.times do
+    call block
+  end
+end

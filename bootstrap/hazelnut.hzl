@@ -1,3 +1,4 @@
+
 # Hazelnut Compiler
 
 puts "Length:" "testing".length
@@ -16,7 +17,7 @@ puts (zero? 10) (zero? 0)
   puts "iterating"
 end
 
-a = list 0
+a = List 0
 a.push 2
 a.push 3
 a.push 6

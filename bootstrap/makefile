@@ -1,5 +1,5 @@
 
-FILES = ./hazelnut.hzl ./stdlib.hzl
+FILES = ./hazelnut.hzl ./std/*
 
 run:
 	hazelnut run $(FILES)

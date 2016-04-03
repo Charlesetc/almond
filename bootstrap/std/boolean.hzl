@@ -1,0 +1,23 @@
+
+# Hazelnut Standard Library
+# Booleans
+
+binding false bool do
+  "a := false"
+  "&a"
+end
+
+binding nil nil do
+  ""
+  "nil"
+end
+
+binding true bool do
+  "a := true"
+  "&a"
+end
+
+binding not bool do x any
+  "a := !from_bool(x)"
+  "&a"
+end

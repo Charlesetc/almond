@@ -1,0 +1,73 @@
+
+# Hazelnut Standard Library
+# Lists
+
+struct List {
+  next
+  last
+  value
+}
+
+define List { x
+  a = new List
+  a.next = nil
+  a.last = nil
+  a.value = x
+  a
+}
+
+define List.push { x
+  if self.next {
+    c = self.next
+    c.push x
+  } else {
+    b = List x
+    self.next = b
+    b.last = self
+    return nil
+  }
+}
+
+define List.print {
+  starting = true
+  self.map { x
+    if (not starting) {
+      print " -> "
+    } else {
+      starting = false
+    }
+    print x
+  }
+  puts
+}
+
+define List.map {
+
+  a = self.value
+  yield a
+
+  if self.next {
+    block = lambda(yield)
+    b = self.next
+    b.map do x
+      call block x
+    end
+  }
+}
+
+define List.pop {
+  if self.next {
+    a = self.next
+    if a.next {
+      return a.pop
+    } else {
+      val = a.value
+      self.next = nil
+      a.last = nil
+      return val
+   }
+  }
+  # a = self.value
+  self.value = nil
+  return self
+}
