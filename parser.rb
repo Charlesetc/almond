@@ -265,7 +265,7 @@ class Parser
       arguments = parse_block_arguments
       forest = parse_functions
       # DO SOMETHING WITH current at this point in time
-      raise "I have asserted that this shouldn't happen" unless current.end?
+      raise "I have asserted that this shouldn't happen" unless  current.end?
 
       next_current
       return Block.new(forest, arguments)

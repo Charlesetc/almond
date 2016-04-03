@@ -40,6 +40,9 @@ module Tree
   match :if do |tree|
     raise "argument error: if takes one argument" if tree.arguments.length != 1
     raise "argument error: if takes a block" if tree.block.nil?
+
+    enter_stack
+
     fn = call(tree.arguments[0])
     fn.body = [
       "if from_bool(",
@@ -48,12 +51,16 @@ module Tree
       generate_calls(tree.block.forest, false),
       "}",
     ].join
+
+    exit_stack
+
     self.if_statement = fn
   end
 
   match :else do |tree|
     # TODO: This can be refactored to be better.
     raise "syntax error: else must follow an if" unless self.if_statement
+    enter_stack
     if tree.arguments.length == 0
       previous_if = self.if_statement
       self.if_statement = nil
@@ -75,6 +82,7 @@ module Tree
       self.if_statement.return_value = fn.return_value
     end
     self.if_statement = nil
+    exit_stack
     FunctionCall.new('into_any(NIL, nil)') # Should be a no-op because we added it to the if.
   end
 
@@ -84,7 +92,7 @@ module Tree
     value, assignee = tree.arguments
 
     if assignee.is_ident?
-      if @@stacks.last.include?(assignee.symbol)
+      if @@stacks.flatten.include?(assignee.symbol)
         equals = "="
       else
         equals = ":="
@@ -113,13 +121,16 @@ module Tree
     raise "return takes at least one argument" if tree.arguments.empty?
 
     name = tree.arguments[0]
-    tree.name = tree.arguments.shift
+    # tree.name = tree.arguments.shift
 
-    fn = call(tree)
+    fn = call(name)
     temp = temp_var
 
     # should this be body?
-    prerequisites = fn.prerequisites + "\n#{temp} :=" + fn.return_value
+    prerequisites = fn.prerequisites + "\n#{temp} :=" + fn.body
+
+    # puts name.inspect
+    # binding.pry
 
     FunctionCall.new(
       "\nreturn #{temp}",

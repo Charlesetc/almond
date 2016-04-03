@@ -85,6 +85,9 @@ module Structs
   end
 
   def generate_methods(name)
+
+
+
     methods = @methods[name]
     if methods
       methods.map do |tree|

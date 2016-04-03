@@ -19,5 +19,10 @@ end
 a = list 0
 a.push 2
 a.push 3
+a.push 6
+a.push 4
 
-puts a
+a.print
+a.pop
+a.pop
+a.print
