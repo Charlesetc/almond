@@ -26,6 +26,11 @@ binding true bool do
   "&a"
 end
 
+binding not bool do x any
+  "a := !from_bool(x)"
+  "&a"
+end
+
 binding gets string do
   "
   reader := bufio.NewReader(os.Stdin)
@@ -86,8 +91,13 @@ define list.push { x
 }
 
 define list.print {
+  starting = true
   self.map { x
-    print " -> "
+    if (not starting) {
+      print " -> "
+    } else {
+      starting = false
+    }
     print x
   }
   puts

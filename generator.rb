@@ -105,12 +105,16 @@ class Generator
 
     type_arguments = tree.block.arguments.each_slice(2).with_index.map { |args, i|
       name, type = args
-      "
-      if arguments[#{i}].hazelnut_type != #{TYPE_MAPPING[type.symbol]} {
-         panic(\"#{i}th argument of #{fn_name} takes a #{type.symbol}\")
-       }
-       #{name.symbol} := (*#{type.symbol})(arguments[#{i}].hazelnut_data)
-      " # These arguments are not hzl_namespace'd
+      if type.symbol == :any
+         "\n#{name.symbol} := arguments[#{i}]\n"
+      else
+        "
+        if arguments[#{i}].hazelnut_type != #{TYPE_MAPPING[type.symbol]} {
+           panic(\"#{i}th argument of #{fn_name} takes a #{type.symbol}\")
+         }
+         #{name.symbol} := (*#{type.symbol})(arguments[#{i}].hazelnut_data)
+        " # These arguments are not hzl_namespace'd
+      end
     }
     preceeding, return_value = tree.block.forest
 

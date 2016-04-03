@@ -1,14 +1,17 @@
+
+FILES = ./hazelnut.hzl ./stdlib.hzl
+
 run:
-	hazelnut run ./hazelnut.hzl ./stdlib.hzl
+	hazelnut run $(FILES)
 
 show:
-	hazelnut show ./hazelnut.hzl ./stdlib.hzl
+	hazelnut show $(FILES)
 
 build:
-	hazelnut build ./hazelnut.hzl ./stdlib.hzl
+	hazelnut build $(FILES)
 
 tokens:
-	hazelnut tokens ./hazelnut.hzl ./stdlib.hzl
+	hazelnut tokens $(FILES)
 
 go:
-	hazelnut ./hazelnut.hzl ./stdlib.hzl
+	hazelnut $(FILES)
