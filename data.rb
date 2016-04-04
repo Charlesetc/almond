@@ -29,6 +29,11 @@ TYPE_MAPPING = {
   string: "STRING",
   bool: "BOOL",
   nil: "NIL",
+  array: "ARRAY",
+}
+
+GO_OUTPUT_MAPPING = {
+  array: "[]*any",
 }
 
 # Move to this away from that ^^

@@ -1,4 +1,3 @@
-
 # Hazelnut Compiler
 
 puts "Length:" "testing".length

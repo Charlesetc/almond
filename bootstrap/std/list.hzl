@@ -2,17 +2,38 @@
 # Hazelnut Standard Library
 # Lists
 
+
+binding index any do y array x int
+  ""
+  "(*y)[*x]"
+end
+
+define array.index do x
+  index self x
+end
+
 struct List {
+  sublist
+  head
+  tail
+
+  # Remove these
+  value
+  last
+  next
+}
+
+struct subList {
   next
   last
   value
 }
 
-define List { x
+define List { *xs
   a = new List
   a.next = nil
   a.last = nil
-  a.value = x
+  a.value = index xs 0
   a
 }
 

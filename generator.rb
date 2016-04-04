@@ -71,8 +71,20 @@ class Generator
 
       defined_arguments = args.each_with_index.map do |a, i|
         raise "arguments to a function definition must be idents" unless a.is_a?(Token) or a.is_ident?
+        rv = if a.symbol.to_s[0] == "*"
+          raise "splat must be last argument" unless i == args.length - 1
+
+          a.symbol = a.symbol.to_s[1..-1].to_sym
+          temp = temp_var
+          "
+          #{temp} := arguments[#{i}:]
+          #{hzl_namespace(a.symbol)} := into_any(ARRAY, unsafe.Pointer(&#{temp}));"
+        else
+          "#{hzl_namespace(a.symbol)} := arguments[#{i}];"
+        end
         stack_push a
-        "#{hzl_namespace(a.symbol)} := arguments[#{i}];"
+
+        rv
       end
 
       start = function_start(symbol, args, is_closure)
@@ -112,15 +124,19 @@ class Generator
         if arguments[#{i}].hazelnut_type != #{TYPE_MAPPING[type.symbol]} {
            panic(\"#{i}th argument of #{fn_name} takes a #{type.symbol}\")
          }
-         #{name.symbol} := (*#{type.symbol})(arguments[#{i}].hazelnut_data)
+         #{name.symbol} := (*#{GO_OUTPUT_MAPPING[type.symbol] or type.symbol})(arguments[#{i}].hazelnut_data)
         " # These arguments are not hzl_namespace'd
       end
     }
     preceeding, return_value = tree.block.forest
 
-    return_value = "
-      return into_any(#{TYPE_MAPPING[fn_type]}, unsafe.Pointer(#{unescape(return_value)}))
-    "
+    return_value = if fn_type == :any
+      "return #{unescape(return_value)}"
+    else
+      "
+        return into_any(#{TYPE_MAPPING[fn_type]}, unsafe.Pointer(#{unescape(return_value)}))
+      "
+    end
 
     [
       start,
