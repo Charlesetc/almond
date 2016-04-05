@@ -1,0 +1,10 @@
+
+# Hazelnut at its finest
+# splat
+
+define print_list do *xs
+  puts xs
+end
+
+
+print_list 1 2 3 4 5

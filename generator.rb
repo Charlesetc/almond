@@ -52,14 +52,14 @@ class Generator
     end
   end
 
-  def function_start(symbol, args, is_closure)
+  def function_start(symbol, args, is_closure, restrict_arguments = true)
       [
         "func ",
         is_closure ? "" : hzl_namespace(symbol),
-        "(arguments []*any, hzl_yield block) *any {
-        if len(arguments) != #{args.length} {
+        "(arguments []*any, hzl_yield block) *any {\n",
+        restrict_arguments ? "if len(arguments) != #{args.length} {
           panic(\"Wrong number of arguments for #{symbol} - not #{args.length}\")
-        }\n"
+        }\n" : "",
       ].join
   end
 
@@ -69,10 +69,13 @@ class Generator
 
   def generate_function(symbol, args, forest, is_closure = false, extra="")
 
+    restrict_arguments = true
+
       defined_arguments = args.each_with_index.map do |a, i|
         raise "arguments to a function definition must be idents" unless a.is_a?(Token) or a.is_ident?
         rv = if a.symbol.to_s[0] == "*"
           raise "splat must be last argument" unless i == args.length - 1
+          restrict_arguments = false
 
           a.symbol = a.symbol.to_s[1..-1].to_sym
           temp = temp_var
@@ -87,7 +90,7 @@ class Generator
         rv
       end
 
-      start = function_start(symbol, args, is_closure)
+      start = function_start(symbol, args, is_closure, restrict_arguments)
 
       [
         start,
