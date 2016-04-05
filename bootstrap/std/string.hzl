@@ -12,10 +12,41 @@ binding gets string do
 end
 
 define string.length do
-  get_string_length(self)
+  get_string_length self
 end
 
 binding get_string_length int do x string
   "temp := len(*x)"
   "&temp"
+end
+
+# Arrays
+
+define array.length do
+  get_array_length self
+end
+
+binding get_array_length int do x array
+  "temp := len(*x)"
+  "&temp"
+end
+
+binding index any do y array x int
+  ""
+  "(*y)[*x]"
+end
+
+define array.index do x
+  index self x
+end
+
+
+define array.each do
+  length = self.length
+  puts self.length
+  block = lambda yield
+  length.times_with_index do i
+    puts i
+    call block (self.index (i - 1))
+  end
 end

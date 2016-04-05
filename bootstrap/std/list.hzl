@@ -2,56 +2,51 @@
 # Hazelnut Standard Library
 # Lists
 
-
-binding index any do y array x int
-  ""
-  "(*y)[*x]"
-end
-
-define array.index do x
-  index self x
-end
-
 struct List {
   sublist
   head
   tail
-
-  # Remove these
-  value
-  last
-  next
 }
 
-struct subList {
+struct sublist {
   next
   last
   value
+}
+
+define sublist { x
+  a = new sublist
+  a.value = x
+  a
 }
 
 define List { *xs
   a = new List
-  a.next = nil
-  a.last = nil
-  a.value = index xs 0
+  xs.each { x
+    puts x
+    a.push x
+  }
   a
 }
 
 define List.push { x
-  if self.next {
-    c = self.next
-    c.push x
+  if (not self.sublist) {
+    self.sublist = new sublist
   } else {
-    b = List x
-    self.next = b
-    b.last = self
-    return nil
+    old_sublist = self.sublist
+    new_sublist = new sublist
+
+    new_sublist.next = old_sublist
+    old_sublist.last = self.sublist
+    self.sublist = new_sublist
   }
+  subl = self.sublist
+  subl.value = x
 }
 
 define List.print {
   starting = true
-  self.map { x
+  self.each { x
     if (not starting) {
       print " -> "
     } else {
@@ -62,21 +57,41 @@ define List.print {
   puts
 }
 
-define List.map {
-
-  a = self.value
-  yield a
-
-  if self.next {
-    block = lambda(yield)
-    b = self.next
-    b.map do x
-      call block x
-    end
+define sublist.each {
+  yield self.value
+  if (not self.next) {
+    return nil
   }
+
+  block = lambda(yield)
+  nxt = self.next
+  nxt.each do x
+    call block x
+  end
+}
+
+define List.each {
+  if (not self.sublist) {
+    return nil
+  }
+  subl = self.sublist
+
+  block = lambda(yield)
+  subl.each do x
+    call block x
+  end
 }
 
 define List.pop {
+  if (not self.sublist) {
+    return nil
+  }
+  subl = self.sublist
+  return subl.pop
+}
+
+
+define sublist.pop {
   if self.next {
     a = self.next
     if a.next {
@@ -89,6 +104,6 @@ define List.pop {
    }
   }
   # a = self.value
-  self.value = nil
+  self.sublist.value = nil
   return self
 }
