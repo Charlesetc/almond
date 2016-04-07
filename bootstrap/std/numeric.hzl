@@ -34,12 +34,11 @@ define int.times_with_index do
     return nil
   }
 
-
   yield self
 
   block = lambda(yield)
 
-  a = (self - 1)
+  a = self - 1
   a.times_with_index do
     call block self
   end

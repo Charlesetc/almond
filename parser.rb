@@ -74,6 +74,9 @@ end
 
 module Transformations
 
+  ##
+  ## Moves (".test" hi) to ("." hi "test")
+  ##
   def transform_dot_preceeding(tree)
     if tree.dot_syntax_with_call?
       name_symbol = ('"' + tree.symbol.to_s[1..-1] + '"').to_sym
@@ -81,7 +84,9 @@ module Transformations
       name.symbol = name_symbol
 
       receiver = tree.arguments.shift
-      raise "Receiver should not be none" unless receiver
+      unless receiver
+        raise "Receiver should not be none"
+      end
       tree.arguments.unshift Expression.new(name)
       tree.arguments.unshift receiver if receiver
       tree.name.symbol = :"."
@@ -92,31 +97,51 @@ module Transformations
     tree.block and tree.block.forest.each { |x| transform_dot_preceeding x }
   end
 
-  def transform_dot_syntax(tree)
+  def get_last_dotted_argument(as)
+  end
 
-    # The first argument is handled differently because it would be
-    # a method call.
-    first_a = tree.arguments[0]
-    if first_a and first_a.dot_syntax?
-      old_name = tree.name
-      tree.name = first_a.name
-      first_a.name = old_name
-      # poifect
+  ##
+  ## Moves (this test.that) to (this (.that test))
+  ## and (test.five there) to (.five test there)
+  ##
+  def transform_dot_syntax(tree)
+    leading_arguments = []
+    while (a = tree.arguments.shift)
+      if a.dot_syntax?
+        leading_arguments << a
+      else
+        tree.arguments.unshift a
+        break
+      end
     end
 
-    # Skips the first one
+    # Transform a.one.two into (.two (.one a))
+    recursing_tree = tree
+    while priority_method = leading_arguments.pop
+      old_name = recursing_tree.name
+      recursing_tree.name = priority_method.name
+      priority_method.name = old_name
+      recursing_tree.arguments.unshift priority_method
+      recursing_tree = priority_method
+    end
+
     last_a = nil
+    next_arguments = []
     tree.arguments.reject! do |a|
-      if (should_reject = (last_a and a.dot_syntax?))
-        # The old switcheroo
-        inner = Expression.new(last_a.name, last_a.arguments, last_a.block)
-        last_a.arguments = [inner] + a.arguments
-        last_a.name = a.name
-        last_a.block = a.block
+      should_reject = (last_a and a.dot_syntax?)
+      if should_reject
+        next_arguments << a
       else
+        next_arguments.each do |next_a|
+          last_a.arguments << next_a
+        end
+        next_arguments = []
         last_a = a
       end
       should_reject
+    end
+    next_arguments.each do |next_a|
+      last_a.arguments << next_a
     end
 
     # Map over the rest of the tree

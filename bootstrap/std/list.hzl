@@ -40,8 +40,7 @@ define List.push { x
     old_sublist.last = self.sublist
     self.sublist = new_sublist
   }
-  subl = self.sublist
-  subl.value = x
+  self.sublist.value = x
 }
 
 define List.print {
@@ -74,10 +73,9 @@ define List.each {
   if (not self.sublist) {
     return nil
   }
-  subl = self.sublist
 
   block = lambda(yield)
-  subl.each do x
+  self.sublist.each do x
     call block x
   end
 }
@@ -86,8 +84,7 @@ define List.pop {
   if (not self.sublist) {
     return nil
   }
-  subl = self.sublist
-  return subl.pop
+  self.sublist.pop
 }
 
 
@@ -103,7 +100,6 @@ define sublist.pop {
       return val
    }
   }
-  # a = self.value
   self.sublist.value = nil
   return self
 }

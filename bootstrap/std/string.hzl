@@ -42,10 +42,8 @@ end
 
 
 define array.each do
-  length = self.length
-  puts self.length
   block = lambda yield
-  length.times_with_index do i
+  self.length.times_with_index do i
     puts i
     call block (self.index (i - 1))
   end

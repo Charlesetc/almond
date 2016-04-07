@@ -124,7 +124,6 @@ Shindo.tests("Parser") do
     end
   end
 
-
   parses_test "map", [:map]
 
   parses_test "map a b", [[:map, [:a, :b], {}]]
@@ -172,7 +171,9 @@ Shindo.tests("Parser") do
 
   parses_test "map.test", [[:".", [:map, :'"test"'], {}]]
 
-  parses_test "map.test a b", [[:".", [:map, :'"test"', :a, :b], {}]]
+  parses_test "a one.two.three", [[:a, [[:'.', [[:'.', [:one, :'"two"'], {}], :'"three"'], {}]], {}]]
+
+  parses_test "one.two.three a", [[:".", [[:".", [:one, :'"two"'], {}], :'"three"', :a], {}]]
 
   parses_test "map a.test b", [[:"map", [[:'.', [:a, :'"test"'], {}], :b], {}]]
 
