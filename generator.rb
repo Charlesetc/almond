@@ -52,7 +52,12 @@ class Generator
     end
   end
 
-  def function_start(symbol, args, is_closure, restrict_arguments = true)
+  def function_start(symbol, args, is_closure, restrict_arguments = true, stack_name=nil)
+      stack_name = if stack_name
+                     stack_name
+                   else
+                     is_closure ? "closure" : symbol.to_s
+                   end
       [
         "func ",
         is_closure ? "" : hzl_namespace(symbol),
@@ -60,6 +65,15 @@ class Generator
         restrict_arguments ? "if len(arguments) != #{args.length} {
           panic(\"Wrong number of arguments for #{symbol} - not #{args.length}\")
         }\n" : "",
+        "
+        defer func() {
+          err := recover()
+          if err != nil {
+            call_stack = append(call_stack, \"#{stack_name}\")
+            panic(err)
+          }
+        }()
+        ",
       ].join
   end
 
@@ -67,7 +81,7 @@ class Generator
     "}"
   end
 
-  def generate_function(symbol, args, forest, is_closure = false, extra="")
+  def generate_function(symbol, args, forest, is_closure = false, extra="", stack_name=nil)
 
     restrict_arguments = true
 
@@ -90,7 +104,8 @@ class Generator
         rv
       end
 
-      start = function_start(symbol, args, is_closure, restrict_arguments)
+      # Function start could be done so much better.
+      start = function_start(symbol, args, is_closure, restrict_arguments, stack_name)
 
       [
         start,
@@ -166,7 +181,14 @@ class Generator
     end.join("\n") +
     @bindings.map { |tree| generate_binding tree }.join("\n") +
     struct_headers + 
+    call_stack +
     init_function
+  end
+
+  def call_stack
+    "
+    var call_stack []string
+    "
   end
 
   def init_function
@@ -179,9 +201,23 @@ class Generator
 
   def generate_main
     [
-      "
+      '
       func main() {
-      ",
+        defer func() {
+          err := recover()
+          if err != nil {
+            fmt.Printf("\n\n!! panic !!\n")
+            for i := len(call_stack)-1; i >= 0; i--{
+              call := call_stack[i]
+              if i < 15 {
+                fmt.Printf("within %s\n", call)
+              }
+            }
+            fmt.Printf("%s\n", err)
+          }
+        }()
+
+      ',
       generate_calls(@forest, false),
       "
       }

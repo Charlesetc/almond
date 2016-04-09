@@ -13,7 +13,7 @@ end
 
 desc "Count the number of lines in the project"
 task :lines do
-  puts `git ls-tree HEAD -r --name-only | ack -v gitignore | ack -v 'md$' | ack -v readme | ag -v license | ack -v example | ack -v '\.png$' | ack -v '\.svg$' | xargs cat | wc -l`
+  puts `git ls-tree HEAD -r --name-only | ack -v gitignore | ack -v 'md$' | ack -v readme | ag -v license | ack -v example | ack -v '\.png$' | ack -v '\.svg$' | ack -v splat | ack -v 'bootstrap/build' | xargs cat | wc -l`
 end
 
 desc "Run the examples"

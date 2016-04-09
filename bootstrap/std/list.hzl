@@ -23,7 +23,6 @@ define sublist { x
 define List { *xs
   a = new List
   xs.each { x
-    puts x
     a.push x
   }
   a

@@ -206,10 +206,38 @@ Shindo.tests("Generator") do
     end
   end
 
+  def func_stack(name="closure")
+    "
+    defer func() {
+      err := recover()
+      if err != nil {
+      call_stack = append(call_stack, \"#{name}\")
+        panic(err)
+      }
+    }()"
+  end
+
+  main_stack = 'defer func() {
+      err := recover()
+      if err != nil {
+        fmt.Printf("\n\n!! panic !!\n")
+        for i := len(call_stack)-1; i >= 0; i--{
+          call := call_stack[i]
+          if i < 15 {
+            fmt.Printf("within %s\n", call)
+          }
+        }
+        fmt.Printf("%s\n", err)
+      }
+    }()
+  '
+
   normal_safe = '
     package main
 
     var struct_definitions []definition
+
+    var call_stack []string
 
     func init() {
       struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
@@ -230,6 +258,8 @@ Shindo.tests("Generator") do
 
     var struct_definitions []definition
 
+    var call_stack []string
+
     func init() {
       struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
         definition{name: "float32", members: []string{}, methods: []method{}},
@@ -247,6 +277,8 @@ Shindo.tests("Generator") do
     #{normal_safe}
 
     func main() {
+      #{main_stack}
+
       hzl_call([]*any{hzl_something([]*any{}, nil)}, nil)
     }
   "
@@ -254,11 +286,12 @@ Shindo.tests("Generator") do
   generates_test "function call with block",
   "map a { c : d c }",  normal_safe + '
 
-    func main() {
+    func main() {' + main_stack + '
       hzl_map([]*any{hzl_a([]*any{}, nil)}, func (arguments []*any, hzl_yield block) *any {
         if len(arguments) != 1 {
           panic("Wrong number of arguments for  - not 1")
         }
+        ' + func_stack + '
         hzl_c := arguments[0];
         return hzl_d([]*any{hzl_c}, nil)
       })
@@ -274,7 +307,7 @@ Shindo.tests("Generator") do
     }
   ", normal_safe + '
 
-    func main() {
+    func main() {' + main_stack + '
       if from_bool(hzl_a([]*any{}, nil)) {
         hzl_b([]*any{}, nil)
       } else {
@@ -289,7 +322,7 @@ Shindo.tests("Generator") do
   return 2
   ", normal_unsafe + '
 
-    func main() {
+    func main() {' + main_stack + '
       temp := 2
 
       temp := into_any(INT, unsafe.Pointer(&temp))
@@ -303,7 +336,7 @@ Shindo.tests("Generator") do
     b a
   ", normal_unsafe + '
 
-    func main() {
+    func main() {' + main_stack + '
       temp := 2
       hzl_a := into_any(INT, unsafe.Pointer(&temp))
       hzl_b([]*any{hzl_a}, nil)
@@ -316,7 +349,7 @@ Shindo.tests("Generator") do
     puts a
   ", normal_unsafe + '
 
-    func main() {
+    func main() {' + main_stack + '
       temp := "testing"
       hzl_a := into_any(STRING, unsafe.Pointer(&temp))
       hzl_puts([]*any{hzl_a}, nil)
@@ -329,7 +362,7 @@ Shindo.tests("Generator") do
     puts a
   ", normal_unsafe + '
 
-    func main() {
+    func main() {' + main_stack + '
       temp := 2
       temp := "five"
 
@@ -361,6 +394,8 @@ Shindo.tests("Generator") do
 
     var struct_definitions []definition
 
+    var call_stack []string
+
     func init() {
       struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
         definition{name: "float32", members: []string{}, methods: []method{}},
@@ -372,7 +407,7 @@ Shindo.tests("Generator") do
         definition{name: "hat", members: []string{"brimmed", "color"}, methods: []method{}}}
     }
 
-    func main() {
+    func main() {' + main_stack + '
       temp := []*any{into_any(NIL, nil), into_any(NIL, nil)}
       hzl_myhat := into_any(8, unsafe.Pointer(&temp))
       temp := "width"
@@ -396,11 +431,14 @@ Shindo.tests("Generator") do
         if len(arguments) != 1 {
           panic("Wrong number of arguments for a - not 1")
         }
+    '  + func_stack("a") + '
         hzl_b := arguments[0]
       return hzl_print([]*any{}, nil)
     }
 
     var struct_definitions []definition
+
+    var call_stack []string
 
     func init() {
       struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
@@ -413,7 +451,7 @@ Shindo.tests("Generator") do
     }
 
 
-    func main() {
+    func main() {' + main_stack + '
       hzl_a([]*any{hzl_b([]*any{}, nil)}, nil)
     }
   '
@@ -436,6 +474,8 @@ Shindo.tests("Generator") do
 
     var struct_definitions []definition
 
+    var call_stack []string
+
     func init() {
       struct_definitions = []definition{definition{name: "int", members: []string{}, methods: []method{}},
         definition{name: "float32", members: []string{}, methods: []method{}},
@@ -447,6 +487,7 @@ Shindo.tests("Generator") do
           if len(arguments) != 2 {
             panic("Wrong number of arguments for  - not 2")
           }
+          '  + func_stack("walk method of animal") + '
           hzl_self := arguments[0]
           hzl_x := arguments[1]
           _ = hzl_self
@@ -456,7 +497,7 @@ Shindo.tests("Generator") do
         }}}}}
     }
 
-    func main() {
+    func main() {' + main_stack + '
       temp := "walk"
       temp := 3
       hzl____dot___([]*any{hzl_animal([]*any{}, nil), into_any(STRING, unsafe.Pointer(&temp)), into_any(INT, unsafe.Pointer(&temp))}, nil)

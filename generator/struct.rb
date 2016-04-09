@@ -85,20 +85,18 @@ module Structs
   end
 
   def generate_methods(name)
-
-
-
     methods = @methods[name]
     if methods
       methods.map do |tree|
         if tree.block
           tree.block.arguments.unshift(Expression.new(Token.new(:self, Position.new)))
         end
+        stack_name = "#{method_name(tree).to_s[1..-2]} method of #{name}"
         [
           "{",
           method_name(tree),
           ",",
-          block(tree, "\n_ = hzl_self\n"), # Avoid go's weird rules.
+          block(tree, "\n_ = hzl_self\n", stack_name), # Avoid go's weird rules.
           "}",
         ].join
       end
