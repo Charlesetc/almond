@@ -7,3 +7,7 @@ puts a.pop
 a.print
 puts a.unshift
 a.print
+
+a = List/from_a "test"
+
+a.print

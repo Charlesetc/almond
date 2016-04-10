@@ -20,6 +20,18 @@ binding string/get_length int do x string
   "&temp"
 end
 
+define string.each do
+  string/range self (lambda yield)
+end
+
+binding string/range nil do s string action any
+  "for _, x := range(*s) {
+    var b rune = x
+    hzl_call([]*any{action, into_any(CHAR, unsafe.Pointer(&b))}, nil)
+  }"
+  "nil"
+end
+
 # Arrays
 
 define array.length do

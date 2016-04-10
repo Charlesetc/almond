@@ -19,6 +19,7 @@ const (
 	BOOL
 	ARRAY
 	LAMBDA
+	CHAR
 )
 
 type any struct {
@@ -146,6 +147,8 @@ func hzl_print(arguments []*any, yield block) *any {
 			fmt.Printf("%d", *(*int)(a.hazelnut_data))
 		} else if a.hazelnut_type == FLOAT {
 			fmt.Printf("%f", *(*float64)(a.hazelnut_data))
+		} else if a.hazelnut_type == CHAR {
+			fmt.Printf("%c", *(*rune)(a.hazelnut_data))
 		} else if a.hazelnut_type == NIL {
 			fmt.Printf("nil")
 		} else if a.hazelnut_type == STRING {

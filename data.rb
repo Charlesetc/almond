@@ -30,10 +30,12 @@ TYPE_MAPPING = {
   bool: "BOOL",
   nil: "NIL",
   array: "ARRAY",
+  char: "CHAR",
 }
 
 GO_OUTPUT_MAPPING = {
   array: "[]*any",
+  char: "rune",
 }
 
 # Move to this away from that ^^
