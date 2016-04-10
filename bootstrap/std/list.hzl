@@ -3,21 +3,9 @@
 # Lists
 
 struct List {
-  sublist
   head
   tail
-}
-
-struct sublist {
-  next
-  last
-  value
-}
-
-define sublist { x
-  a = new sublist
-  a.value = x
-  a
+  length
 }
 
 define List { *xs
@@ -26,20 +14,6 @@ define List { *xs
     a.push x
   }
   a
-}
-
-define List.push { x
-  if (not self.sublist) {
-    self.sublist = new sublist
-  } else {
-    old_sublist = self.sublist
-    new_sublist = new sublist
-
-    new_sublist.next = old_sublist
-    old_sublist.last = self.sublist
-    self.sublist = new_sublist
-  }
-  self.sublist.value = x
 }
 
 define List.print {
@@ -55,6 +29,78 @@ define List.print {
   puts
 }
 
+define List.each {
+  if (not self.head) {
+    return nil
+  }
+
+  block = lambda(yield)
+  self.tail.each do x
+    call block x
+  end
+}
+
+define List.empty {
+  return (self.length == 0)
+}
+
+define List.push { x
+  if (not self.head) {
+    self.head = sublist x
+    self.tail = self.head
+  } else {
+    last = self.head
+    self.head = sublist x
+
+    self.head.last = last
+    last.next = self.head
+  }
+}
+
+define List.pop {
+  if (not self.head) {
+    return nil
+  }
+  out = self.head
+  self.head = out.last
+  self.head.next = nil
+  return out.value
+}
+
+define List.shift { x
+  if (not self.head) {
+    self.push x # already handles this case
+  } else {
+    next_one = self.tail
+    self.tail = sublist x
+    self.tail.next = next_one
+    next_one.last = self.tail
+  }
+}
+
+define List.unshift {
+  if (not self.tail) {
+    return nil
+  }
+  out = self.tail
+  self.tail = out.next
+  self.tail.next = nil
+  return out.value
+}
+
+
+struct sublist {
+  next
+  last
+  value
+}
+
+define sublist { x
+  a = new sublist
+  a.value = x
+  a
+}
+
 define sublist.each {
   yield self.value
   if (not self.next) {
@@ -68,37 +114,10 @@ define sublist.each {
   end
 }
 
-define List.each {
-  if (not self.sublist) {
-    return nil
+define List/from_a { xs
+  a = List
+  xs.each { x
+    a.push x
   }
-
-  block = lambda(yield)
-  self.sublist.each do x
-    call block x
-  end
-}
-
-define List.pop {
-  if (not self.sublist) {
-    return nil
-  }
-  self.sublist.pop
-}
-
-
-define sublist.pop {
-  if self.next {
-    a = self.next
-    if a.next {
-      return a.pop
-    } else {
-      val = a.value
-      self.next = nil
-      a.last = nil
-      return val
-   }
-  }
-  self.sublist.value = nil
-  return self
+  a
 }

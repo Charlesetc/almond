@@ -30,16 +30,11 @@ end
 
 # Very inefficient
 define int.times_with_index do
-  if (self == 0) {
-    return nil
-  }
-
-  yield self
-
-  block = lambda(yield)
-
-  a = self - 1
-  a.times_with_index do
-    call block self
+  i = 0
+  block = lambda yield
+  self.times do
+    i = i + 1
+    call block i
   end
+
 end

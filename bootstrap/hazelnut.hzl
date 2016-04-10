@@ -1,28 +1,9 @@
 # Hazelnut Compiler
 
-puts "Length:" "testing".length
-
-define zero? do x
-  if (x == 0) do
-    return true
-  end else do
-    return false
-  end
-end
-
-puts (zero? 10) (zero? 0)
-
-(2).times do
-  puts "iterating"
-end
-
-a = List 0
-a.push 2
-a.push 3
-a.push 6
-a.push 4
-
+a = List/from_a [2 3 4]
+a.pop
+a.shift 1
+puts a.pop
 a.print
-a.pop
-a.pop
+puts a.unshift
 a.print

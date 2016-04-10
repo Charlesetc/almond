@@ -12,10 +12,10 @@ binding gets string do
 end
 
 define string.length do
-  get_string_length self
+  string/get_length self
 end
 
-binding get_string_length int do x string
+binding string/get_length int do x string
   "temp := len(*x)"
   "&temp"
 end
@@ -44,7 +44,6 @@ end
 define array.each do
   block = lambda yield
   self.length.times_with_index do i
-    puts i
     call block (self.index (i - 1))
   end
 end

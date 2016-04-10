@@ -60,13 +60,14 @@ def hzl_namespace(name)
   name.gsub! "?", "___question___"
   name.gsub! "=", "___equals___"
   name.gsub! "-", "___minus___"
+  name.gsub! "/", "___divide___"
   "hzl_" + name
 end
 
 class String
 
   def alpha?
-    self =~ /^[[:alpha:]\.\-?=%$^_+@*]+$/
+    self =~ /^[[:alpha:]\.\/\-?=%$^_+@*]+$/
   end
 
   def numeric?
@@ -74,7 +75,7 @@ class String
   end
 
   def alphanumeric?
-    self =~ /^[[:alpha:]\-_=%?$^+@*[:digit:]]+$/
+    self =~ /^[[:alpha:]\/\-_=%?$^+@*[:digit:]]+$/
   end
 
   def quote?
