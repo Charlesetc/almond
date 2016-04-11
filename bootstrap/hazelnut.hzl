@@ -1,13 +1,5 @@
 # Hazelnut Compiler
 
-a = List/from_a [2 3 4]
-a.pop
-a.shift 1
-puts a.pop
-a.print
-puts a.unshift
-a.print
+List/from_a [2 3 4]
+List/from_a "test"
 
-a = List/from_a "test"
-
-a.print

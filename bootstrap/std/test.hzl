@@ -1,0 +1,53 @@
+
+# Testing
+
+define Describe do name
+  if ((OS/argument "run-tests") == "true") {
+    puts
+    print name
+    puts ":"
+    yield
+  }
+end
+
+define Test do name
+  flag = OS/argument "only-test"
+  condition = or (not flag) (flag == name)
+  if condition {
+    puts "\t*" name
+    assert yield
+  }
+end
+
+binding or bool do a bool b bool
+  "temp := *a || *b "
+  "&temp"
+end
+
+binding OS/argument nil do name string
+  "
+  var result string
+  for i, arg := range os.Args {
+    if arg == \"--\" + *name {
+      if len(os.Args) <= (i+1) {
+        break
+      }
+      result = os.Args[i+1]
+      return into_any(STRING, unsafe.Pointer(&result))
+    }
+  }
+  "
+  "nil"
+end
+
+binding panic nil do x string
+  "panic(*x)"
+  "nil"
+end
+
+define assert do x
+  if (not x) {
+    panic "assertion error"
+  }
+  true
+end

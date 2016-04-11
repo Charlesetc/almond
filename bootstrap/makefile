@@ -17,3 +17,11 @@ tokens:
 
 go:
 	hazelnut $(FILES)
+
+test: build-test run-test
+
+build-test:
+	hazelnut build $(FILES) ./tests/*
+
+run-test:
+	./build/boolean --run-tests true

@@ -1,0 +1,34 @@
+
+# Tests for list operations
+
+Describe "Lists" do
+
+  Test "test `pop`" do
+    list = List 1 2 3 4
+    a = list.pop
+    assert (list.length == 3)
+    a == 4
+  end
+
+  Test "test `shift`" do
+    list = List 1 2 3 4
+    a = list.shift
+    assert (list.length == 3)
+    a == 1
+  end
+
+  Test "test `push`" do
+    list = List 1 2 3 4
+    list.push 2
+    assert (list.length == 5)
+    assert (list.pop == 2)
+  end
+
+  Test "test `unshift`" do
+    list = List 1 2 3 4
+    list.unshift 2
+    assert (list.length == 5)
+    assert (list.shift == 2)
+  end
+
+end

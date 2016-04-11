@@ -10,6 +10,7 @@ struct List {
 
 define List { *xs
   a = new List
+  a.length = 0
   xs.each { x
     a.push x
   }
@@ -45,6 +46,7 @@ define List.empty {
 }
 
 define List.push { x
+  self.length = self.length + 1
   if (not self.head) {
     self.head = sublist x
     self.tail = self.head
@@ -58,6 +60,7 @@ define List.push { x
 }
 
 define List.pop {
+  self.length = self.length - 1
   if (not self.head) {
     return nil
   }
@@ -67,10 +70,11 @@ define List.pop {
   return out.value
 }
 
-define List.shift { x
+define List.unshift { x
   if (not self.head) {
     self.push x # already handles this case
   } else {
+    self.length = self.length + 1
     next_one = self.tail
     self.tail = sublist x
     self.tail.next = next_one
@@ -78,7 +82,8 @@ define List.shift { x
   }
 }
 
-define List.unshift {
+define List.shift {
+  self.length = self.length - 1
   if (not self.tail) {
     return nil
   }
