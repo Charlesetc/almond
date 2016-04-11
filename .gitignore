@@ -2,3 +2,4 @@
 build/main.go
 .sass-cache
 _site/*
+build/hazelnut

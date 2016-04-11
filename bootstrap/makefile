@@ -10,7 +10,7 @@ show:
 	hazelnut show $(FILES)
 
 build:
-	hazelnut build $(FILES)
+	hazelnut build $(FILES) --build=hazelnut
 
 tokens:
 	hazelnut tokens $(FILES)
@@ -21,7 +21,7 @@ go:
 test: build-test run-test
 
 build-test:
-	hazelnut build $(FILES) ./tests/*
+	hazelnut build $(FILES) ./tests/* --build=hazelnut
 
 run-test:
-	./build/boolean --run-tests true
+	./build/hazelnut --run-tests true

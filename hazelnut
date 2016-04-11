@@ -19,6 +19,11 @@ when "run"
   puts `go run ./build/*.go`
 when "build"
   name = ARGV[0]
+  ARGV.reject! do |x|
+    if x[0..7] == '--build='
+      name = x[8..-1]
+    end
+  end
   File.write("./build/main.go", compile(ARGF.read))
   output_file = File.basename(name).split('.')[0]
   puts `go build -o ./build/#{output_file} ./build/*.go `
