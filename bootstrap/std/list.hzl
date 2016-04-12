@@ -88,8 +88,8 @@ define List.shift {
     return nil
   }
   out = self.tail
-  self.tail = out.next
-  self.tail.next = nil
+  self.tail = self.tail.next
+  out.next = nil
   return out.value
 }
 

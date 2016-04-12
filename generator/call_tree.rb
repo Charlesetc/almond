@@ -139,6 +139,22 @@ module Tree
     )
   end
 
+  match :char do |tree|
+    raise "char does not take a block" if tree.block
+    raise "char takes one argument" if tree.arguments.length != 1
+    name = tree.arguments[0].symbol
+
+    temp = temp_var
+    preceeding = "#{temp} := '#{name}'\n"
+
+    body = "into_any(CHAR, unsafe.Pointer(&#{temp}))"
+
+    FunctionCall.new(
+      body,
+      preceeding,
+    )
+  end
+
   match :new do |tree|
     raise "new does not take a block" if tree.block
     raise "new takes one argument" if tree.arguments.length != 1
