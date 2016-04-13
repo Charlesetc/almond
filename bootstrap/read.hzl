@@ -1,0 +1,39 @@
+
+# Read
+
+struct TSymbol {
+  symbol
+}
+
+define TSymbol {
+  t = new TSymbol
+  t.symbol = List
+  t
+}
+
+define HZL/builtin-read do read-table stream 
+  first_condition = (read-table.get stream.peek) == nil)
+  condition = or (not first_condition) (stream.peek == nil)
+  if condition {
+    return TSymbol
+  }
+  current = stream.pop
+  token = HZL/builtin-read read-table stream
+  # This token is only a TSymbol
+  token.symbol.push current
+  return token
+end
+
+define HZL/read do read-table stream
+  reader = read-table.get stream.peek
+  if (not reader) {
+    reader = lambda do read-table stream
+      HZL/builtin-read read-table stream
+    end
+  }
+  call reader read-table stream
+end
+
+
+symbol = HZL/read Table (List/from_a 'test')
+symbol.symbol.print

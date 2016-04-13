@@ -1,0 +1,27 @@
+
+# Test Tables
+
+Describe "Tables" do
+
+  Test "get returns nil" do
+    t = Table
+    not (t.get "hi")
+  end
+
+  Test "add and get" do 
+    t = Table
+    t.add "pumpkin" "pie"
+    
+    t.get "pumpkin" == "pie"
+  end
+
+  Test "add twice and get" do 
+    t = Table
+
+    t.add "saturday" "night"
+    t.add "saturday" "morning"
+    
+    t.get "saturday" == "morning"
+  end
+
+end

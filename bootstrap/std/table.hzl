@@ -1,0 +1,32 @@
+
+# Table
+
+struct Table {
+  contents
+}
+
+define Table {
+  a = new Table
+  a.contents = List
+  a
+}
+
+define Table.get { term
+  output = nil
+  self.contents.each do data
+    key = data.index 0
+    value = data.index 1
+
+    # This can be improved with exceptions 
+    # or break or goto or anything honestly
+    if (key == term) {
+      output = value
+    }
+  end
+  return output
+}
+
+define Table.add { key value
+  self.contents.push [key value]
+  return nil
+}

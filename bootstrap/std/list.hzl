@@ -66,7 +66,9 @@ define List.pop {
   }
   out = self.head
   self.head = out.last
-  self.head.next = nil
+  if self.head {
+    self.head.next = nil
+  }
   return out.value
 }
 
@@ -125,4 +127,8 @@ define List/from_a { xs
     a.push x
   }
   a
+}
+
+define List.peek {
+  self.head
 }

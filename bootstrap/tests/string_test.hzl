@@ -1,0 +1,18 @@
+
+# Test Tables
+
+Describe "Strings" do
+
+  Test "equals operator" do
+    a = "test"
+    b = "test"
+    a == b
+  end
+
+  Test "not equals operator" do
+    a = "test"
+    b = "wow"
+    not (a == b)
+  end
+
+end

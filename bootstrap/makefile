@@ -1,5 +1,5 @@
 
-FILES = ./std/* ./hazelnut.hzl
+FILES = ./std/* ./hazelnut.hzl ./read.hzl
 
 .PHONY: run show build tokens go
 
@@ -18,10 +18,11 @@ tokens:
 go:
 	hazelnut $(FILES)
 
-test: build-test run-test
+test: build-test
+	./build/hazelnut --run-tests true
 
 build-test:
 	hazelnut build $(FILES) ./tests/* --build=hazelnut
 
 run-test:
-	./build/hazelnut --run-tests true
+	./build/hazelnut --run-tests true --only-test "$(name)"

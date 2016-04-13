@@ -1,0 +1,8 @@
+
+
+binding raise nil do
+  "panic(\"raise\")"
+  "nil"
+end
+
+
