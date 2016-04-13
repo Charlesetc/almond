@@ -25,6 +25,9 @@ define HZL/builtin-read do read-table stream
 end
 
 define HZL/read do read-table stream
+  if (stream.peek == nil) {
+    return nil
+  }
   reader = read-table.get stream.peek
   if (not reader) {
     reader = lambda do read-table stream
@@ -35,5 +38,17 @@ define HZL/read do read-table stream
 end
 
 
-symbol = HZL/read Table (List/from_a 'test')
-symbol.symbol.print
+define HZL/start do read-table stream
+  a = HZL/read read-table stream
+  if (a == nil) {
+    return List
+  }
+
+  list = HZL/start read-table stream
+  list.unshift a
+  list
+end
+
+
+forest = HZL/start Table (List/from_a 'test')
+forest.head.value.symbol.print
