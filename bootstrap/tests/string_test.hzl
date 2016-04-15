@@ -16,3 +16,21 @@ Describe "Strings" do
   end
 
 end
+
+Describe "Chars" do
+
+  Test "not equals operator" do
+    a = char a
+    space = char ' '
+
+    not (a == space)
+  end
+
+  Test "equals operator" do
+    a = char 'a'
+    b = char a
+
+    a == b
+  end
+
+end

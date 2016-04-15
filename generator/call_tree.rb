@@ -142,10 +142,14 @@ module Tree
   match :char do |tree|
     raise "char does not take a block" if tree.block
     raise "char takes one argument" if tree.arguments.length != 1
-    name = tree.arguments[0].symbol
+    name = tree.arguments[0].symbol.to_s
+
+    if name[0] != "'"
+      name = "'" + name + "'"
+    end
 
     temp = temp_var
-    preceeding = "#{temp} := '#{name}'\n"
+    preceeding = "#{temp} := #{name}\n"
 
     body = "into_any(CHAR, unsafe.Pointer(&#{temp}))"
 
