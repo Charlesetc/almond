@@ -11,6 +11,10 @@ define TSymbol {
   t
 }
 
+struct TEOF {}
+
+define TEOF {: new TEOF }
+
 define HZL/builtin-read do read-table stream 
   first_condition = (read-table.get stream.peek) == nil)
   condition = or (not first_condition) (stream.peek == nil)
@@ -26,7 +30,7 @@ end
 
 define HZL/read do read-table stream
   if (stream.peek == nil) {
-    return nil
+    return TEOF
   }
   reader = read-table.get stream.peek
   if (not reader) {
@@ -37,18 +41,30 @@ define HZL/read do read-table stream
   call reader read-table stream
 end
 
-
 define HZL/start do read-table stream
   a = HZL/read read-table stream
-  if (a == nil) {
+
+  if (kind a == "TEOF") {
     return List
   }
 
   list = HZL/start read-table stream
-  list.unshift a
+  condition = a == nil
+  if (not condition) {
+    list.unshift a
+  }
   list
 end
 
+read-nothing = lambda do _ stream
+  stream.pop
+  nil
+end
 
-forest = HZL/start Table (List/from_a 'test')
-forest.head.value.symbol.print
+read-table = Table
+read-table.add (char ' ') read-nothing
+
+forest = HZL/start read-table (List/from_a 'test this and that')
+forest.each do tree
+  tree.symbol.print
+end

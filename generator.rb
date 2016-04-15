@@ -97,7 +97,11 @@ class Generator
           #{temp} := arguments[#{i}:]
           #{hzl_namespace(a.symbol)} := into_any(ARRAY, unsafe.Pointer(&#{temp}));"
         else
-          "#{hzl_namespace(a.symbol)} := arguments[#{i}];"
+          if a.symbol == :_
+            ""
+          else
+            "#{hzl_namespace(a.symbol)} := arguments[#{i}];"
+          end
         end
         stack_push a
 

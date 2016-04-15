@@ -1,0 +1,14 @@
+
+# Test generic things
+
+struct example {}
+
+Describe "generic" do
+
+  Test "`kind` function" do
+    a = new example
+    assert ((kind a) == "example")
+    not ((kind a) == "not_example")
+  end
+
+end

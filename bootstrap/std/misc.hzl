@@ -5,4 +5,10 @@ binding raise nil do
   "nil"
 end
 
+binding kind string do a any
+  "
+	def := struct_definitions[a.hazelnut_type]
+  "
+  "&(def.name)"
+end
 
