@@ -11,11 +11,29 @@ define TSymbol {
   t
 }
 
-struct TEOF {}
+struct TEOF {
+  list
+}
+struct TItemBreak {
+  list
+}
 
-define TEOF {: new TEOF }
+define TEOF { l
+  a = new TEOF
+  a.list = l
+  a
+}
+
+define TItemBreak { l
+  a = new TItemBreak
+  a.list = l
+  a
+}
 
 define HZL/builtin-read do read-table stream 
+
+  # if (table.get stream.peek) is nil
+  # or  stream.peak is nil
   first_condition = (read-table.get stream.peek) == nil)
   condition = or (not first_condition) (stream.peek == nil)
   if condition {
@@ -30,7 +48,7 @@ end
 
 define HZL/read do read-table stream
   if (stream.peek == nil) {
-    return TEOF
+    return (new TEOF)
   }
   reader = read-table.get stream.peek
   if (not reader) {
@@ -41,19 +59,36 @@ define HZL/read do read-table stream
   call reader read-table stream
 end
 
-define HZL/start do read-table stream
+define HZL/read-expression do read-table stream
   a = HZL/read read-table stream
 
   if (kind a == "TEOF") {
-    return List
+    return (TEOF List)
+  }
+  if (kind a == "TItemBreak") {
+    return (TItemBreak List)
   }
 
-  list = HZL/start read-table stream
+
+  list = HZL/read-expression read-table stream
+
+  # if a != nil
   condition = a == nil
   if (not condition) {
-    list.unshift a
+    list.list.push a
   }
   list
+end
+
+define HZL/start do read-table stream
+  expr = HZL/read-expression read-table stream
+  if (kind expr == "TItemBreak") {
+    items = HZL/start read-table stream
+    items.push expr
+    return items
+  }
+  assert (kind expr == "TEOF")
+  return (List expr)
 end
 
 read-nothing = lambda do _ stream
@@ -61,10 +96,20 @@ read-nothing = lambda do _ stream
   nil
 end
 
+read-newline = lambda do _ stream
+  stream.pop
+  new TItemBreak
+end
+
 read-table = Table
 read-table.add (char ' ') read-nothing
+read-table.add (char '\n') read-newline
 
-forest = HZL/start read-table (List/from_a 'test this and that')
-forest.each do tree
-  tree.symbol.print
+items = HZL/start read-table (List/from_a 'test this\nand\nthat')
+
+items.each do item
+  puts "Item:"
+  item.list.each do tree
+    tree.symbol.print
+  end
 end

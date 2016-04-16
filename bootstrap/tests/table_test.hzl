@@ -24,4 +24,14 @@ Describe "Tables" do
     t.get "saturday" == "morning"
   end
 
+  Test "add two values" do
+    t = Table
+    t.add "a" "apple"
+    t.add "b" "banana"
+
+    assert ((t.get "a") == "apple")
+    assert ((t.get "b") == "banana")
+    assert ((t.get "a") == "apple")
+  end
+
 end
