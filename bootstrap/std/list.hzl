@@ -135,3 +135,14 @@ define List.peek {
   }
   self.tail.value
 }
+
+define List/equal { a b
+  a1 = a.pop
+  b1 = b.pop
+  if (a1 == nil) {
+    return (b1 == nil)
+  }
+  past = List/equal a b
+  now = a1 == b1
+  return (and past now)
+}

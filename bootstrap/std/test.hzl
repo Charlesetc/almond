@@ -24,6 +24,11 @@ binding or bool do a bool b bool
   "&temp"
 end
 
+binding and bool do a bool b bool
+  "temp := *a && *b "
+  "&temp"
+end
+
 binding OS/argument nil do name string
   "
   var result string

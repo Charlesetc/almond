@@ -1,0 +1,57 @@
+
+# Test read
+
+define AST/assert-equal do a b
+  condition = kind a == kind b
+  if (not condition) {
+    panic "asserted equal but different kinds"
+    return nil
+  }
+  if (kind a == "List") {
+    condition = a.length == b.length
+    if (not condition) {
+      panic "asserted equal but lists different lengths"
+      return nil
+    }
+    l = a.length
+    l.times do
+      a1 = a.pop 
+      b1 = b.pop
+      AST/assert-equal a1 b1
+    end
+    return true # Only if the other assertions pass. 
+  }
+  if (kind a == "TSymbol") {
+    assert (List/equal a.symbol b.symbol)
+    return true
+  }
+  if (kind a == "TOperator") {
+    assert a.char == b.char
+  }
+end
+
+define assert-reads do str list
+  items = HZL/start default-table (List/from_a str)
+
+  new-list = List
+  items.each do i
+    new-list.push i.list
+  end
+
+  AST/assert-equal new-list list
+  true
+end
+
+define Symbol do str
+  t = new TSymbol
+  t.symbol = List/from_a str
+  t
+end
+
+Describe "Read" do
+
+  Test "read two identifiers with space" do
+    assert-reads "test two" (List (List (Symbol "test") (Symbol "two")))
+  end
+
+end
