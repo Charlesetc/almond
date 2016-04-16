@@ -1,0 +1,12 @@
+# Globals
+
+
+a = "test"
+
+global a
+
+define print_a do
+  puts a
+end
+
+print_a

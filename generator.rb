@@ -16,6 +16,7 @@ class Generator
     @functions = []
     @methods = {}
     @bindings = []
+    @globals = []
     @struct_definitions = {}
   end
 
@@ -32,7 +33,11 @@ class Generator
 
   def ingest_forest
     @forest.reject! do |tree|
-      if tree.symbol == :define
+      if tree.symbol == :global
+        a = tree.arguments[0]
+        stack_push a
+        @globals << a.symbol
+      elsif tree.symbol == :define
         first_a = tree.arguments[0]
         if first_a and first_a.symbol == :'.'
           if first_a.arguments.length != 2
@@ -186,7 +191,14 @@ class Generator
     @bindings.map { |tree| generate_binding tree }.join("\n") +
     struct_headers + 
     call_stack +
+    globals +
     init_function
+  end
+
+  def globals
+    @globals.map do |g|
+      "\nvar #{hzl_namespace(g)} *any\n"
+    end.join
   end
 
   def call_stack
@@ -250,4 +262,11 @@ def unescape(expression)
   code = expression.symbol.to_s[1..-2]
   code.gsub "\\\\", "\\"
   code.gsub "\\\"", "\""
+end
+
+
+class Symbol
+  def symbol
+    self
+  end
 end
