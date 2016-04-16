@@ -1,17 +1,29 @@
 
 # Read
 
+# Any identifier
 struct TSymbol {
   symbol
 }
 
+# Something that should be parsed as an operator
+struct TOperator {
+  char
+}
+
+# Only used on the top-level
+# Technically contains a stand-alone tree
 struct TEOF {
   list
 }
+# Only used on the top-level
+# Technically contains a stand-alone tree
 struct TItemBreak {
   list
 }
 
+# Used internally when parsing.
+# Should not be in the final syntax tree.
 struct TToken {
   char
 }
@@ -36,6 +48,12 @@ define TItemBreak { l
 
 define TToken { c
   a = new TToken
+  a.char = c
+  a
+}
+
+define TOperator { c
+  a = new TOperator
   a.char = c
   a
 }
@@ -111,6 +129,11 @@ read-newline = lambda do _ stream
   new TItemBreak
 end
 
+operator-function = lambda do _ stream
+  a = stream.shift
+  TOperator a
+end
+
 read-close-paren = lambda do _ stream
   stream.shift
   TToken (char ')')
@@ -155,9 +178,17 @@ read-close-paren = read-close-paren
 read-table.add (char '(') read-open-paren
 read-table.add (char ')') read-close-paren
 
-items = HZL/start read-table (List/from_a 'wow ((this that) hi) tab next')
+operators = [(char '*') (char '+')]
+
+operators.each do operator
+  read-table.add operator operator-function
+end
+
+items = HZL/start read-table (List/from_a 'wow ((this + that) hi) tab * next')
 
 puts 'Done.'
+
+# List <TToken | TOperator>
 
 items.each do item
   print-ast item.list
@@ -170,7 +201,13 @@ define print-ast { ast
       print-ast a
     end
     puts ")"
-  } else {
-    ast.symbol.print
+    return nil
   }
+  if (kind ast == "TOperator") {
+    print "Op("
+    print ast.char
+    puts ")"
+    return nil
+  }
+  ast.symbol.print
 }
