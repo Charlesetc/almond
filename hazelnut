@@ -4,10 +4,13 @@ require_relative "./generator.rb"
 require_relative "./parser.rb"
 require_relative "./token.rb"
 
-def compile(source)
-  t = Tokenizer.new source
-  t.read
-  parser = Parser.new t.tokens
+def compile
+  tokens = ARGV.map do |file|
+    t = Tokenizer.new File.read(file)
+    t.read
+    t.tokens
+  end.flatten
+  parser = Parser.new tokens
   forest = parser.parse
   generator = Generator.new forest
   generator.generate
@@ -15,7 +18,7 @@ end
 
 case a = ARGV.shift
 when "run"
-  File.write("./build/main.go", compile(ARGF.read))
+  File.write("./build/main.go", compile())
   puts `go run ./build/*.go`
 when "build"
   name = ARGV[0]
@@ -24,7 +27,7 @@ when "build"
       name = x[8..-1]
     end
   end
-  File.write("./build/main.go", compile(ARGF.read))
+  File.write("./build/main.go", compile())
   output_file = File.basename(name).split('.')[0]
   puts `go build -o ./build/#{output_file} ./build/*.go `
 when "show"
@@ -39,5 +42,5 @@ when "tokens"
   puts t.tokens.map {|x| x.symbol.to_s}
 else
   ARGV.unshift a
-  puts compile(ARGF.read)
+  puts compile()
 end

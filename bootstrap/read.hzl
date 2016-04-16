@@ -119,31 +119,6 @@ define HZL/start do read-table stream
   return (List expr)
 end
 
-read-nothing = lambda do _ stream
-  stream.shift
-  nil
-end
-
-read-newline = lambda do _ stream
-  stream.shift
-  new TItemBreak
-end
-
-operator-function = lambda do _ stream
-  a = stream.shift
-  TOperator a
-end
-
-read-close-paren = lambda do _ stream
-  stream.shift
-  TToken (char ')')
-end
-
-read-open-paren = lambda do read-table stream
-  stream.shift
-  HZL/read-open-paren read-table stream
-end
-
 define HZL/read-open-paren do read-table stream
   a = HZL/read read-table stream
 
@@ -170,21 +145,50 @@ define HZL/read-open-paren do read-table stream
   list
 end
 
-read-table = Table
-read-table.add (char ' ') read-nothing
-read-table.add (char '\n') read-newline
-read-open-paren = read-open-paren 
-read-close-paren = read-close-paren
-read-table.add (char '(') read-open-paren
-read-table.add (char ')') read-close-paren
+define default-table do
 
-operators = [(char '*') (char '+')]
+  read-nothing = lambda do _ stream
+    stream.shift
+    nil
+  end
 
-operators.each do operator
-  read-table.add operator operator-function
+  read-newline = lambda do _ stream
+    stream.shift
+    new TItemBreak
+  end
+
+  operator-function = lambda do _ stream
+    a = stream.shift
+    TOperator a
+  end
+
+  read-close-paren = lambda do _ stream
+    stream.shift
+    TToken (char ')')
+  end
+
+  read-open-paren = lambda do read-table stream
+    stream.shift
+    HZL/read-open-paren read-table stream
+  end
+
+  read-table = Table
+  read-table.add (char ' ') read-nothing
+  read-table.add (char '\n') read-newline
+  read-close-paren = read-close-paren
+  read-table.add (char '(') read-open-paren
+  read-table.add (char ')') read-close-paren
+
+  operators = [(char '*') (char '+')]
+
+  operators.each do operator
+    read-table.add operator operator-function
+  end
+
+  read-table
 end
 
-items = HZL/start read-table (List/from_a 'wow ((this + that) hi) tab * next')
+items = HZL/start default-table (List/from_a 'wow ((this + that) hi) tab * next')
 
 puts 'Done.'
 
