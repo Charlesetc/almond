@@ -130,8 +130,8 @@ define List/from_a { xs
 }
 
 define List.peek {
-  if (not self.head) {
+  if (not self.tail) {
     return nil
   }
-  self.head.value
+  self.tail.value
 }

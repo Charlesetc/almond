@@ -5,17 +5,21 @@ struct TSymbol {
   symbol
 }
 
-define TSymbol {
-  t = new TSymbol
-  t.symbol = List
-  t
-}
-
 struct TEOF {
   list
 }
 struct TItemBreak {
   list
+}
+
+struct TToken {
+  char
+}
+
+define TSymbol {
+  t = new TSymbol
+  t.symbol = List
+  t
 }
 
 define TEOF { l
@@ -30,8 +34,14 @@ define TItemBreak { l
   a
 }
 
-define HZL/builtin-read do read-table stream 
+define TToken { c
+  a = new TToken
+  a.char = c
+  a
+}
 
+
+define HZL/builtin-read do read-table stream 
   # if (table.get stream.peek) is nil
   # or  stream.peak is nil
   first_condition = (read-table.get stream.peek) == nil)
@@ -39,10 +49,10 @@ define HZL/builtin-read do read-table stream
   if condition {
     return TSymbol
   }
-  current = stream.pop
+  current = stream.shift
   token = HZL/builtin-read read-table stream
   # This token is only a TSymbol
-  token.symbol.push current
+  token.symbol.unshift current
   return token
 end
 
@@ -75,7 +85,7 @@ define HZL/read-expression do read-table stream
   # if a != nil
   condition = a == nil
   if (not condition) {
-    list.list.push a
+    list.list.unshift a
   }
   list
 end
@@ -84,7 +94,7 @@ define HZL/start do read-table stream
   expr = HZL/read-expression read-table stream
   if (kind expr == "TItemBreak") {
     items = HZL/start read-table stream
-    items.push expr
+    items.unshift expr
     return items
   }
   assert (kind expr == "TEOF")
@@ -92,24 +102,75 @@ define HZL/start do read-table stream
 end
 
 read-nothing = lambda do _ stream
-  stream.pop
+  stream.shift
   nil
 end
 
 read-newline = lambda do _ stream
-  stream.pop
+  stream.shift
   new TItemBreak
+end
+
+read-close-paren = lambda do _ stream
+  stream.shift
+  TToken (char ')')
+end
+
+read-open-paren = lambda do read-table stream
+  stream.shift
+  HZL/read-open-paren read-table stream
+end
+
+define HZL/read-open-paren do read-table stream
+  a = HZL/read read-table stream
+
+  if (kind a == "TEOF") {
+    raise # EOF in a paren? IMPOSSIBLE
+  }
+  if (kind a == "TItemBreak") {
+    # Ignore Item breaks in parentheses
+    return (HZL/read-open-paren read-table stream)
+  }
+  if (kind a == "TToken") {
+    condition = a.char == (char ')')
+    if condition {
+      return List
+    }
+  }
+
+  list = HZL/read-open-paren read-table stream
+
+  condition = a == nil
+  if (not condition) {
+    list.unshift a
+  }
+  list
 end
 
 read-table = Table
 read-table.add (char ' ') read-nothing
 read-table.add (char '\n') read-newline
+read-open-paren = read-open-paren 
+read-close-paren = read-close-paren
+read-table.add (char '(') read-open-paren
+read-table.add (char ')') read-close-paren
 
-items = HZL/start read-table (List/from_a 'test this\nand\nthat')
+items = HZL/start read-table (List/from_a 'wow ((this that) hi) tab next')
+
+puts 'Done.'
 
 items.each do item
-  puts "Item:"
-  item.list.each do tree
-    tree.symbol.print
-  end
+  print-ast item.list
 end
+
+define print-ast { ast
+  if (kind ast == "List") {
+    puts "("
+    ast.each do a
+      print-ast a
+    end
+    puts ")"
+  } else {
+    ast.symbol.print
+  }
+}
