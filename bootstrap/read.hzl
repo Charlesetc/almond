@@ -11,14 +11,8 @@ struct TOperator {
   char
 }
 
-# Only used on the top-level
-# Technically contains a stand-alone tree
-struct TEOF {
-  list
-}
-# Only used on the top-level
-# Technically contains a stand-alone tree
-struct TItemBreak {
+struct TAccumulator {
+  token_type
   list
 }
 
@@ -35,13 +29,16 @@ define TSymbol {
 }
 
 define TEOF { l
-  a = new TEOF
-  a.list = l
-  a
+  TAccumulator "TEOF" l
 }
 
 define TItemBreak { l
-  a = new TItemBreak
+  TAccumulator "TItemBreak" l
+}
+
+define TAccumulator { token_type l
+  a = new TAccumulator
+  a.token_type = token_type
   a.list = l
   a
 }
@@ -56,6 +53,28 @@ define TOperator { c
   a = new TOperator
   a.char = c
   a
+}
+
+# All possible ast types
+
+define TToken.token_type {
+  "TToken"
+}
+
+define TSymbol.token_type {
+  "TSymbol"
+}
+
+define List.token_type {
+  "TList"
+}
+
+define nil.token_type {
+  "TNil"
+}
+
+define TOperator.token_type {
+  "TOperator"
 }
 
 
@@ -76,7 +95,7 @@ end
 
 define HZL/read do read-table stream
   if (stream.peek == nil) {
-    return (new TEOF)
+    return (TEOF List)
   }
   reader = read-table.get stream.peek
   if (not reader) {
@@ -87,16 +106,13 @@ define HZL/read do read-table stream
   call reader read-table stream
 end
 
+# Read until we hit the end of a line, file, or block
 define HZL/read-expression do read-table stream
   a = HZL/read read-table stream
 
-  if (kind a == "TEOF") {
-    return (TEOF List)
+  if (kind a == "TAccumulator") {
+    return a
   }
-  if (kind a == "TItemBreak") {
-    return (TItemBreak List)
-  }
-
 
   list = HZL/read-expression read-table stream
 
@@ -110,22 +126,22 @@ end
 
 define HZL/start do read-table stream
   expr = HZL/read-expression read-table stream
-  if (kind expr == "TItemBreak") {
+  if (expr.token_type == "TItemBreak") {
     items = HZL/start read-table stream
     items.unshift expr
     return items
   }
-  assert (kind expr == "TEOF")
+  assert (expr.token_type == "TEOF")
   return (List expr)
 end
 
 define HZL/read-open-paren do read-table stream
   a = HZL/read read-table stream
 
-  if (kind a == "TEOF") {
+  if (a.token_type == "TEOF") {
     raise # EOF in a paren? IMPOSSIBLE
   }
-  if (kind a == "TItemBreak") {
+  if (a.token_type == "TItemBreak") {
     # Ignore Item breaks in parentheses
     return (HZL/read-open-paren read-table stream)
   }
@@ -154,7 +170,7 @@ define default-table do
 
   read-newline = lambda do _ stream
     stream.shift
-    new TItemBreak
+    TItemBreak List
   end
 
   operator-function = lambda do _ stream
