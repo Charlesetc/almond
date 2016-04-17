@@ -22,8 +22,14 @@ struct TToken {
   char
 }
 
+# Generic Accumulator
+define TList { l
+  TAccumulator "TList" l
+}
+
 define TSymbol {
   t = new TSymbol
+  # This is an ok occurance of List
   t.symbol = List
   t
 }
@@ -63,10 +69,6 @@ define TToken.token_type {
 
 define TSymbol.token_type {
   "TSymbol"
-}
-
-define List.token_type {
-  "TList"
 }
 
 define nil.token_type {
@@ -110,7 +112,10 @@ end
 define HZL/read-expression do read-table stream
   a = HZL/read read-table stream
 
-  if (kind a == "TAccumulator") {
+  if (a.token_type == "TEOF") {
+    return a
+  }
+  if (a.token_type == "TItemBreak") {
     return a
   }
 
@@ -128,11 +133,11 @@ define HZL/start do read-table stream
   expr = HZL/read-expression read-table stream
   if (expr.token_type == "TItemBreak") {
     items = HZL/start read-table stream
-    items.unshift expr
+    items.list.list.unshift expr
     return items
   }
   assert (expr.token_type == "TEOF")
-  return (List expr)
+  return (TList expr)
 end
 
 define HZL/read-open-paren do read-table stream
@@ -148,17 +153,17 @@ define HZL/read-open-paren do read-table stream
   if (kind a == "TToken") {
     condition = a.char == (char ')')
     if condition {
-      return List
+      return (TList List)
     }
   }
 
-  list = HZL/read-open-paren read-table stream
+  tlist = HZL/read-open-paren read-table stream
 
   condition = a == nil
   if (not condition) {
-    list.unshift a
+    tlist.list.unshift a
   }
-  list
+  tlist
 end
 
 define default-table do
@@ -170,7 +175,7 @@ define default-table do
 
   read-newline = lambda do _ stream
     stream.shift
-    TItemBreak List
+    (TItemBreak List)
   end
 
   operator-function = lambda do _ stream
@@ -206,9 +211,10 @@ define default-table do
 end
 
 define print-ast { ast
-  if (kind ast == "List") {
+  if (kind ast == "TAccumulator") {
+    print ast.token_type
     puts "("
-    ast.each do a
+    ast.list.each do a
       print-ast a
     end
     puts ")"

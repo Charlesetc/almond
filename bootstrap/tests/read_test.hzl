@@ -3,6 +3,9 @@
 
 define AST/assert-equal do a b
   condition = kind a == kind b
+  condition1 = and (kind a == "TAccumulator") (kind b == "List")
+  condition = or condition condition1
+
   if (not condition) {
     puts (kind a) (kind b)
     panic "asserted equal but different kinds"
@@ -35,13 +38,7 @@ define assert-reads do str *list
   list = List/from_a list
   items = HZL/start default-table (List/from_a str)
 
-
-  new-list = List
-  items.each do i
-    new-list.push i.list
-  end
-
-  AST/assert-equal new-list list
+  AST/assert-equal items list
   true
 end
 

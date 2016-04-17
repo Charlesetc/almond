@@ -24,5 +24,5 @@ test: build-test
 build-test:
 	hazelnut build $(FILES) ./tests/* --build=hazelnut
 
-run-test:
+run-test: build-test
 	./build/hazelnut --run-tests true --only-test "$(name)"

@@ -12,3 +12,9 @@ binding kind string do a any
   "&(def.name)"
 end
 
+define debug do
+    puts '___-----------___'
+    print '  '
+    yield
+    puts '---___________---'
+end
