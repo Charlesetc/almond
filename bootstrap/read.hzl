@@ -175,6 +175,7 @@ define default-table do
   read-table = Table
   read-table.add (char ' ') read-nothing
   read-table.add (char '\n') read-newline
+  read-table.add (char ':') read-newline
   read-close-paren = read-close-paren
   read-table.add (char '(') read-open-paren
   read-table.add (char ')') read-close-paren

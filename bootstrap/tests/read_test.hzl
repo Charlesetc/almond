@@ -89,4 +89,10 @@ Describe "Read" do
     assert-reads "one + (two * three)" (List (Symbol "one") op1 inner
   end
 
+  Test "colon newline" do
+    one = List (Symbol "one")
+    two = List (Symbol "two")
+    assert-reads "one: two" one two
+  end
+
 end
