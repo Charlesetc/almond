@@ -4,6 +4,7 @@
 define AST/assert-equal do a b
   condition = kind a == kind b
   if (not condition) {
+    puts (kind a) (kind b)
     panic "asserted equal but different kinds"
     return nil
   }
@@ -26,12 +27,14 @@ define AST/assert-equal do a b
     return true
   }
   if (kind a == "TOperator") {
-    assert a.char == b.char
+    assert (a.char == b.char)
   }
 end
 
-define assert-reads do str list
+define assert-reads do str *list
+  list = List/from_a list
   items = HZL/start default-table (List/from_a str)
+
 
   new-list = List
   items.each do i
@@ -50,8 +53,40 @@ end
 
 Describe "Read" do
 
-  Test "read two identifiers with space" do
-    assert-reads "test two" (List (List (Symbol "test") (Symbol "two")))
+  Test "two identifiers with space" do
+    assert-reads "test two" (List (Symbol "test") (Symbol "two"))
+  end
+
+  Test "with parentheses" do
+    inner = List (Symbol "one")
+    inner = List (Symbol "test") inner (Symbol "two")
+    assert-reads "test (one) two" inner
+  end
+
+  Test "double parentheses" do
+    inner = List (Symbol "one")
+    inner = List inner (Symbol "wow")
+    inner = List (Symbol "test") inner (Symbol "two")
+    assert-reads "test ((one) wow) two" inner
+  end
+
+  Test "three items" do
+    one = List (Symbol "one")
+    two = List (Symbol "two")
+    three = List (Symbol "four") (List (Symbol "three"))
+    assert-reads "one\ntwo\nfour (three)" one two three
+  end
+
+  Test "operator" do
+    op = TOperator (char '+')
+    assert-reads "one + two" (List (Symbol "one") op (Symbol "two"))
+  end
+
+  Test "operators with parens" do
+    op1 = TOperator (char '+')
+    op2 = TOperator (char '*')
+    inner = List (Symbol "two") op2 (Symbol "three")
+    assert-reads "one + (two * three)" (List (Symbol "one") op1 inner
   end
 
 end

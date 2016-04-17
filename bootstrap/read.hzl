@@ -188,16 +188,6 @@ define default-table do
   read-table
 end
 
-items = HZL/start default-table (List/from_a 'wow ((this + that) hi) tab * next')
-
-puts 'Done.'
-
-# List <TToken | TOperator>
-
-items.each do item
-  print-ast item.list
-end
-
 define print-ast { ast
   if (kind ast == "List") {
     puts "("
