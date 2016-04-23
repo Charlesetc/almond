@@ -16,6 +16,21 @@ struct TAccumulator {
   list
 }
 
+define TAccumulator.each do {
+  block = lambda yield
+  self.list.each do i
+    call block i
+  end
+}
+
+define TAccumulator.length do {
+  self.list.length
+}
+
+define TAccumulator.pop do {
+  self.list.pop
+}
+
 # Used internally when parsing.
 # Should not be in the final syntax tree.
 struct TToken {
@@ -133,11 +148,11 @@ define HZL/start do read-table stream
   expr = HZL/read-expression read-table stream
   if (expr.token_type == "TItemBreak") {
     items = HZL/start read-table stream
-    items.list.list.unshift expr
+    items.list.unshift expr
     return items
   }
   assert (expr.token_type == "TEOF")
-  return (TList expr)
+  return (TList (List expr))
 end
 
 define HZL/read-open-paren do read-table stream
@@ -212,7 +227,9 @@ end
 
 define print-ast { ast
   if (kind ast == "TAccumulator") {
+    print '['
     print ast.token_type
+    print ']'
     puts "("
     ast.list.each do a
       print-ast a
@@ -223,6 +240,14 @@ define print-ast { ast
   if (kind ast == "TOperator") {
     print "Op("
     print ast.char
+    puts ")"
+    return nil
+  }
+  if (kind ast == "List") {
+    puts "[list]("
+    ast.each do a
+      print-ast a
+    end
     puts ")"
     return nil
   }

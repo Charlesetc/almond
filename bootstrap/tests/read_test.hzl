@@ -11,7 +11,7 @@ define AST/assert-equal do a b
     panic "asserted equal but different kinds"
     return nil
   }
-  if (kind a == "List") {
+  if (kind a == "TAccumulator") {
     condition = a.length == b.length
     if (not condition) {
       panic "asserted equal but lists different lengths"
@@ -37,6 +37,10 @@ end
 define assert-reads do str *list
   list = List/from_a list
   items = HZL/start default-table (List/from_a str)
+
+  # print-ast list
+  # puts
+  # print-ast items
 
   AST/assert-equal items list
   true
@@ -92,4 +96,8 @@ Describe "Read" do
     assert-reads "one: two" one two
   end
 
+#   Test "simplest block" do
+#     block = List (Symbol "blocks") List
+#     assert-reads "{}" block
+#   end
 end
