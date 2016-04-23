@@ -1,5 +1,5 @@
 
-FILES = ./std/* ./hazelnut.hzl ./read.hzl
+FILES = ./std/* ./read/* ./hazelnut.hzl ./read.hzl
 
 .PHONY: run show build tokens go
 
