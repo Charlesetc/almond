@@ -8,6 +8,23 @@ define List.lazy {
   ll
 }
 
+struct Lazy-List/Take-While {
+  block
+  keep
+}
+
+define Lazy-List/Take-While.apply { a
+  if (self.keep == false) {
+    return nil
+  }
+  taken = call self.block a
+  if (not taken) {
+    self.keep = false
+    return nil
+  }
+  a
+}
+
 struct Lazy-List/Filter {
   block
 }
@@ -68,6 +85,13 @@ define Lazy-List.map {
 define Lazy-List.filter {
   filter = new Lazy-List/Filter
   filter.block = lambda yield
+  self.operations.push filter
+}
+
+define Lazy-List.take-while {
+  filter = new Lazy-List/Take-While
+  filter.block = lambda yield
+  filter.keep = true
   self.operations.push filter
 }
 

@@ -119,6 +119,8 @@ func hzl____equals______equals___(arguments []*any, yield block) *any {
 		return into_bool(*(*int)(a.hazelnut_data) == *(*int)(b.hazelnut_data))
 	} else if a.hazelnut_type == NIL {
 		return into_bool(true)
+	} else if a.hazelnut_type == BOOL {
+		return into_bool(*(*bool)(a.hazelnut_data) == *(*bool)(b.hazelnut_data))
 	} else if a.hazelnut_type == CHAR {
 		return into_bool(*(*rune)(a.hazelnut_data) == *(*rune)(b.hazelnut_data))
 	}

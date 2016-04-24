@@ -62,4 +62,15 @@ Describe "Lazy-Lists" do
     assert (l.pop == 36)
   end
 
+  Test "take-while" do
+    l = List 0 0 0 1 0
+    l = l.lazy
+    l.take-while { a: a == 0 }
+    l = l.collect
+    l.each { a
+      assert (a == 0)
+    }
+    assert (l.length == 3)
+  end
+
 end
