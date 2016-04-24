@@ -1,0 +1,82 @@
+
+# Lazy-Lists
+
+define List.lazy {
+  ll = new Lazy-List
+  ll.list = self
+  ll.operations = List
+  ll
+}
+
+struct Lazy-List/Filter {
+  block
+}
+
+define Lazy-List/Filter.apply { a
+  if (a == nil) {
+    return nil
+  }
+  if (call self.block a) {
+    return a
+  }
+  nil
+}
+
+struct Lazy-List/Map {
+  block
+}
+
+define Lazy-List/Map.apply { a
+  if (a == nil) {
+    return nil
+  }
+  call self.block a
+}
+
+struct Lazy-List {
+  list
+  operations
+}
+
+# This is gross code
+define Lazy-List.shift {
+  if self.list.empty {
+    return nil
+  }
+  a = self.list.shift
+  output = nil
+  self.operations.each { op
+    if (not output) {
+      a = op.apply a
+      if (a == nil) {
+        output = self.shift # This might not work.
+      }
+    }
+  }
+  if (not output) {
+    output = a
+  }
+  output
+}
+
+define Lazy-List.map {
+  map = new Lazy-List/Map
+  map.block = lambda yield
+  self.operations.push map
+}
+
+define Lazy-List.filter {
+  filter = new Lazy-List/Filter
+  filter.block = lambda yield
+  self.operations.push filter
+}
+
+define Lazy-List.collect {
+  a = self.shift
+  if (a == nil) {
+    return List
+  }
+  list = self.collect
+  list.unshift a
+  list
+}

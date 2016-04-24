@@ -12,6 +12,11 @@ binding (-) int do x int y int
 "&a"
 end
 
+binding (<) bool do x int y int
+  "a := *y < *x"
+  "&a"
+end
+
 # Very inefficient
 define int.times do
 

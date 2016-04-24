@@ -47,4 +47,25 @@ Describe "Lists" do
     a == 3
   end
 
+  Test "take-while"  do
+    list = List 1 2 3 4 5
+    next-list = list.take-while do a
+      not (a == 4)
+    end
+    assert (next-list.length == 3)
+    assert (list.length == 2)
+    a = next-list.pop
+    assert (a == 3)
+    a = list.pop
+    assert (a == 5)
+  end
+
+  Test 'map' do
+    list = List 1 2 3 4 5
+    list = list.map { x: x + 2 }
+
+    assert (list.pop == 7)
+    assert (list.shift == 3)
+  end
+
 end

@@ -5,6 +5,7 @@ require 'pry'
 OPERATORS = {
   :'=' => 0.0,
   :== => 0.1,
+  :< => 0.12,
   :+ => 0.2,
   :- => 0.2,
   :* => 0.3,
@@ -63,13 +64,14 @@ def hzl_namespace(name)
   name.gsub! "=", "___equals___"
   name.gsub! "-", "___minus___"
   name.gsub! "/", "___divide___"
+  name.gsub! "<", "___lt___"
   "hzl_" + name
 end
 
 class String
 
   def alpha?
-    self =~ /^[[:alpha:]\.\/\-?=%$^_+@*]+$/
+    self =~ /^[[:alpha:]\.\/\-?=%$<^_+@*]+$/
   end
 
   def numeric?
@@ -77,7 +79,7 @@ class String
   end
 
   def alphanumeric?
-    self =~ /^[[:alpha:]\/\-_=%?$^+@*[:digit:]]+$/
+    self =~ /^[[:alpha:]\/\-_=%?$^<+@*[:digit:]]+$/
   end
 
   def quote?

@@ -146,3 +146,32 @@ define List/equal { a b
   now = a1 == b1
   return (and past now)
 }
+
+define List.take-while {
+  if self.empty {
+    return List
+  }
+  a = self.shift
+  keep = yield a
+  if keep {
+    block = lambda yield
+    list = self.take-while { i
+      call block i
+    }
+    list.unshift a
+    return list
+  } else {
+    self.unshift a
+    return List
+  }
+}
+
+define List.map {
+  out-list = List
+  block = lambda yield
+  self.each { a
+    a = call block a
+    out-list.push a
+  }
+  out-list
+}

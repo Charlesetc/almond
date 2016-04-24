@@ -11,4 +11,10 @@ Describe "generic" do
     not ((kind a) == "not_example")
   end
 
+  Test "less than" { : 2 < 3 }
+
+  Test "not less than" {
+    not (3 < 2)
+  }
+
 end
