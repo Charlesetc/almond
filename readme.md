@@ -1,4 +1,8 @@
 
+# [depricated]
+
+Working on [acorn](https://github.com/Charlesetc/acorn) instead. Similar language, compiles to llvm and writen in rust.
+
 ## Hazelnut
 
 ![hazelnut logo](http://www.charlesetc.com/hazelnut/logo/hazelnut.svg)
