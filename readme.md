@@ -1,7 +1,7 @@
 
 # [deprecated]
 
-Working on [acorn](https://github.com/Charlesetc/acorn) instead. Similar language, compiles to llvm and writen in rust.
+Working on [acorn](https://github.com/Charlesetc/acorn) instead. Similar language, compiles to llvm and written in rust.
 
 ## Hazelnut
 
